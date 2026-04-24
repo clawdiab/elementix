@@ -8,3 +8,4 @@ export * from './components/badge/badge';
 export * from './components/avatar/avatar';
 export * from './components/card/card';
 export * from './components/alert/alert';
+export * from './components/dialog/dialog';
