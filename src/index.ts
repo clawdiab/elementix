@@ -5,3 +5,4 @@ export * from './components/checkbox/checkbox';
 export * from './components/switch/switch';
 export * from './components/radio/radio';
 export * from './components/badge/badge';
+export * from './components/avatar/avatar';
