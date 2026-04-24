@@ -4,8 +4,6 @@ const VALID_SHAPES = ['circle', 'square'] as const;
 type Size = typeof VALID_SIZES[number];
 type Shape = typeof VALID_SHAPES[number];
 
-const SIZE_MAP: Record<Size, number> = { xs: 24, sm: 32, md: 40, lg: 48, xl: 64 };
-
 export class ElxAvatar extends HTMLElement {
   static observedAttributes = ['src', 'alt', 'fallback', 'size', 'shape'];
 
