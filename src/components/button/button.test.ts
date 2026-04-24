@@ -1,10 +1,13 @@
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterEach } from 'vitest';
 import './button';
 
 describe('elx-button', () => {
   beforeAll(() => {
-    // Ensure custom element is registered
     expect(customElements.get('elx-button')).toBeDefined();
+  });
+
+  afterEach(() => {
+    document.body.innerHTML = '';
   });
 
   it('renders with default props', async () => {
@@ -15,8 +18,6 @@ describe('elx-button', () => {
     expect(button).toBeTruthy();
     expect(button!.classList.contains('primary')).toBe(true);
     expect(button!.classList.contains('md')).toBe(true);
-
-    el.remove();
   });
 
   it('renders slot content', async () => {
@@ -26,8 +27,6 @@ describe('elx-button', () => {
 
     const slot = el.shadowRoot!.querySelector('slot');
     expect(slot).toBeTruthy();
-
-    el.remove();
   });
 
   it('applies variant attribute', async () => {
@@ -37,8 +36,6 @@ describe('elx-button', () => {
 
     const button = el.shadowRoot!.querySelector('button');
     expect(button!.classList.contains('danger')).toBe(true);
-
-    el.remove();
   });
 
   it('applies size attribute', async () => {
@@ -48,8 +45,6 @@ describe('elx-button', () => {
 
     const button = el.shadowRoot!.querySelector('button');
     expect(button!.classList.contains('lg')).toBe(true);
-
-    el.remove();
   });
 
   it('handles disabled state', async () => {
@@ -60,8 +55,6 @@ describe('elx-button', () => {
     const button = el.shadowRoot!.querySelector('button');
     expect(button!.disabled).toBe(true);
     expect(button!.getAttribute('aria-disabled')).toBe('true');
-
-    el.remove();
   });
 
   it('updates when attributes change', async () => {
@@ -74,7 +67,58 @@ describe('elx-button', () => {
     el.setAttribute('variant', 'secondary');
     button = el.shadowRoot!.querySelector('button');
     expect(button!.classList.contains('secondary')).toBe(true);
+  });
 
-    el.remove();
+  // Security tests
+  it('ignores invalid variant values (XSS protection)', async () => {
+    const el = document.createElement('elx-button');
+    el.setAttribute('variant', '<script>alert(1)</script>');
+    document.body.appendChild(el);
+
+    const button = el.shadowRoot!.querySelector('button');
+    // Should fall back to default 'primary' since value is invalid
+    expect(button!.classList.contains('primary')).toBe(true);
+    expect(button!.classList.contains('<script>alert(1)</script>')).toBe(false);
+  });
+
+  it('ignores invalid size values', async () => {
+    const el = document.createElement('elx-button');
+    el.setAttribute('size', 'malicious-class');
+    document.body.appendChild(el);
+
+    const button = el.shadowRoot!.querySelector('button');
+    expect(button!.classList.contains('md')).toBe(true);
+    expect(button!.classList.contains('malicious-class')).toBe(false);
+  });
+
+  // Form behavior test
+  it('has type="button" by default to prevent form submission', async () => {
+    const el = document.createElement('elx-button');
+    document.body.appendChild(el);
+
+    const button = el.shadowRoot!.querySelector('button');
+    expect(button!.type).toBe('button');
+  });
+
+  // Focus-visible test
+  it('has focus-visible styles defined', async () => {
+    const el = document.createElement('elx-button');
+    document.body.appendChild(el);
+
+    const style = el.shadowRoot!.querySelector('style');
+    expect(style!.textContent).toContain(':focus-visible');
+  });
+
+  // DOM stability test
+  it('preserves button element across attribute changes', async () => {
+    const el = document.createElement('elx-button');
+    document.body.appendChild(el);
+
+    const button1 = el.shadowRoot!.querySelector('button');
+    el.setAttribute('variant', 'danger');
+    el.setAttribute('size', 'lg');
+
+    const button2 = el.shadowRoot!.querySelector('button');
+    expect(button1).toBe(button2); // Same reference, not recreated
   });
 });
