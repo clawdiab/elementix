@@ -7,3 +7,4 @@ export * from './components/radio/radio';
 export * from './components/badge/badge';
 export * from './components/avatar/avatar';
 export * from './components/card/card';
+export * from './components/alert/alert';
