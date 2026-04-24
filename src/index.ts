@@ -11,3 +11,4 @@ export * from './components/alert/alert';
 export * from './components/dialog/dialog';
 export * from './components/tabs/tabs';
 export * from './components/tooltip/tooltip';
+export * from './components/select/select';
