@@ -10,7 +10,10 @@ export class ElxDialog extends HTMLElement {
   }
 
   connectedCallback() { this._buildDom(); this._update(); }
-  disconnectedCallback() { this._restoreFocus(); }
+  disconnectedCallback() {
+    this._restoreFocus();
+    document.removeEventListener('keydown', this._onKeydown);
+  }
 
   attributeChangedCallback() { this._update(); }
 
