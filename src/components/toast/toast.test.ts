@@ -55,7 +55,32 @@ describe('elx-toast', () => {
     document.body.appendChild(el);
     const toast = el.shadowRoot!.querySelector('.toast');
     expect(toast!.getAttribute('role')).toBe('alert');
+    expect(toast!.getAttribute('aria-atomic')).toBe('true');
+    expect(toast!.getAttribute('aria-live')).toBe('polite');
+  });
+
+  it('uses assertive aria-live for error variant', () => {
+    const el = document.createElement('elx-toast');
+    el.setAttribute('variant', 'error');
+    document.body.appendChild(el);
+    const toast = el.shadowRoot!.querySelector('.toast');
     expect(toast!.getAttribute('aria-live')).toBe('assertive');
+  });
+
+  it('uses assertive aria-live for warning variant', () => {
+    const el = document.createElement('elx-toast');
+    el.setAttribute('variant', 'warning');
+    document.body.appendChild(el);
+    const toast = el.shadowRoot!.querySelector('.toast');
+    expect(toast!.getAttribute('aria-live')).toBe('assertive');
+  });
+
+  it('uses polite aria-live for success variant', () => {
+    const el = document.createElement('elx-toast');
+    el.setAttribute('variant', 'success');
+    document.body.appendChild(el);
+    const toast = el.shadowRoot!.querySelector('.toast');
+    expect(toast!.getAttribute('aria-live')).toBe('polite');
   });
 
   it('is hidden by default (no open attribute)', () => {

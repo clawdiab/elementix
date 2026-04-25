@@ -26,6 +26,8 @@ export class ElxToast extends HTMLElement {
 
   disconnectedCallback() {
     this._clearTimer();
+    const closeBtn = this.shadowRoot?.querySelector('.close-btn');
+    closeBtn?.removeEventListener('click', this._onClose);
   }
 
   attributeChangedCallback(_name: string) {
@@ -139,7 +141,7 @@ export class ElxToast extends HTMLElement {
     const container = document.createElement('div');
     container.className = 'toast';
     container.setAttribute('role', 'alert');
-    container.setAttribute('aria-live', 'assertive');
+    container.setAttribute('aria-atomic', 'true');
 
     const icon = document.createElement('span');
     icon.className = 'icon';
@@ -169,6 +171,8 @@ export class ElxToast extends HTMLElement {
     if (!container) return;
 
     container.className = `toast ${this.variant}`;
+    const liveValue = this.variant === 'error' || this.variant === 'warning' ? 'assertive' : 'polite';
+    container.setAttribute('aria-live', liveValue);
 
     const icon = container.querySelector('.icon');
     if (icon) icon.textContent = ICONS[this.variant];
