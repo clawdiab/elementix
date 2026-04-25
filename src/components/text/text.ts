@@ -4,11 +4,11 @@ const VALID_WEIGHTS = ['normal', 'medium', 'semibold', 'bold'] as const;
 const VALID_COLORS = ['default', 'muted', 'primary', 'danger', 'success'] as const;
 const VALID_ALIGNS = ['left', 'center', 'right'] as const;
 
-type Tag = typeof VALID_TAGS[number];
-type Size = typeof VALID_SIZES[number];
-type Weight = typeof VALID_WEIGHTS[number];
-type Color = typeof VALID_COLORS[number];
-type Align = typeof VALID_ALIGNS[number];
+type Tag = (typeof VALID_TAGS)[number];
+type Size = (typeof VALID_SIZES)[number];
+type Weight = (typeof VALID_WEIGHTS)[number];
+type Color = (typeof VALID_COLORS)[number];
+type Align = (typeof VALID_ALIGNS)[number];
 
 const DEFAULT_SIZES: Record<Tag, Size> = {
   h1: '4xl',

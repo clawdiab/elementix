@@ -1,8 +1,8 @@
 const VALID_VARIANTS = ['elevated', 'outlined', 'filled'] as const;
 const VALID_PADDINGS = ['none', 'sm', 'md', 'lg'] as const;
 
-type Variant = typeof VALID_VARIANTS[number];
-type Padding = typeof VALID_PADDINGS[number];
+type Variant = (typeof VALID_VARIANTS)[number];
+type Padding = (typeof VALID_PADDINGS)[number];
 
 export class ElxCard extends HTMLElement {
   static observedAttributes = ['variant', 'padding', 'interactive'];
@@ -12,23 +12,40 @@ export class ElxCard extends HTMLElement {
     this.attachShadow({ mode: 'open' });
   }
 
-  connectedCallback() { this._buildDom(); this._update(); }
-  attributeChangedCallback() { this._update(); }
+  connectedCallback() {
+    this._buildDom();
+    this._update();
+  }
+  attributeChangedCallback() {
+    this._update();
+  }
 
   get variant(): Variant {
     const val = this.getAttribute('variant');
-    return (VALID_VARIANTS as readonly string[]).indexOf(val as string) !== -1 ? (val as Variant) : 'elevated';
+    return (VALID_VARIANTS as readonly string[]).indexOf(val as string) !== -1
+      ? (val as Variant)
+      : 'elevated';
   }
-  set variant(val: string) { this.setAttribute('variant', val); }
+  set variant(val: string) {
+    this.setAttribute('variant', val);
+  }
 
   get padding(): Padding {
     const val = this.getAttribute('padding');
-    return (VALID_PADDINGS as readonly string[]).indexOf(val as string) !== -1 ? (val as Padding) : 'md';
+    return (VALID_PADDINGS as readonly string[]).indexOf(val as string) !== -1
+      ? (val as Padding)
+      : 'md';
   }
-  set padding(val: string) { this.setAttribute('padding', val); }
+  set padding(val: string) {
+    this.setAttribute('padding', val);
+  }
 
-  get interactive(): boolean { return this.hasAttribute('interactive'); }
-  set interactive(val: boolean) { val ? this.setAttribute('interactive', '') : this.removeAttribute('interactive'); }
+  get interactive(): boolean {
+    return this.hasAttribute('interactive');
+  }
+  set interactive(val: boolean) {
+    val ? this.setAttribute('interactive', '') : this.removeAttribute('interactive');
+  }
 
   private _buildDom() {
     const style = document.createElement('style');

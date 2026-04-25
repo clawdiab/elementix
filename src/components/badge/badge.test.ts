@@ -6,7 +6,9 @@ describe('elx-badge', () => {
     expect(customElements.get('elx-badge')).toBeDefined();
   });
 
-  afterEach(() => { document.body.innerHTML = ''; });
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
 
   it('renders with default props', () => {
     const el = document.createElement('elx-badge');

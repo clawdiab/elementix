@@ -1,15 +1,23 @@
 const VALID_SIZES = ['sm', 'md', 'lg'] as const;
 const VALID_TYPES = ['text', 'password', 'email', 'number', 'tel', 'url', 'search'] as const;
 
-type Size = typeof VALID_SIZES[number];
-type InputType = typeof VALID_TYPES[number];
+type Size = (typeof VALID_SIZES)[number];
+type InputType = (typeof VALID_TYPES)[number];
 
 let uid = 0;
 
 export class ElxInput extends HTMLElement {
   static observedAttributes = [
-    'type', 'size', 'disabled', 'readonly', 'placeholder',
-    'value', 'name', 'required', 'error', 'label'
+    'type',
+    'size',
+    'disabled',
+    'readonly',
+    'placeholder',
+    'value',
+    'name',
+    'required',
+    'error',
+    'label',
   ];
 
   private _input: HTMLInputElement | null = null;
@@ -37,16 +45,18 @@ export class ElxInput extends HTMLElement {
       : 'text';
   }
 
-  set type(val: string) { this.setAttribute('type', val); }
+  set type(val: string) {
+    this.setAttribute('type', val);
+  }
 
   get size(): Size {
     const val = this.getAttribute('size');
-    return (VALID_SIZES as readonly string[]).indexOf(val as string) !== -1
-      ? (val as Size)
-      : 'md';
+    return (VALID_SIZES as readonly string[]).indexOf(val as string) !== -1 ? (val as Size) : 'md';
   }
 
-  set size(val: string) { this.setAttribute('size', val); }
+  set size(val: string) {
+    this.setAttribute('size', val);
+  }
 
   get value(): string {
     return this._input?.value ?? this.getAttribute('value') ?? '';
@@ -57,26 +67,54 @@ export class ElxInput extends HTMLElement {
     this.setAttribute('value', val);
   }
 
-  get name(): string { return this.getAttribute('name') ?? ''; }
-  set name(val: string) { this.setAttribute('name', val); }
+  get name(): string {
+    return this.getAttribute('name') ?? '';
+  }
+  set name(val: string) {
+    this.setAttribute('name', val);
+  }
 
-  get placeholder(): string { return this.getAttribute('placeholder') ?? ''; }
-  set placeholder(val: string) { this.setAttribute('placeholder', val); }
+  get placeholder(): string {
+    return this.getAttribute('placeholder') ?? '';
+  }
+  set placeholder(val: string) {
+    this.setAttribute('placeholder', val);
+  }
 
-  get disabled(): boolean { return this.hasAttribute('disabled'); }
-  set disabled(val: boolean) { val ? this.setAttribute('disabled', '') : this.removeAttribute('disabled'); }
+  get disabled(): boolean {
+    return this.hasAttribute('disabled');
+  }
+  set disabled(val: boolean) {
+    val ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
+  }
 
-  get readonly(): boolean { return this.hasAttribute('readonly'); }
-  set readonly(val: boolean) { val ? this.setAttribute('readonly', '') : this.removeAttribute('readonly'); }
+  get readonly(): boolean {
+    return this.hasAttribute('readonly');
+  }
+  set readonly(val: boolean) {
+    val ? this.setAttribute('readonly', '') : this.removeAttribute('readonly');
+  }
 
-  get required(): boolean { return this.hasAttribute('required'); }
-  set required(val: boolean) { val ? this.setAttribute('required', '') : this.removeAttribute('required'); }
+  get required(): boolean {
+    return this.hasAttribute('required');
+  }
+  set required(val: boolean) {
+    val ? this.setAttribute('required', '') : this.removeAttribute('required');
+  }
 
-  get error(): boolean { return this.hasAttribute('error'); }
-  set error(val: boolean) { val ? this.setAttribute('error', '') : this.removeAttribute('error'); }
+  get error(): boolean {
+    return this.hasAttribute('error');
+  }
+  set error(val: boolean) {
+    val ? this.setAttribute('error', '') : this.removeAttribute('error');
+  }
 
-  focus() { this._input?.focus(); }
-  blur() { this._input?.blur(); }
+  focus() {
+    this._input?.focus();
+  }
+  blur() {
+    this._input?.blur();
+  }
 
   private _buildDom() {
     const style = document.createElement('style');
@@ -125,17 +163,23 @@ export class ElxInput extends HTMLElement {
     this.shadowRoot!.appendChild(wrapper);
 
     this._input.addEventListener('input', () => {
-      this.dispatchEvent(new CustomEvent('input', {
-        detail: { value: this._input!.value },
-        bubbles: true, composed: true
-      }));
+      this.dispatchEvent(
+        new CustomEvent('input', {
+          detail: { value: this._input!.value },
+          bubbles: true,
+          composed: true,
+        }),
+      );
     });
 
     this._input.addEventListener('change', () => {
-      this.dispatchEvent(new CustomEvent('change', {
-        detail: { value: this._input!.value },
-        bubbles: true, composed: true
-      }));
+      this.dispatchEvent(
+        new CustomEvent('change', {
+          detail: { value: this._input!.value },
+          bubbles: true,
+          composed: true,
+        }),
+      );
     });
 
     this._input.addEventListener('focus', () => {

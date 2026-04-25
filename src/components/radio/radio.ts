@@ -1,5 +1,5 @@
 const VALID_SIZES = ['sm', 'md', 'lg'] as const;
-type Size = typeof VALID_SIZES[number];
+type Size = (typeof VALID_SIZES)[number];
 
 let uid = 0;
 
@@ -16,32 +16,63 @@ export class ElxRadio extends HTMLElement {
     this.attachShadow({ mode: 'open' });
   }
 
-  connectedCallback() { this._buildDom(); this._update(); }
-  attributeChangedCallback() { this._update(); }
+  connectedCallback() {
+    this._buildDom();
+    this._update();
+  }
+  attributeChangedCallback() {
+    this._update();
+  }
 
-  get checked(): boolean { return this.hasAttribute('checked'); }
-  set checked(val: boolean) { val ? this.setAttribute('checked', '') : this.removeAttribute('checked'); }
+  get checked(): boolean {
+    return this.hasAttribute('checked');
+  }
+  set checked(val: boolean) {
+    val ? this.setAttribute('checked', '') : this.removeAttribute('checked');
+  }
 
-  get disabled(): boolean { return this.hasAttribute('disabled'); }
-  set disabled(val: boolean) { val ? this.setAttribute('disabled', '') : this.removeAttribute('disabled'); }
+  get disabled(): boolean {
+    return this.hasAttribute('disabled');
+  }
+  set disabled(val: boolean) {
+    val ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
+  }
 
   get size(): Size {
     const val = this.getAttribute('size');
     return (VALID_SIZES as readonly string[]).indexOf(val as string) !== -1 ? (val as Size) : 'md';
   }
-  set size(val: string) { this.setAttribute('size', val); }
+  set size(val: string) {
+    this.setAttribute('size', val);
+  }
 
-  get name(): string { return this.getAttribute('name') ?? ''; }
-  set name(val: string) { this.setAttribute('name', val); }
+  get name(): string {
+    return this.getAttribute('name') ?? '';
+  }
+  set name(val: string) {
+    this.setAttribute('name', val);
+  }
 
-  get value(): string { return this.getAttribute('value') ?? ''; }
-  set value(val: string) { this.setAttribute('value', val); }
+  get value(): string {
+    return this.getAttribute('value') ?? '';
+  }
+  set value(val: string) {
+    this.setAttribute('value', val);
+  }
 
-  get label(): string { return this.getAttribute('label') ?? ''; }
-  set label(val: string) { this.setAttribute('label', val); }
+  get label(): string {
+    return this.getAttribute('label') ?? '';
+  }
+  set label(val: string) {
+    this.setAttribute('label', val);
+  }
 
-  focus() { this._input?.focus(); }
-  blur() { this._input?.blur(); }
+  focus() {
+    this._input?.focus();
+  }
+  blur() {
+    this._input?.blur();
+  }
 
   private _buildDom() {
     const style = document.createElement('style');
@@ -137,10 +168,13 @@ export class ElxRadio extends HTMLElement {
       this.setAttribute('checked', '');
       // Uncheck siblings in same group
       this._uncheckSiblings();
-      this.dispatchEvent(new CustomEvent('change', {
-        detail: { value: this.value, name: this.name },
-        bubbles: true, composed: true
-      }));
+      this.dispatchEvent(
+        new CustomEvent('change', {
+          detail: { value: this.value, name: this.name },
+          bubbles: true,
+          composed: true,
+        }),
+      );
     });
   }
 
@@ -148,7 +182,7 @@ export class ElxRadio extends HTMLElement {
     const parent = this.parentElement;
     if (!parent) return;
     const siblings = parent.querySelectorAll(`elx-radio[name="${this.name}"]`);
-    siblings.forEach(sib => {
+    siblings.forEach((sib) => {
       if (sib !== this && sib.hasAttribute('checked')) {
         sib.removeAttribute('checked');
       }
@@ -201,19 +235,38 @@ export class ElxRadioGroup extends HTMLElement {
     this.addEventListener('change', this._handleChange.bind(this) as EventListener);
   }
 
-  attributeChangedCallback() { this._propagateAttrs(); }
+  attributeChangedCallback() {
+    this._propagateAttrs();
+  }
 
-  get name(): string { return this.getAttribute('name') ?? ''; }
-  set name(val: string) { this.setAttribute('name', val); }
+  get name(): string {
+    return this.getAttribute('name') ?? '';
+  }
+  set name(val: string) {
+    this.setAttribute('name', val);
+  }
 
-  get value(): string { return this.getAttribute('value') ?? ''; }
-  set value(val: string) { this.setAttribute('value', val); this._syncChecked(); }
+  get value(): string {
+    return this.getAttribute('value') ?? '';
+  }
+  set value(val: string) {
+    this.setAttribute('value', val);
+    this._syncChecked();
+  }
 
-  get disabled(): boolean { return this.hasAttribute('disabled'); }
-  set disabled(val: boolean) { val ? this.setAttribute('disabled', '') : this.removeAttribute('disabled'); }
+  get disabled(): boolean {
+    return this.hasAttribute('disabled');
+  }
+  set disabled(val: boolean) {
+    val ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
+  }
 
-  get orientation(): string { return this.getAttribute('orientation') ?? 'vertical'; }
-  set orientation(val: string) { this.setAttribute('orientation', val); }
+  get orientation(): string {
+    return this.getAttribute('orientation') ?? 'vertical';
+  }
+  set orientation(val: string) {
+    this.setAttribute('orientation', val);
+  }
 
   private _buildDom() {
     const style = document.createElement('style');
@@ -229,7 +282,7 @@ export class ElxRadioGroup extends HTMLElement {
 
   private _propagateAttrs() {
     const radios = this.querySelectorAll('elx-radio');
-    radios.forEach(radio => {
+    radios.forEach((radio) => {
       if (this.name) radio.setAttribute('name', this.name);
       if (this.disabled) radio.setAttribute('disabled', '');
     });
@@ -238,7 +291,7 @@ export class ElxRadioGroup extends HTMLElement {
 
   private _syncChecked() {
     const radios = this.querySelectorAll('elx-radio');
-    radios.forEach(radio => {
+    radios.forEach((radio) => {
       if (radio.getAttribute('value') === this.value) {
         radio.setAttribute('checked', '');
       } else {

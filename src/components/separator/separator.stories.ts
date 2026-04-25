@@ -5,9 +5,9 @@ export default {
   title: 'Components/Separator',
   tags: ['autodocs'],
   argTypes: {
-    orientation: { 
-      control: { type: 'select' }, 
-      options: ['horizontal', 'vertical'] 
+    orientation: {
+      control: { type: 'select' },
+      options: ['horizontal', 'vertical'],
     },
   },
 };

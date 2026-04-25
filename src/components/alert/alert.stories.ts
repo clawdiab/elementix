@@ -6,8 +6,8 @@ export default {
   tags: ['autodocs'],
   argTypes: {
     variant: { control: { type: 'select' }, options: ['info', 'success', 'warning', 'error'] },
-    dismissible: { control: 'boolean' }
-  }
+    dismissible: { control: 'boolean' },
+  },
 };
 
 const Template = ({ variant, dismissible }: any) => html`

@@ -96,7 +96,9 @@ describe('elx-text', () => {
       document.body.appendChild(el);
 
       const inner = el.shadowRoot!.querySelector(tag);
-      expect(inner!.style.fontWeight, `${tag} should default to semibold`).toBe('var(--elx-font-weight-semibold)');
+      expect(inner!.style.fontWeight, `${tag} should default to semibold`).toBe(
+        'var(--elx-font-weight-semibold)',
+      );
     }
   });
 
@@ -118,7 +120,9 @@ describe('elx-text', () => {
       document.body.appendChild(el);
 
       const inner = el.shadowRoot!.querySelector(tag) as HTMLElement;
-      expect(inner!.style.fontSize, `as="${tag}" should default to size ${size}`).toBe(`var(--elx-font-size-${size})`);
+      expect(inner!.style.fontSize, `as="${tag}" should default to size ${size}`).toBe(
+        `var(--elx-font-size-${size})`,
+      );
     }
   });
 

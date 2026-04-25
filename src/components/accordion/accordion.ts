@@ -25,19 +25,31 @@ export class ElxAccordionItem extends HTMLElement {
     }
   }
 
-  get value(): string { return this.getAttribute('value') ?? ''; }
-  set value(val: string) { this.setAttribute('value', val); }
+  get value(): string {
+    return this.getAttribute('value') ?? '';
+  }
+  set value(val: string) {
+    this.setAttribute('value', val);
+  }
 
-  get label(): string { return this.getAttribute('label') ?? ''; }
-  set label(val: string) { this.setAttribute('label', val); }
+  get label(): string {
+    return this.getAttribute('label') ?? '';
+  }
+  set label(val: string) {
+    this.setAttribute('label', val);
+  }
 
-  get disabled(): boolean { return this.hasAttribute('disabled'); }
+  get disabled(): boolean {
+    return this.hasAttribute('disabled');
+  }
   set disabled(val: boolean) {
     if (val) this.setAttribute('disabled', '');
     else this.removeAttribute('disabled');
   }
 
-  get open(): boolean { return this._open; }
+  get open(): boolean {
+    return this._open;
+  }
 
   toggle(force?: boolean) {
     if (this.disabled) return;
@@ -45,7 +57,9 @@ export class ElxAccordionItem extends HTMLElement {
     if (next === this._open) return;
     this._open = next;
     this._updateState();
-    this.dispatchEvent(new CustomEvent('toggle', { detail: { value: this.value, open: this._open }, bubbles: true }));
+    this.dispatchEvent(
+      new CustomEvent('toggle', { detail: { value: this.value, open: this._open }, bubbles: true }),
+    );
   }
 
   private _buildDom() {
@@ -138,7 +152,10 @@ export class ElxAccordionItem extends HTMLElement {
     arrow.setAttribute('fill', 'currentColor');
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     path.setAttribute('fill-rule', 'evenodd');
-    path.setAttribute('d', 'M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z');
+    path.setAttribute(
+      'd',
+      'M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z',
+    );
     path.setAttribute('clip-rule', 'evenodd');
     arrow.appendChild(path);
 
@@ -215,7 +232,7 @@ export class ElxAccordion extends HTMLElement {
 
   private _onItemToggle = (e: CustomEvent) => {
     if (this.type === 'single' && e.detail.open) {
-      this._getItems().forEach(item => {
+      this._getItems().forEach((item) => {
         if (item !== e.target && item.open) {
           item.toggle(false);
         }
@@ -227,8 +244,8 @@ export class ElxAccordion extends HTMLElement {
     const target = e.target as HTMLElement;
     if (!target.closest('elx-accordion-item')) return;
 
-    const items = this._getItems().filter(i => !i.disabled);
-    const currentItem = (target.closest('elx-accordion-item') as ElxAccordionItem);
+    const items = this._getItems().filter((i) => !i.disabled);
+    const currentItem = target.closest('elx-accordion-item') as ElxAccordionItem;
     const currentIndex = items.indexOf(currentItem);
     if (currentIndex === -1) return;
 

@@ -1,5 +1,5 @@
 const VALID_ORIENTATIONS = ['horizontal', 'vertical'] as const;
-type Orientation = typeof VALID_ORIENTATIONS[number];
+type Orientation = (typeof VALID_ORIENTATIONS)[number];
 
 export class ElxSeparator extends HTMLElement {
   static observedAttributes = ['orientation'];
@@ -69,7 +69,7 @@ export class ElxSeparator extends HTMLElement {
   private _updateOrientation() {
     const separator = this.shadowRoot?.querySelector('.separator');
     if (!separator) return;
-    
+
     separator.className = `separator ${this.orientation}`;
     separator.setAttribute('aria-orientation', this.orientation);
   }

@@ -93,7 +93,9 @@ export const Colors: StoryObj = {
         ${extraColors.map(
           (cssVar) => html`
             <div>
-              <div style="${swatchBoxStyle(cssVar)} border: 1px solid var(--elx-color-neutral-200);"></div>
+              <div
+                style="${swatchBoxStyle(cssVar)} border: 1px solid var(--elx-color-neutral-200);"
+              ></div>
               <div style="${swatchLabelStyle}">var(${cssVar})</div>
             </div>
           `,
@@ -185,7 +187,9 @@ export const Typography: StoryObj = {
         ({ token, label }) => html`
           <div style="${rowStyle}">
             <span style="${tokenLabelStyle}">${token} — ${label}</span>
-            <span style="font-weight: var(${token}); font-size: var(--elx-font-size-lg); font-family: var(--elx-font-family-sans);">
+            <span
+              style="font-weight: var(${token}); font-size: var(--elx-font-size-lg); font-family: var(--elx-font-family-sans);"
+            >
               The quick brown fox
             </span>
           </div>
@@ -198,8 +202,10 @@ export const Typography: StoryObj = {
         ({ token, label }) => html`
           <div style="${rowStyle}">
             <span style="${tokenLabelStyle}">${token} — ${label}</span>
-            <span style="line-height: var(${token}); font-size: var(--elx-font-size-base); font-family: var(--elx-font-family-sans); background: var(--elx-color-primary-50); padding: 4px 8px; border-radius: var(--elx-radius-sm);">
-              Line height sample<br/>Second line of text
+            <span
+              style="line-height: var(${token}); font-size: var(--elx-font-size-base); font-family: var(--elx-font-family-sans); background: var(--elx-color-primary-50); padding: 4px 8px; border-radius: var(--elx-radius-sm);"
+            >
+              Line height sample<br />Second line of text
             </span>
           </div>
         `,
@@ -226,14 +232,18 @@ export const BorderRadius: StoryObj = {
         ${radii.map(
           ({ token, label }) => html`
             <div style="text-align: center;">
-              <div style="
+              <div
+                style="
                 width: 96px;
                 height: 96px;
                 background: var(--elx-color-primary-500);
                 border-radius: var(${token});
                 box-shadow: 0 1px 3px rgba(0,0,0,.12);
-              "></div>
-              <div style="font-size: var(--elx-font-size-sm); font-weight: var(--elx-font-weight-semibold); margin-top: 8px;">
+              "
+              ></div>
+              <div
+                style="font-size: var(--elx-font-size-sm); font-weight: var(--elx-font-weight-semibold); margin-top: 8px;"
+              >
                 ${label}
               </div>
               <div style="${swatchLabelStyle} max-width: 96px;">var(${token})</div>

@@ -1,8 +1,8 @@
 const VALID_VARIANTS = ['primary', 'secondary', 'danger', 'ghost'] as const;
 const VALID_SIZES = ['sm', 'md', 'lg'] as const;
 
-type Variant = typeof VALID_VARIANTS[number];
-type Size = typeof VALID_SIZES[number];
+type Variant = (typeof VALID_VARIANTS)[number];
+type Size = (typeof VALID_SIZES)[number];
 
 export class ElxButton extends HTMLElement {
   static observedAttributes = ['variant', 'size', 'disabled'];

@@ -12,7 +12,9 @@ export const Default = () => html`
     <span slot="title">Dialog Title</span>
     <p>This is the dialog content. You can put anything here.</p>
     <div slot="footer">
-      <elx-button variant="ghost" onclick="document.querySelector('#dialog1').close()">Cancel</elx-button>
+      <elx-button variant="ghost" onclick="document.querySelector('#dialog1').close()"
+        >Cancel</elx-button
+      >
       <elx-button onclick="document.querySelector('#dialog1').close()">Confirm</elx-button>
     </div>
   </elx-dialog>

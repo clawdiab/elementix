@@ -7,23 +7,19 @@ export default {
   argTypes: {
     variant: {
       control: { type: 'select' },
-      options: ['primary', 'secondary', 'danger', 'ghost']
+      options: ['primary', 'secondary', 'danger', 'ghost'],
     },
     size: {
       control: { type: 'select' },
-      options: ['sm', 'md', 'lg']
+      options: ['sm', 'md', 'lg'],
     },
     disabled: { control: 'boolean' },
-    label: { control: 'text' }
-  }
+    label: { control: 'text' },
+  },
 };
 
 const Template = ({ variant, size, disabled, label }: any) => html`
-  <elx-button
-    variant=${variant}
-    size=${size}
-    ?disabled=${disabled}
-  >${label}</elx-button>
+  <elx-button variant=${variant} size=${size} ?disabled=${disabled}>${label}</elx-button>
 `;
 
 export const Primary = Template.bind({});

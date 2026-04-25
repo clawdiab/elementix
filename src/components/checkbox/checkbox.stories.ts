@@ -11,8 +11,8 @@ export default {
     size: { control: { type: 'select' }, options: ['sm', 'md', 'lg'] },
     label: { control: 'text' },
     name: { control: 'text' },
-    value: { control: 'text' }
-  }
+    value: { control: 'text' },
+  },
 };
 
 const Template = ({ checked, disabled, indeterminate, size, label, name, value }: any) => html`
@@ -28,19 +28,67 @@ const Template = ({ checked, disabled, indeterminate, size, label, name, value }
 `;
 
 export const Default = Template.bind({});
-(Default as any).args = { checked: false, disabled: false, indeterminate: false, size: 'md', label: 'Accept terms', name: 'terms', value: 'on' };
+(Default as any).args = {
+  checked: false,
+  disabled: false,
+  indeterminate: false,
+  size: 'md',
+  label: 'Accept terms',
+  name: 'terms',
+  value: 'on',
+};
 
 export const Checked = Template.bind({});
-(Checked as any).args = { checked: true, disabled: false, indeterminate: false, size: 'md', label: 'Checked', name: '', value: 'on' };
+(Checked as any).args = {
+  checked: true,
+  disabled: false,
+  indeterminate: false,
+  size: 'md',
+  label: 'Checked',
+  name: '',
+  value: 'on',
+};
 
 export const Indeterminate = Template.bind({});
-(Indeterminate as any).args = { checked: false, disabled: false, indeterminate: true, size: 'md', label: 'Indeterminate', name: '', value: 'on' };
+(Indeterminate as any).args = {
+  checked: false,
+  disabled: false,
+  indeterminate: true,
+  size: 'md',
+  label: 'Indeterminate',
+  name: '',
+  value: 'on',
+};
 
 export const Disabled = Template.bind({});
-(Disabled as any).args = { checked: false, disabled: true, indeterminate: false, size: 'md', label: 'Disabled', name: '', value: 'on' };
+(Disabled as any).args = {
+  checked: false,
+  disabled: true,
+  indeterminate: false,
+  size: 'md',
+  label: 'Disabled',
+  name: '',
+  value: 'on',
+};
 
 export const Small = Template.bind({});
-(Small as any).args = { checked: false, disabled: false, indeterminate: false, size: 'sm', label: 'Small', name: '', value: 'on' };
+(Small as any).args = {
+  checked: false,
+  disabled: false,
+  indeterminate: false,
+  size: 'sm',
+  label: 'Small',
+  name: '',
+  value: 'on',
+};
 
 export const Large = Template.bind({});
-(Large as any).args = { checked: false, disabled: false, indeterminate: false, size: 'lg', label: 'Large', name: '', value: 'on' };
+(Large as any).args = {
+  checked: false,
+  disabled: false,
+  indeterminate: false,
+  size: 'lg',
+  label: 'Large',
+  name: '',
+  value: 'on',
+};
