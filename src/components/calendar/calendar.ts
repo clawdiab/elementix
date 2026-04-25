@@ -130,6 +130,10 @@ export class ElxCalendar extends HTMLElement {
   private _currentMonth: number;
   private _currentYear: number;
   private _rendered = false;
+  private _boundHandleKeydown: (e: KeyboardEvent) => void;
+  private _boundHandleClick: (e: MouseEvent) => void;
+  private _boundPrevMonth: () => void;
+  private _boundNextMonth: () => void;
 
   constructor() {
     super();
@@ -137,6 +141,10 @@ export class ElxCalendar extends HTMLElement {
     const now = new Date();
     this._currentMonth = now.getMonth();
     this._currentYear = now.getFullYear();
+    this._boundHandleKeydown = this._handleKeydown.bind(this);
+    this._boundHandleClick = this._handleDayClick.bind(this);
+    this._boundPrevMonth = () => this._prevMonth();
+    this._boundNextMonth = () => this._nextMonth();
   }
 
   get value(): Date | null {
@@ -189,6 +197,16 @@ export class ElxCalendar extends HTMLElement {
       this._render();
       this._rendered = true;
     }
+  }
+
+  disconnectedCallback() {
+    const prevBtn = this.shadowRoot?.querySelector('.prev');
+    const nextBtn = this.shadowRoot?.querySelector('.next');
+    const daysContainer = this.shadowRoot?.querySelector('.days');
+    prevBtn?.removeEventListener('click', this._boundPrevMonth);
+    nextBtn?.removeEventListener('click', this._boundNextMonth);
+    daysContainer?.removeEventListener('click', this._boundHandleClick as EventListener);
+    daysContainer?.removeEventListener('keydown', this._boundHandleKeydown as EventListener);
   }
 
   attributeChangedCallback(name: string, _oldVal: string | null, newVal: string | null) {
@@ -275,7 +293,9 @@ export class ElxCalendar extends HTMLElement {
       if (isSelected) classes += ' selected';
       if (isDisabled) classes += ' disabled';
 
-      html += `<button class="${classes}" data-day="${i}" role="gridcell" aria-label="${months[this._currentMonth]} ${i}, ${this._currentYear}">${i}</button>`;
+      const ariaDisabled = isDisabled ? ' aria-disabled="true"' : '';
+      const ariaSelected = isSelected ? ' aria-selected="true"' : '';
+      html += `<button class="${classes}" data-day="${i}" role="gridcell" aria-label="${months[this._currentMonth]} ${i}, ${this._currentYear}"${ariaDisabled}${ariaSelected}>${i}</button>`;
     }
 
     // Next month days
@@ -289,9 +309,15 @@ export class ElxCalendar extends HTMLElement {
 
   private _isDisabled(date: Date): boolean {
     if (this.disabled) return true;
-    const time = date.getTime();
-    if (this._min && time < this._min.getTime()) return true;
-    if (this._max && time > this._max.getTime()) return true;
+    const d = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+    if (this._min) {
+      const minD = new Date(this._min.getFullYear(), this._min.getMonth(), this._min.getDate()).getTime();
+      if (d < minD) return true;
+    }
+    if (this._max) {
+      const maxD = new Date(this._max.getFullYear(), this._max.getMonth(), this._max.getDate()).getTime();
+      if (d > maxD) return true;
+    }
     return false;
   }
 
@@ -300,9 +326,33 @@ export class ElxCalendar extends HTMLElement {
     const nextBtn = this.shadowRoot!.querySelector('.next');
     const daysContainer = this.shadowRoot!.querySelector('.days');
 
-    prevBtn?.addEventListener('click', () => this._prevMonth());
-    nextBtn?.addEventListener('click', () => this._nextMonth());
-    daysContainer?.addEventListener('click', (e) => this._handleDayClick(e as MouseEvent));
+    prevBtn?.addEventListener('click', this._boundPrevMonth);
+    nextBtn?.addEventListener('click', this._boundNextMonth);
+    daysContainer?.addEventListener('click', this._boundHandleClick as EventListener);
+    daysContainer?.addEventListener('keydown', this._boundHandleKeydown as EventListener);
+  }
+
+  private _handleKeydown(e: KeyboardEvent) {
+    const target = e.target as HTMLElement;
+    if (!target.classList.contains('day')) return;
+    if (target.classList.contains('other-month')) return;
+
+    const days: HTMLElement[] = [];
+    this.shadowRoot!.querySelectorAll('.day:not(.other-month):not(.disabled)').forEach(el => days.push(el as HTMLElement));
+    const currentIndex = days.indexOf(target);
+    if (currentIndex === -1) return;
+
+    let newIndex = currentIndex;
+    if (e.key === 'ArrowRight') newIndex = Math.min(currentIndex + 1, days.length - 1);
+    else if (e.key === 'ArrowLeft') newIndex = Math.max(currentIndex - 1, 0);
+    else if (e.key === 'ArrowDown') newIndex = Math.min(currentIndex + 7, days.length - 1);
+    else if (e.key === 'ArrowUp') newIndex = Math.max(currentIndex - 7, 0);
+    else if (e.key === 'Home') newIndex = 0;
+    else if (e.key === 'End') newIndex = days.length - 1;
+    else return;
+
+    e.preventDefault();
+    days[newIndex].focus();
   }
 
   private _prevMonth() {
@@ -364,7 +414,13 @@ export class ElxCalendar extends HTMLElement {
     days.forEach(day => {
       const dayNum = parseInt((day as HTMLElement).dataset.day || '0', 10);
       const date = new Date(this._currentYear, this._currentMonth, dayNum);
-      day.classList.toggle('disabled', this._isDisabled(date));
+      const isDisabled = this._isDisabled(date);
+      day.classList.toggle('disabled', isDisabled);
+      if (isDisabled) {
+        day.setAttribute('aria-disabled', 'true');
+      } else {
+        day.removeAttribute('aria-disabled');
+      }
     });
   }
 }

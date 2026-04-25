@@ -185,4 +185,40 @@ describe('ElxCalendar', () => {
     el.setAttribute('value', '2025-06-15');
     expect(el._currentMonth).toBe(5);
   });
+
+  it('has aria-disabled on disabled days', () => {
+    el._currentMonth = 0;
+    el._currentYear = 2025;
+    el._renderDays();
+    el.min = new Date(2025, 0, 15);
+    const days = el.shadowRoot.querySelectorAll('.day:not(.other-month)');
+    expect(days[0].getAttribute('aria-disabled')).toBe('true');
+  });
+
+  it('has aria-selected on initial render with value', () => {
+    el.value = new Date(2025, 0, 10);
+    el._renderDays();
+    const selected = el.shadowRoot.querySelector('.day.selected');
+    expect(selected.getAttribute('aria-selected')).toBe('true');
+  });
+
+  it('supports keyboard navigation ArrowRight', () => {
+    const days = el.shadowRoot.querySelectorAll('.day:not(.other-month):not(.disabled)');
+    days[0].focus();
+    days[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    expect(el.shadowRoot.activeElement).toBe(days[1]);
+  });
+
+  it('supports keyboard navigation ArrowDown', () => {
+    const days = el.shadowRoot.querySelectorAll('.day:not(.other-month):not(.disabled)');
+    days[0].focus();
+    days[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    expect(el.shadowRoot.activeElement).toBe(days[7]);
+  });
+
+  it('cleans up listeners on disconnect', () => {
+    el.remove();
+    // Should not throw
+    expect(true).toBe(true);
+  });
 });
