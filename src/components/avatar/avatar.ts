@@ -202,10 +202,12 @@ export class ElxAvatarGroup extends HTMLElement {
 
   private _rendered = false;
   private _overflowEl: HTMLSpanElement | null = null;
+  private _boundHandleSlotChange: () => void;
 
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
+    this._boundHandleSlotChange = this._handleSlotChange.bind(this);
   }
 
   connectedCallback() {
@@ -214,6 +216,13 @@ export class ElxAvatarGroup extends HTMLElement {
       this._rendered = true;
     }
     this._updateOverflow();
+  }
+
+  disconnectedCallback() {
+    const slot = this.shadowRoot?.querySelector('slot');
+    if (slot) {
+      slot.removeEventListener('slotchange', this._boundHandleSlotChange);
+    }
   }
 
   attributeChangedCallback(_name: string, oldVal: string | null, newVal: string | null) {
@@ -235,9 +244,18 @@ export class ElxAvatarGroup extends HTMLElement {
     this.shadowRoot!.innerHTML = `
       <style>${avatarGroupStyles}</style>
       <slot></slot>
-      <span class="overflow" part="overflow" style="display: none;"></span>
+      <span class="overflow" part="overflow" role="group" style="display: none;"></span>
     `;
     this._overflowEl = this.shadowRoot!.querySelector('.overflow');
+    
+    const slot = this.shadowRoot!.querySelector('slot');
+    if (slot) {
+      slot.addEventListener('slotchange', this._boundHandleSlotChange);
+    }
+  }
+
+  private _handleSlotChange() {
+    this._updateOverflow();
   }
 
   private _updateOverflow() {
@@ -249,6 +267,7 @@ export class ElxAvatarGroup extends HTMLElement {
     if (max > 0 && avatars.length > max) {
       const overflow = avatars.length - max;
       this._overflowEl.textContent = `+${overflow}`;
+      this._overflowEl.setAttribute('aria-label', `${overflow} more avatars`);
       this._overflowEl.style.display = 'inline-flex';
 
       avatars.forEach((avatar, index) => {
@@ -260,6 +279,7 @@ export class ElxAvatarGroup extends HTMLElement {
       });
     } else {
       this._overflowEl.style.display = 'none';
+      this._overflowEl.removeAttribute('aria-label');
       avatars.forEach(avatar => {
         (avatar as HTMLElement).style.display = '';
       });
