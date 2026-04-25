@@ -7,7 +7,9 @@ describe('elx-tabs', () => {
     expect(customElements.get('elx-tab-panel')).toBeDefined();
   });
 
-  afterEach(() => { document.body.innerHTML = ''; });
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
 
   it('renders tab list and panels', () => {
     const el = document.createElement('elx-tabs');
@@ -81,7 +83,9 @@ describe('elx-tabs', () => {
     `;
     document.body.appendChild(el);
     let detail: any = null;
-    el.addEventListener('change', (e: any) => { detail = e.detail; });
+    el.addEventListener('change', (e: any) => {
+      detail = e.detail;
+    });
     const tabs = el.shadowRoot!.querySelectorAll<HTMLButtonElement>('.tab');
     tabs[1].click();
     expect(detail.value).toBe('b');
@@ -119,7 +123,7 @@ describe('elx-tabs', () => {
     const tabs = el.shadowRoot!.querySelectorAll<HTMLButtonElement>('.tab');
     tabs[0].focus();
     el.shadowRoot!.querySelector('.tab-list')!.dispatchEvent(
-      new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })
+      new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }),
     );
     expect((el as any).value).toBe('b');
   });
@@ -135,7 +139,7 @@ describe('elx-tabs', () => {
     const tabs = el.shadowRoot!.querySelectorAll<HTMLButtonElement>('.tab');
     tabs[1].focus();
     el.shadowRoot!.querySelector('.tab-list')!.dispatchEvent(
-      new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true })
+      new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }),
     );
     expect((el as any).value).toBe('a');
   });
@@ -149,7 +153,7 @@ describe('elx-tabs', () => {
     `;
     document.body.appendChild(el);
     el.shadowRoot!.querySelector('.tab-list')!.dispatchEvent(
-      new KeyboardEvent('keydown', { key: 'Home', bubbles: true })
+      new KeyboardEvent('keydown', { key: 'Home', bubbles: true }),
     );
     expect((el as any).value).toBe('a');
   });
@@ -163,7 +167,7 @@ describe('elx-tabs', () => {
     `;
     document.body.appendChild(el);
     el.shadowRoot!.querySelector('.tab-list')!.dispatchEvent(
-      new KeyboardEvent('keydown', { key: 'End', bubbles: true })
+      new KeyboardEvent('keydown', { key: 'End', bubbles: true }),
     );
     expect((el as any).value).toBe('c');
   });
@@ -174,7 +178,9 @@ describe('elx-tab-panel', () => {
     expect(customElements.get('elx-tab-panel')).toBeDefined();
   });
 
-  afterEach(() => { document.body.innerHTML = ''; });
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
 
   it('is hidden by default', () => {
     const el = document.createElement('elx-tab-panel');

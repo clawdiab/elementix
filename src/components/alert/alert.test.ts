@@ -6,7 +6,9 @@ describe('elx-alert', () => {
     expect(customElements.get('elx-alert')).toBeDefined();
   });
 
-  afterEach(() => { document.body.innerHTML = ''; });
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
 
   it('renders with default variant (info)', () => {
     const el = document.createElement('elx-alert');
@@ -63,7 +65,9 @@ describe('elx-alert', () => {
     el.setAttribute('dismissible', '');
     document.body.appendChild(el);
     let fired = false;
-    el.addEventListener('close', () => { fired = true; });
+    el.addEventListener('close', () => {
+      fired = true;
+    });
     const btn = el.shadowRoot!.querySelector('.close-btn') as HTMLButtonElement;
     btn.click();
     expect(fired).toBe(true);

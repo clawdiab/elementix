@@ -9,8 +9,8 @@ export default {
     alt: { control: 'text' },
     fallback: { control: 'text' },
     size: { control: { type: 'select' }, options: ['xs', 'sm', 'md', 'lg', 'xl'] },
-    shape: { control: { type: 'select' }, options: ['circle', 'square'] }
-  }
+    shape: { control: { type: 'select' }, options: ['circle', 'square'] },
+  },
 };
 
 const Template = ({ src, alt, fallback, size, shape }: any) => html`
@@ -18,7 +18,13 @@ const Template = ({ src, alt, fallback, size, shape }: any) => html`
 `;
 
 export const Default = Template.bind({});
-(Default as any).args = { src: 'https://i.pravatar.cc/150?img=1', alt: 'User', fallback: 'JD', size: 'md', shape: 'circle' };
+(Default as any).args = {
+  src: 'https://i.pravatar.cc/150?img=1',
+  alt: 'User',
+  fallback: 'JD',
+  size: 'md',
+  shape: 'circle',
+};
 
 export const Fallback = Template.bind({});
 (Fallback as any).args = { src: '', alt: '', fallback: 'AB', size: 'md', shape: 'circle' };
@@ -36,6 +42,11 @@ export const Sizes = () => html`
 export const Square = () => html`
   <div style="display:flex;gap:12px;align-items:center">
     <elx-avatar shape="square" size="md" fallback="SQ"></elx-avatar>
-    <elx-avatar shape="square" size="lg" src="https://i.pravatar.cc/150?img=3" alt="Square avatar"></elx-avatar>
+    <elx-avatar
+      shape="square"
+      size="lg"
+      src="https://i.pravatar.cc/150?img=3"
+      alt="Square avatar"
+    ></elx-avatar>
   </div>
 `;

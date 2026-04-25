@@ -6,7 +6,9 @@ describe('elx-card', () => {
     expect(customElements.get('elx-card')).toBeDefined();
   });
 
-  afterEach(() => { document.body.innerHTML = ''; });
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
 
   it('renders with default props', () => {
     const el = document.createElement('elx-card');
@@ -40,7 +42,7 @@ describe('elx-card', () => {
 
   it('applies padding sizes', () => {
     const sizes = ['none', 'sm', 'md', 'lg'] as const;
-    sizes.forEach(size => {
+    sizes.forEach((size) => {
       const el = document.createElement('elx-card');
       el.setAttribute('padding', size);
       document.body.appendChild(el);

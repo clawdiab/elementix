@@ -1,10 +1,18 @@
 const VALID_SIZES = ['sm', 'md', 'lg'] as const;
-type Size = typeof VALID_SIZES[number];
+type Size = (typeof VALID_SIZES)[number];
 
 let uid = 0;
 
 export class ElxCheckbox extends HTMLElement {
-  static observedAttributes = ['checked', 'disabled', 'indeterminate', 'size', 'label', 'name', 'value'];
+  static observedAttributes = [
+    'checked',
+    'disabled',
+    'indeterminate',
+    'size',
+    'label',
+    'name',
+    'value',
+  ];
 
   private _input: HTMLInputElement | null = null;
   private _labelEl: HTMLLabelElement | null = null;
@@ -25,32 +33,62 @@ export class ElxCheckbox extends HTMLElement {
     this._update();
   }
 
-  get checked(): boolean { return this.hasAttribute('checked'); }
-  set checked(val: boolean) { val ? this.setAttribute('checked', '') : this.removeAttribute('checked'); }
+  get checked(): boolean {
+    return this.hasAttribute('checked');
+  }
+  set checked(val: boolean) {
+    val ? this.setAttribute('checked', '') : this.removeAttribute('checked');
+  }
 
-  get disabled(): boolean { return this.hasAttribute('disabled'); }
-  set disabled(val: boolean) { val ? this.setAttribute('disabled', '') : this.removeAttribute('disabled'); }
+  get disabled(): boolean {
+    return this.hasAttribute('disabled');
+  }
+  set disabled(val: boolean) {
+    val ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
+  }
 
-  get indeterminate(): boolean { return this.hasAttribute('indeterminate'); }
-  set indeterminate(val: boolean) { val ? this.setAttribute('indeterminate', '') : this.removeAttribute('indeterminate'); }
+  get indeterminate(): boolean {
+    return this.hasAttribute('indeterminate');
+  }
+  set indeterminate(val: boolean) {
+    val ? this.setAttribute('indeterminate', '') : this.removeAttribute('indeterminate');
+  }
 
   get size(): Size {
     const val = this.getAttribute('size');
     return (VALID_SIZES as readonly string[]).indexOf(val as string) !== -1 ? (val as Size) : 'md';
   }
-  set size(val: string) { this.setAttribute('size', val); }
+  set size(val: string) {
+    this.setAttribute('size', val);
+  }
 
-  get name(): string { return this.getAttribute('name') ?? ''; }
-  set name(val: string) { this.setAttribute('name', val); }
+  get name(): string {
+    return this.getAttribute('name') ?? '';
+  }
+  set name(val: string) {
+    this.setAttribute('name', val);
+  }
 
-  get value(): string { return this.getAttribute('value') ?? 'on'; }
-  set value(val: string) { this.setAttribute('value', val); }
+  get value(): string {
+    return this.getAttribute('value') ?? 'on';
+  }
+  set value(val: string) {
+    this.setAttribute('value', val);
+  }
 
-  get label(): string { return this.getAttribute('label') ?? ''; }
-  set label(val: string) { this.setAttribute('label', val); }
+  get label(): string {
+    return this.getAttribute('label') ?? '';
+  }
+  set label(val: string) {
+    this.setAttribute('label', val);
+  }
 
-  focus() { this._input?.focus(); }
-  blur() { this._input?.blur(); }
+  focus() {
+    this._input?.focus();
+  }
+  blur() {
+    this._input?.blur();
+  }
 
   private _buildDom() {
     const style = document.createElement('style');
@@ -169,10 +207,13 @@ export class ElxCheckbox extends HTMLElement {
       } else {
         this.removeAttribute('checked');
       }
-      this.dispatchEvent(new CustomEvent('change', {
-        detail: { checked: this.checked, value: this.value },
-        bubbles: true, composed: true
-      }));
+      this.dispatchEvent(
+        new CustomEvent('change', {
+          detail: { checked: this.checked, value: this.value },
+          bubbles: true,
+          composed: true,
+        }),
+      );
     });
   }
 

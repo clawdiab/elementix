@@ -43,24 +43,34 @@ export class ElxSelect extends HTMLElement {
     }
   }
 
-  get options(): SelectOption[] { return this._options; }
+  get options(): SelectOption[] {
+    return this._options;
+  }
   set options(val: SelectOption[]) {
     this._options = val;
     this._renderOptions();
     this._updateDisplay();
   }
 
-  get value(): string { return this._value; }
+  get value(): string {
+    return this._value;
+  }
   set value(val: string) {
     this._value = val;
     this.setAttribute('value', val);
     this._updateDisplay();
   }
 
-  get placeholder(): string { return this.getAttribute('placeholder') ?? 'Select...'; }
-  set placeholder(val: string) { this.setAttribute('placeholder', val); }
+  get placeholder(): string {
+    return this.getAttribute('placeholder') ?? 'Select...';
+  }
+  set placeholder(val: string) {
+    this.setAttribute('placeholder', val);
+  }
 
-  get disabled(): boolean { return this.hasAttribute('disabled'); }
+  get disabled(): boolean {
+    return this.hasAttribute('disabled');
+  }
   set disabled(val: boolean) {
     if (val) this.setAttribute('disabled', '');
     else this.removeAttribute('disabled');
@@ -194,7 +204,10 @@ export class ElxSelect extends HTMLElement {
     arrow.setAttribute('fill', 'currentColor');
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     path.setAttribute('fill-rule', 'evenodd');
-    path.setAttribute('d', 'M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z');
+    path.setAttribute(
+      'd',
+      'M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z',
+    );
     path.setAttribute('clip-rule', 'evenodd');
     arrow.appendChild(path);
 
@@ -250,7 +263,7 @@ export class ElxSelect extends HTMLElement {
     const text = this._button.querySelector('.trigger-text');
     if (!text) return;
 
-    const selected = this._options.find(o => o.value === this._value);
+    const selected = this._options.find((o) => o.value === this._value);
     if (selected) {
       text.textContent = selected.label;
       text.classList.remove('placeholder');
@@ -260,7 +273,7 @@ export class ElxSelect extends HTMLElement {
     }
 
     // Update selected state in listbox
-    this._listbox?.querySelectorAll('.option').forEach(opt => {
+    this._listbox?.querySelectorAll('.option').forEach((opt) => {
       const val = opt.getAttribute('data-value');
       if (val === this._value) {
         opt.classList.add('selected');
@@ -284,7 +297,7 @@ export class ElxSelect extends HTMLElement {
     document.addEventListener('keydown', this._onDocumentKeydown);
 
     // Focus first selected or first option
-    const selectedIndex = this._options.findIndex(o => o.value === this._value);
+    const selectedIndex = this._options.findIndex((o) => o.value === this._value);
     this._focusOption(selectedIndex >= 0 ? selectedIndex : 0);
   }
 
@@ -294,7 +307,7 @@ export class ElxSelect extends HTMLElement {
     this._listbox?.classList.remove('open');
     document.removeEventListener('keydown', this._onDocumentKeydown);
     this._focusedIndex = -1;
-    this._listbox?.querySelectorAll('.option').forEach(o => o.classList.remove('focused'));
+    this._listbox?.querySelectorAll('.option').forEach((o) => o.classList.remove('focused'));
   }
 
   private _selectOption(opt: SelectOption) {

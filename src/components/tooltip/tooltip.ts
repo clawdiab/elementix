@@ -1,5 +1,5 @@
 const VALID_POSITIONS = ['top', 'right', 'bottom', 'left'] as const;
-type Position = typeof VALID_POSITIONS[number];
+type Position = (typeof VALID_POSITIONS)[number];
 
 export class ElxTooltip extends HTMLElement {
   static observedAttributes = ['content', 'position'];
@@ -16,7 +16,7 @@ export class ElxTooltip extends HTMLElement {
 
   connectedCallback() {
     this._buildDom();
-    
+
     // The tooltip wraps its target via a slot
     const slot = this.shadowRoot!.querySelector('slot');
     slot?.addEventListener('slotchange', () => {
@@ -37,19 +37,27 @@ export class ElxTooltip extends HTMLElement {
       if (this._tooltip) this._tooltip.textContent = newVal;
     } else if (name === 'position') {
       if (this._tooltip) {
-        this._tooltip.dataset.position = VALID_POSITIONS.includes(newVal as Position) ? newVal : 'top';
+        this._tooltip.dataset.position = VALID_POSITIONS.includes(newVal as Position)
+          ? newVal
+          : 'top';
       }
     }
   }
 
-  get content(): string { return this.getAttribute('content') ?? ''; }
-  set content(val: string) { this.setAttribute('content', val); }
+  get content(): string {
+    return this.getAttribute('content') ?? '';
+  }
+  set content(val: string) {
+    this.setAttribute('content', val);
+  }
 
-  get position(): Position { 
+  get position(): Position {
     const pos = this.getAttribute('position') as Position;
     return VALID_POSITIONS.includes(pos) ? pos : 'top';
   }
-  set position(val: Position) { this.setAttribute('position', val); }
+  set position(val: Position) {
+    this.setAttribute('position', val);
+  }
 
   private _buildDom() {
     const style = document.createElement('style');
@@ -129,7 +137,7 @@ export class ElxTooltip extends HTMLElement {
     this._tooltip.setAttribute('aria-hidden', 'true');
     this._tooltip.dataset.position = this.position;
     this._tooltip.textContent = this.content;
-    
+
     // Generate a unique ID for ARIA association
     this._tooltip.id = `tooltip-${Math.random().toString(36).substring(2, 9)}`;
 
@@ -158,14 +166,14 @@ export class ElxTooltip extends HTMLElement {
 
   private _teardownTarget() {
     if (!this._target) return;
-    
+
     this._target.removeAttribute('aria-describedby');
     this._target.removeEventListener('mouseenter', this._onShow);
     this._target.removeEventListener('mouseleave', this._onHide);
     this._target.removeEventListener('focus', this._onShow);
     this._target.removeEventListener('blur', this._onHide);
     this._target.removeEventListener('keydown', this._onKeydown);
-    
+
     this._target = null;
   }
 

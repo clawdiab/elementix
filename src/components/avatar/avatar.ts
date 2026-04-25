@@ -1,8 +1,8 @@
 const VALID_SIZES = ['xs', 'sm', 'md', 'lg', 'xl'] as const;
 const VALID_SHAPES = ['circle', 'square'] as const;
 
-type Size = typeof VALID_SIZES[number];
-type Shape = typeof VALID_SHAPES[number];
+type Size = (typeof VALID_SIZES)[number];
+type Shape = (typeof VALID_SHAPES)[number];
 
 export class ElxAvatar extends HTMLElement {
   static observedAttributes = ['src', 'alt', 'fallback', 'size', 'shape'];
@@ -16,29 +16,52 @@ export class ElxAvatar extends HTMLElement {
     this.attachShadow({ mode: 'open' });
   }
 
-  connectedCallback() { this._buildDom(); this._update(); }
-  attributeChangedCallback() { this._update(); }
+  connectedCallback() {
+    this._buildDom();
+    this._update();
+  }
+  attributeChangedCallback() {
+    this._update();
+  }
 
-  get src(): string { return this.getAttribute('src') ?? ''; }
-  set src(val: string) { this.setAttribute('src', val); }
+  get src(): string {
+    return this.getAttribute('src') ?? '';
+  }
+  set src(val: string) {
+    this.setAttribute('src', val);
+  }
 
-  get alt(): string { return this.getAttribute('alt') ?? ''; }
-  set alt(val: string) { this.setAttribute('alt', val); }
+  get alt(): string {
+    return this.getAttribute('alt') ?? '';
+  }
+  set alt(val: string) {
+    this.setAttribute('alt', val);
+  }
 
-  get fallback(): string { return this.getAttribute('fallback') ?? ''; }
-  set fallback(val: string) { this.setAttribute('fallback', val); }
+  get fallback(): string {
+    return this.getAttribute('fallback') ?? '';
+  }
+  set fallback(val: string) {
+    this.setAttribute('fallback', val);
+  }
 
   get size(): Size {
     const val = this.getAttribute('size');
     return (VALID_SIZES as readonly string[]).indexOf(val as string) !== -1 ? (val as Size) : 'md';
   }
-  set size(val: string) { this.setAttribute('size', val); }
+  set size(val: string) {
+    this.setAttribute('size', val);
+  }
 
   get shape(): Shape {
     const val = this.getAttribute('shape');
-    return (VALID_SHAPES as readonly string[]).indexOf(val as string) !== -1 ? (val as Shape) : 'circle';
+    return (VALID_SHAPES as readonly string[]).indexOf(val as string) !== -1
+      ? (val as Shape)
+      : 'circle';
   }
-  set shape(val: string) { this.setAttribute('shape', val); }
+  set shape(val: string) {
+    this.setAttribute('shape', val);
+  }
 
   private _buildDom() {
     const style = document.createElement('style');

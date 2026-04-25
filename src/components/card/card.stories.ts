@@ -7,8 +7,8 @@ export default {
   argTypes: {
     variant: { control: { type: 'select' }, options: ['elevated', 'outlined', 'filled'] },
     padding: { control: { type: 'select' }, options: ['none', 'sm', 'md', 'lg'] },
-    interactive: { control: 'boolean' }
-  }
+    interactive: { control: 'boolean' },
+  },
 };
 
 const Template = ({ variant, padding, interactive }: any) => html`

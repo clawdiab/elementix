@@ -1,12 +1,12 @@
 const VALID_VARIANTS = ['info', 'success', 'warning', 'error'] as const;
 
-type Variant = typeof VALID_VARIANTS[number];
+type Variant = (typeof VALID_VARIANTS)[number];
 
 const ICONS: Record<Variant, string> = {
   info: 'ℹ️',
   success: '✓',
   warning: '⚠',
-  error: '✕'
+  error: '✕',
 };
 
 export class ElxAlert extends HTMLElement {
@@ -19,19 +19,34 @@ export class ElxAlert extends HTMLElement {
     this.attachShadow({ mode: 'open' });
   }
 
-  connectedCallback() { this._buildDom(); this._update(); }
-  disconnectedCallback() { this._closeBtn?.removeEventListener('click', this._onClose); }
+  connectedCallback() {
+    this._buildDom();
+    this._update();
+  }
+  disconnectedCallback() {
+    this._closeBtn?.removeEventListener('click', this._onClose);
+  }
 
-  attributeChangedCallback() { this._update(); }
+  attributeChangedCallback() {
+    this._update();
+  }
 
   get variant(): Variant {
     const val = this.getAttribute('variant');
-    return (VALID_VARIANTS as readonly string[]).indexOf(val as string) !== -1 ? (val as Variant) : 'info';
+    return (VALID_VARIANTS as readonly string[]).indexOf(val as string) !== -1
+      ? (val as Variant)
+      : 'info';
   }
-  set variant(val: string) { this.setAttribute('variant', val); }
+  set variant(val: string) {
+    this.setAttribute('variant', val);
+  }
 
-  get dismissible(): boolean { return this.hasAttribute('dismissible'); }
-  set dismissible(val: boolean) { val ? this.setAttribute('dismissible', '') : this.removeAttribute('dismissible'); }
+  get dismissible(): boolean {
+    return this.hasAttribute('dismissible');
+  }
+  set dismissible(val: boolean) {
+    val ? this.setAttribute('dismissible', '') : this.removeAttribute('dismissible');
+  }
 
   private _onClose = () => {
     this.dispatchEvent(new CustomEvent('close', { bubbles: true, composed: true }));

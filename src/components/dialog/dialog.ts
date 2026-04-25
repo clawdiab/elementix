@@ -2,22 +2,30 @@ export class ElxDialog extends HTMLElement {
   static observedAttributes = ['open'];
 
   private _previousActive: HTMLElement | null = null;
-  private _focusableSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+  private _focusableSelector =
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
   }
 
-  connectedCallback() { this._buildDom(); this._update(); }
+  connectedCallback() {
+    this._buildDom();
+    this._update();
+  }
   disconnectedCallback() {
     this._restoreFocus();
     document.removeEventListener('keydown', this._onKeydown);
   }
 
-  attributeChangedCallback() { this._update(); }
+  attributeChangedCallback() {
+    this._update();
+  }
 
-  get open(): boolean { return this.hasAttribute('open'); }
+  get open(): boolean {
+    return this.hasAttribute('open');
+  }
   set open(val: boolean) {
     val ? this.setAttribute('open', '') : this.removeAttribute('open');
   }
@@ -199,7 +207,9 @@ export class ElxDialog extends HTMLElement {
     }
   }
 
-  public show() { this.open = true; }
+  public show() {
+    this.open = true;
+  }
   public close() {
     this.open = false;
     this.dispatchEvent(new CustomEvent('close', { bubbles: true, composed: true }));

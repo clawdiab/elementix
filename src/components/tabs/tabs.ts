@@ -6,14 +6,27 @@ export class ElxTabPanel extends HTMLElement {
     this.attachShadow({ mode: 'open' });
   }
 
-  connectedCallback() { this._buildDom(); this._update(); }
-  attributeChangedCallback() { this._update(); }
+  connectedCallback() {
+    this._buildDom();
+    this._update();
+  }
+  attributeChangedCallback() {
+    this._update();
+  }
 
-  get name(): string { return this.getAttribute('name') ?? ''; }
-  set name(val: string) { this.setAttribute('name', val); }
+  get name(): string {
+    return this.getAttribute('name') ?? '';
+  }
+  set name(val: string) {
+    this.setAttribute('name', val);
+  }
 
-  get active(): boolean { return this.hasAttribute('active'); }
-  set active(val: boolean) { val ? this.setAttribute('active', '') : this.removeAttribute('active'); }
+  get active(): boolean {
+    return this.hasAttribute('active');
+  }
+  set active(val: boolean) {
+    val ? this.setAttribute('active', '') : this.removeAttribute('active');
+  }
 
   private _buildDom() {
     const style = document.createElement('style');
@@ -55,10 +68,16 @@ export class ElxTabs extends HTMLElement {
     this._renderTabs();
   }
 
-  attributeChangedCallback() { this._renderTabs(); }
+  attributeChangedCallback() {
+    this._renderTabs();
+  }
 
-  get value(): string { return this.getAttribute('value') ?? ''; }
-  set value(val: string) { this.setAttribute('value', val); }
+  get value(): string {
+    return this.getAttribute('value') ?? '';
+  }
+  set value(val: string) {
+    this.setAttribute('value', val);
+  }
 
   private _buildDom() {
     const style = document.createElement('style');
@@ -115,7 +134,7 @@ export class ElxTabs extends HTMLElement {
     this._rendering = true;
 
     const panels: Element[] = [];
-    this.querySelectorAll('elx-tab-panel').forEach(p => panels.push(p));
+    this.querySelectorAll('elx-tab-panel').forEach((p) => panels.push(p));
     const currentValue = this.value || (panels[0]?.getAttribute('name') ?? '');
 
     while (this._tabList.firstChild) {
@@ -156,19 +175,24 @@ export class ElxTabs extends HTMLElement {
     this.value = name;
     this._rendering = false;
     this._renderTabs();
-    this.dispatchEvent(new CustomEvent('change', {
-      bubbles: true,
-      composed: true,
-      detail: { value: name }
-    }));
+    this.dispatchEvent(
+      new CustomEvent('change', {
+        bubbles: true,
+        composed: true,
+        detail: { value: name },
+      }),
+    );
   }
 
   private _onKeydown = (e: KeyboardEvent) => {
     const tabs: HTMLButtonElement[] = [];
-    this._tabList!.querySelectorAll<HTMLButtonElement>('.tab').forEach(t => tabs.push(t));
+    this._tabList!.querySelectorAll<HTMLButtonElement>('.tab').forEach((t) => tabs.push(t));
     let current = -1;
     for (let i = 0; i < tabs.length; i++) {
-      if (tabs[i].getAttribute('aria-selected') === 'true') { current = i; break; }
+      if (tabs[i].getAttribute('aria-selected') === 'true') {
+        current = i;
+        break;
+      }
     }
     let next = current;
 
@@ -186,7 +210,7 @@ export class ElxTabs extends HTMLElement {
 
     e.preventDefault();
     const panels: Element[] = [];
-    this.querySelectorAll('elx-tab-panel').forEach(p => panels.push(p));
+    this.querySelectorAll('elx-tab-panel').forEach((p) => panels.push(p));
     const name = panels[next]?.getAttribute('name') ?? '';
     this._selectTab(name);
     tabs[next]?.focus();

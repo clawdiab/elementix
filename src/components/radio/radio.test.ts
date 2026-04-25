@@ -7,7 +7,9 @@ describe('elx-radio', () => {
     expect(customElements.get('elx-radio-group')).toBeDefined();
   });
 
-  afterEach(() => { document.body.innerHTML = ''; });
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
 
   it('renders with default props', () => {
     const el = document.createElement('elx-radio');
@@ -77,7 +79,9 @@ describe('elx-radio', () => {
     const el = document.createElement('elx-radio');
     el.setAttribute('disabled', '');
     document.body.appendChild(el);
-    expect(el.shadowRoot!.querySelector('.radio-circle')!.classList.contains('disabled')).toBe(true);
+    expect(el.shadowRoot!.querySelector('.radio-circle')!.classList.contains('disabled')).toBe(
+      true,
+    );
   });
 
   it('sets name and value on input', () => {
@@ -109,7 +113,9 @@ describe('elx-radio', () => {
   it('label htmlFor matches input id', () => {
     const el = document.createElement('elx-radio');
     document.body.appendChild(el);
-    expect(el.shadowRoot!.querySelector('label')!.htmlFor).toBe(el.shadowRoot!.querySelector('input')!.id);
+    expect(el.shadowRoot!.querySelector('label')!.htmlFor).toBe(
+      el.shadowRoot!.querySelector('input')!.id,
+    );
   });
 
   it('dispatches change event on selection', () => {
@@ -118,7 +124,9 @@ describe('elx-radio', () => {
     el.setAttribute('name', 'fruit');
     document.body.appendChild(el);
     let detail: any = null;
-    el.addEventListener('change', (e: any) => { detail = e.detail; });
+    el.addEventListener('change', (e: any) => {
+      detail = e.detail;
+    });
     el.shadowRoot!.querySelector('input')!.dispatchEvent(new Event('change', { bubbles: true }));
     expect(detail).toBeTruthy();
     expect(detail.value).toBe('apple');
@@ -130,7 +138,9 @@ describe('elx-radio', () => {
     el.setAttribute('disabled', '');
     document.body.appendChild(el);
     let fired = false;
-    el.addEventListener('change', () => { fired = true; });
+    el.addEventListener('change', () => {
+      fired = true;
+    });
     el.shadowRoot!.querySelector('input')!.dispatchEvent(new Event('change', { bubbles: true }));
     expect(fired).toBe(false);
   });
@@ -153,7 +163,9 @@ describe('elx-radio', () => {
 });
 
 describe('elx-radio-group', () => {
-  afterEach(() => { document.body.innerHTML = ''; });
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
 
   it('renders with slot', () => {
     const group = document.createElement('elx-radio-group');

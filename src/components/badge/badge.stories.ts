@@ -6,10 +6,13 @@ export default {
   tags: ['autodocs'],
   argTypes: {
     variant: { control: { type: 'select' }, options: ['solid', 'soft', 'outline'] },
-    color: { control: { type: 'select' }, options: ['gray', 'red', 'green', 'blue', 'yellow', 'purple'] },
+    color: {
+      control: { type: 'select' },
+      options: ['gray', 'red', 'green', 'blue', 'yellow', 'purple'],
+    },
     size: { control: { type: 'select' }, options: ['sm', 'md', 'lg'] },
-    text: { control: 'text' }
-  }
+    text: { control: 'text' },
+  },
 };
 
 const Template = ({ variant, color, size, text }: any) => html`

@@ -6,7 +6,9 @@ describe('elx-switch', () => {
     expect(customElements.get('elx-switch')).toBeDefined();
   });
 
-  afterEach(() => { document.body.innerHTML = ''; });
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
 
   it('renders with default props', () => {
     const el = document.createElement('elx-switch');
@@ -106,7 +108,9 @@ describe('elx-switch', () => {
     const el = document.createElement('elx-switch');
     document.body.appendChild(el);
     let detail: any = null;
-    el.addEventListener('change', (e: any) => { detail = e.detail; });
+    el.addEventListener('change', (e: any) => {
+      detail = e.detail;
+    });
     const input = el.shadowRoot!.querySelector('input')!;
     input.checked = true;
     input.dispatchEvent(new Event('change', { bubbles: true }));
@@ -119,7 +123,9 @@ describe('elx-switch', () => {
     el.setAttribute('disabled', '');
     document.body.appendChild(el);
     let fired = false;
-    el.addEventListener('change', () => { fired = true; });
+    el.addEventListener('change', () => {
+      fired = true;
+    });
     const input = el.shadowRoot!.querySelector('input')!;
     input.dispatchEvent(new Event('change', { bubbles: true }));
     expect(fired).toBe(false);

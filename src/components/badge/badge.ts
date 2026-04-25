@@ -2,9 +2,9 @@ const VALID_VARIANTS = ['solid', 'soft', 'outline'] as const;
 const VALID_COLORS = ['gray', 'red', 'green', 'blue', 'yellow', 'purple'] as const;
 const VALID_SIZES = ['sm', 'md', 'lg'] as const;
 
-type Variant = typeof VALID_VARIANTS[number];
-type Color = typeof VALID_COLORS[number];
-type Size = typeof VALID_SIZES[number];
+type Variant = (typeof VALID_VARIANTS)[number];
+type Color = (typeof VALID_COLORS)[number];
+type Size = (typeof VALID_SIZES)[number];
 
 export class ElxBadge extends HTMLElement {
   static observedAttributes = ['variant', 'color', 'size'];
@@ -27,21 +27,31 @@ export class ElxBadge extends HTMLElement {
 
   get variant(): Variant {
     const val = this.getAttribute('variant');
-    return (VALID_VARIANTS as readonly string[]).indexOf(val as string) !== -1 ? (val as Variant) : 'solid';
+    return (VALID_VARIANTS as readonly string[]).indexOf(val as string) !== -1
+      ? (val as Variant)
+      : 'solid';
   }
-  set variant(val: string) { this.setAttribute('variant', val); }
+  set variant(val: string) {
+    this.setAttribute('variant', val);
+  }
 
   get color(): Color {
     const val = this.getAttribute('color');
-    return (VALID_COLORS as readonly string[]).indexOf(val as string) !== -1 ? (val as Color) : 'gray';
+    return (VALID_COLORS as readonly string[]).indexOf(val as string) !== -1
+      ? (val as Color)
+      : 'gray';
   }
-  set color(val: string) { this.setAttribute('color', val); }
+  set color(val: string) {
+    this.setAttribute('color', val);
+  }
 
   get size(): Size {
     const val = this.getAttribute('size');
     return (VALID_SIZES as readonly string[]).indexOf(val as string) !== -1 ? (val as Size) : 'md';
   }
-  set size(val: string) { this.setAttribute('size', val); }
+  set size(val: string) {
+    this.setAttribute('size', val);
+  }
 
   private _buildDom() {
     const style = document.createElement('style');

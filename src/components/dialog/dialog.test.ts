@@ -6,7 +6,9 @@ describe('elx-dialog', () => {
     expect(customElements.get('elx-dialog')).toBeDefined();
   });
 
-  afterEach(() => { document.body.innerHTML = ''; });
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
 
   it('renders with overlay and dialog', () => {
     const el = document.createElement('elx-dialog');
@@ -50,7 +52,9 @@ describe('elx-dialog', () => {
     el.setAttribute('open', '');
     document.body.appendChild(el);
     let fired = false;
-    el.addEventListener('close', () => { fired = true; });
+    el.addEventListener('close', () => {
+      fired = true;
+    });
     (el as any).close();
     expect(fired).toBe(true);
   });
