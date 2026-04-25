@@ -98,7 +98,6 @@ describe('ElxDrawer', () => {
   });
 
   it('has title, default, and footer slots', () => {
-    const slots = el.shadowRoot.querySelectorAll('slot');
     const names = [...el.shadowRoot.querySelectorAll('slot')].map((s: any) => s.name || 'default');
     expect(names).toContain('title');
     expect(names).toContain('default');
