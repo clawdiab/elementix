@@ -18,6 +18,7 @@ export * from './components/accordion/accordion';
 export * from './components/text/text';
 export * from './components/toast/toast';
 export * from './components/table/table';
+export * from './components/skeleton/skeleton';
 export * from './components/dropdown/dropdown';
 export * from './components/popover/popover';
 export * from './components/progress/progress';
