@@ -88,6 +88,31 @@ describe('elx-dropdown', () => {
     const menu = el.shadowRoot!.querySelector('.menu');
     expect(menu!.getAttribute('aria-hidden')).toBe('false');
   });
+
+  it('sets aria-haspopup and aria-expanded on trigger', () => {
+    const el = document.createElement('elx-dropdown') as any;
+    const btn = document.createElement('button');
+    btn.slot = 'trigger';
+    el.appendChild(btn);
+    document.body.appendChild(el);
+    expect(btn.getAttribute('aria-haspopup')).toBe('menu');
+    expect(btn.getAttribute('aria-expanded')).toBe('false');
+    el.show();
+    expect(btn.getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('dispatches open and close events', () => {
+    const el = document.createElement('elx-dropdown') as any;
+    document.body.appendChild(el);
+    const openHandler = vi.fn();
+    const closeHandler = vi.fn();
+    el.addEventListener('open', openHandler);
+    el.addEventListener('close', closeHandler);
+    el.show();
+    expect(openHandler).toHaveBeenCalled();
+    el.hide();
+    expect(closeHandler).toHaveBeenCalled();
+  });
 });
 
 describe('elx-dropdown-item', () => {
@@ -166,5 +191,20 @@ describe('elx-dropdown-item', () => {
     document.body.appendChild(el);
     const item = el.shadowRoot!.querySelector('.item');
     expect(item!.getAttribute('aria-disabled')).toBe('true');
+  });
+
+  it('has tabindex -1 when disabled', () => {
+    const el = document.createElement('elx-dropdown-item') as any;
+    el.disabled = true;
+    document.body.appendChild(el);
+    const item = el.shadowRoot!.querySelector('.item');
+    expect(item!.getAttribute('tabindex')).toBe('-1');
+  });
+
+  it('has tabindex 0 when enabled', () => {
+    const el = document.createElement('elx-dropdown-item') as any;
+    document.body.appendChild(el);
+    const item = el.shadowRoot!.querySelector('.item');
+    expect(item!.getAttribute('tabindex')).toBe('0');
   });
 });

@@ -42,11 +42,15 @@ export class ElxDropdown extends HTMLElement {
   }
 
   show() {
-    if (!this.disabled) this.open = true;
+    if (!this.disabled) {
+      this.open = true;
+      this.dispatchEvent(new CustomEvent('open', { bubbles: true, composed: true }));
+    }
   }
 
   hide() {
     this.open = false;
+    this.dispatchEvent(new CustomEvent('close', { bubbles: true, composed: true }));
   }
 
   toggle() {
@@ -55,8 +59,8 @@ export class ElxDropdown extends HTMLElement {
 
   private _handleClickOutside(e: Event) {
     if (!this.open) return;
-    const target = e.target as Node;
-    if (!this.contains(target)) {
+    const path = e.composedPath();
+    if (!path.includes(this)) {
       this.hide();
     }
   }
@@ -64,9 +68,48 @@ export class ElxDropdown extends HTMLElement {
   private _handleKeydown(e: KeyboardEvent) {
     if (!this.open) return;
     if (e.key === 'Escape') {
+      e.preventDefault();
       this.hide();
       this._focusTrigger();
     }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      this._focusItem(1);
+    }
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      this._focusItem(-1);
+    }
+    if (e.key === 'Home') {
+      e.preventDefault();
+      this._focusItem(0, true);
+    }
+    if (e.key === 'End') {
+      e.preventDefault();
+      this._focusItem(-1, true);
+    }
+  }
+
+  private _getItems(): ElxDropdownItem[] {
+    return Array.from(this.querySelectorAll('elx-dropdown-item:not([disabled])'));
+  }
+
+  private _focusItem(direction: number, absolute = false) {
+    const items = this._getItems();
+    if (items.length === 0) return;
+    const active = document.activeElement as HTMLElement;
+    const currentIndex = items.indexOf(active as ElxDropdownItem);
+    let nextIndex: number;
+    if (absolute) {
+      nextIndex = direction >= 0 ? 0 : items.length - 1;
+    } else if (currentIndex === -1) {
+      nextIndex = direction > 0 ? 0 : items.length - 1;
+    } else {
+      nextIndex = (currentIndex + direction + items.length) % items.length;
+    }
+    const item = items[nextIndex];
+    const inner = item.shadowRoot?.querySelector('.item') as HTMLElement;
+    inner?.focus();
   }
 
   private _focusTrigger() {
@@ -168,6 +211,12 @@ export class ElxDropdown extends HTMLElement {
     const menu = this.shadowRoot?.querySelector('.menu');
     if (menu) {
       menu.setAttribute('aria-hidden', String(!this.open));
+    }
+    // Update trigger ARIA attributes
+    const trigger = this.querySelector('[slot="trigger"]') as HTMLElement;
+    if (trigger) {
+      trigger.setAttribute('aria-haspopup', 'menu');
+      trigger.setAttribute('aria-expanded', String(this.open));
     }
   }
 }
@@ -291,6 +340,7 @@ export class ElxDropdownItem extends HTMLElement {
     const item = this.shadowRoot?.querySelector('.item');
     if (item) {
       item.setAttribute('aria-disabled', String(this.disabled));
+      item.setAttribute('tabindex', this.disabled ? '-1' : '0');
     }
   }
 }
