@@ -133,4 +133,39 @@ describe('elx-pagination', () => {
     const next = buttons[buttons.length - 1];
     expect(next.disabled).toBe(true);
   });
+
+  it('change event bubbles and is composed', () => {
+    const el = document.createElement('elx-pagination') as any;
+    el.total = 50;
+    el.page = 1;
+    document.body.appendChild(el);
+    let event: CustomEvent | null = null;
+    el.addEventListener('change', (e: CustomEvent) => { event = e; });
+    const buttons = el.shadowRoot!.querySelectorAll('button');
+    buttons[2].click();
+    expect(event).toBeTruthy();
+    expect(event!.bubbles).toBe(true);
+    expect(event!.composed).toBe(true);
+  });
+
+  it('ellipsis is aria-hidden', () => {
+    const el = document.createElement('elx-pagination') as any;
+    el.total = 200;
+    el.page = 5;
+    document.body.appendChild(el);
+    const ellipsis = el.shadowRoot!.querySelector('.ellipsis');
+    expect(ellipsis!.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('supports sibling-count attribute', () => {
+    const el = document.createElement('elx-pagination') as any;
+    el.total = 200;
+    el.page = 10;
+    el.siblingCount = 2;
+    document.body.appendChild(el);
+    expect(el.siblingCount).toBe(2);
+    // With siblingCount=2, should show more page buttons around current
+    const buttons = el.shadowRoot!.querySelectorAll('button');
+    expect(buttons.length).toBeGreaterThan(5);
+  });
 });

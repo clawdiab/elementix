@@ -130,6 +130,7 @@ export class ElxPagination extends HTMLElement {
         const ellipsis = document.createElement('span');
         ellipsis.className = 'ellipsis';
         ellipsis.textContent = '...';
+        ellipsis.setAttribute('aria-hidden', 'true');
         nav.appendChild(ellipsis);
       } else {
         const btn = this._createButton(String(p), true, () => this._goToPage(p as number));
@@ -208,7 +209,7 @@ export class ElxPagination extends HTMLElement {
   private _goToPage(newPage: number) {
     const clampedPage = Math.max(1, Math.min(this.totalPages, newPage));
     this.page = clampedPage;
-    this.dispatchEvent(new CustomEvent('change', { detail: { page: clampedPage } }));
+    this.dispatchEvent(new CustomEvent('change', { detail: { page: clampedPage }, bubbles: true, composed: true }));
   }
 }
 
