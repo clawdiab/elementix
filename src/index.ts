@@ -21,3 +21,4 @@ export * from './components/dropdown/dropdown';
 export * from './components/popover/popover';
 export * from './components/progress/progress';
 export * from './components/breadcrumb/breadcrumb';
+export * from './components/pagination/pagination';
