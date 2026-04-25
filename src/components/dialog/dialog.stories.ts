@@ -6,11 +6,6 @@ export default {
   tags: ['autodocs'],
 };
 
-const showDialog = (id: string) => {
-  const dialog = document.querySelector(id) as any;
-  dialog?.show();
-};
-
 export const Default = () => html`
   <elx-button onclick="document.querySelector('#dialog1').show()">Open Dialog</elx-button>
   <elx-dialog id="dialog1">

@@ -40,7 +40,7 @@ describe('elx-alert', () => {
     const el = document.createElement('elx-alert');
     el.setAttribute('variant', 'critical');
     document.body.appendChild(el);
-    expect(el.variant).toBe('info');
+    expect((el as any).variant).toBe('info');
   });
 
   it('shows close button when dismissible', () => {

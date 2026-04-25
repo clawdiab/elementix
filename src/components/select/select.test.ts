@@ -85,7 +85,7 @@ describe('elx-select', () => {
     button.click();
     const option = el.shadowRoot!.querySelector('[data-value="banana"]') as HTMLElement;
     option.click();
-    expect(el.value).toBe('banana');
+    expect((el as any).value).toBe('banana');
     const text = el.shadowRoot!.querySelector('.trigger-text');
     expect(text?.textContent).toBe('Banana');
   });
@@ -171,7 +171,7 @@ describe('elx-select', () => {
     button.click();
     const option = el.shadowRoot!.querySelector('[data-value="b"]') as HTMLElement;
     option.click();
-    expect(el.value).toBe('');
+    expect((el as any).value).toBe('');
   });
 
   it('closes on Escape key', () => {
@@ -243,7 +243,7 @@ describe('elx-select', () => {
     const el = document.createElement('elx-select') as ElxSelect;
     el.options = defaultOptions;
     el.value = 'apple';
-    expect(el.value).toBe('apple');
+    expect((el as any).value).toBe('apple');
     expect(el.getAttribute('value')).toBe('apple');
   });
 
