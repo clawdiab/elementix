@@ -115,6 +115,7 @@ export class ElxMenu extends HTMLElement {
       this._rendered = true;
     }
     this.shadowRoot!.querySelector('.menu')?.addEventListener('keydown', this._boundHandleKeydown);
+    this.shadowRoot!.querySelector('.menu')?.setAttribute('aria-orientation', 'vertical');
   }
 
   disconnectedCallback() {
@@ -191,6 +192,9 @@ export class ElxMenuItem extends HTMLElement {
     if (!this.hasAttribute('tabindex')) {
       this.setAttribute('tabindex', this.hasAttribute('disabled') ? '-1' : '0');
     }
+    if (this.hasAttribute('disabled')) {
+      this.setAttribute('aria-disabled', 'true');
+    }
     this.addEventListener('click', this._handleClick);
     this.addEventListener('keydown', this._handleKeydown);
   }
@@ -230,6 +234,11 @@ export class ElxMenuItem extends HTMLElement {
     if (oldVal === newVal) return;
     if (_name === 'disabled') {
       this.setAttribute('tabindex', newVal !== null ? '-1' : '0');
+      if (newVal !== null) {
+        this.setAttribute('aria-disabled', 'true');
+      } else {
+        this.removeAttribute('aria-disabled');
+      }
     }
   }
 
@@ -275,6 +284,7 @@ export class ElxMenuDivider extends HTMLElement {
       this._rendered = true;
     }
     this.setAttribute('role', 'separator');
+    this.setAttribute('aria-hidden', 'true');
   }
 
   private _render() {
@@ -327,7 +337,7 @@ export class ElxMenuGroup extends HTMLElement {
   private _render() {
     this.shadowRoot!.innerHTML = `
       <style>${menuGroupStyles}</style>
-      <div class="label" aria-hidden="true">${this.label}</div>
+      <div class="label" aria-hidden="true"></div>
       <slot></slot>
     `;
     if (this.label) {

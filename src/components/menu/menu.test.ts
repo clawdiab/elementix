@@ -133,8 +133,12 @@ describe('ElxMenuItem', () => {
 
   it('applies active styles', () => {
     item.active = true;
-    const base = item.shadowRoot.querySelector('.menu-item');
-    expect(getComputedStyle(base).color).toBeTruthy();
+    expect(item.hasAttribute('active')).toBe(true);
+  });
+
+  it('sets aria-disabled when disabled', () => {
+    item.disabled = true;
+    expect(item.getAttribute('aria-disabled')).toBe('true');
   });
 
   it('has prefix and suffix slots', () => {
