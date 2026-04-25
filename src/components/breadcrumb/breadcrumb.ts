@@ -44,10 +44,7 @@ export class ElxBreadcrumb extends HTMLElement {
         gap: 4px;
       }
 
-      ::slotted(elx-breadcrumb-item) {
-        display: inline-flex;
-        align-items: center;
-      }
+
     `;
 
     const nav = document.createElement('nav');
@@ -86,6 +83,7 @@ export class ElxBreadcrumbItem extends HTMLElement {
 
   connectedCallback() {
     if (!this.shadowRoot?.querySelector('.item')) this._buildDom();
+    this.setAttribute('role', 'listitem');
     this._update();
   }
 
@@ -157,7 +155,11 @@ export class ElxBreadcrumbItem extends HTMLElement {
 
     if (this.href && !isCurrent) {
       const a = document.createElement('a');
-      a.href = this.href;
+      // Sanitize href to prevent javascript: URLs
+      const href = this.href;
+      if (!/^javascript:/i.test(href)) {
+        a.href = href;
+      }
       a.appendChild(document.createElement('slot'));
       container.appendChild(a);
     } else {

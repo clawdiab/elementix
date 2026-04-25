@@ -125,4 +125,19 @@ describe('elx-breadcrumb-item', () => {
     const sep = el.shadowRoot!.querySelector('.separator');
     expect(sep!.getAttribute('aria-hidden')).toBe('true');
   });
+
+  it('has role=listitem', () => {
+    const el = document.createElement('elx-breadcrumb-item');
+    document.body.appendChild(el);
+    expect(el.getAttribute('role')).toBe('listitem');
+  });
+
+  it('sanitizes javascript: href', () => {
+    const el = document.createElement('elx-breadcrumb-item') as any;
+    el.href = 'javascript:alert(1)';
+    document.body.appendChild(el);
+    const a = el.shadowRoot!.querySelector('a');
+    expect(a).toBeTruthy();
+    expect(a!.href).not.toContain('javascript:');
+  });
 });
