@@ -1,4 +1,4 @@
-name: Create Release
+name: Release & Publish
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  packages: write
 
 jobs:
   release:
@@ -16,6 +17,23 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@clawdiab'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
       - name: Extract version from tag
         id: version
         run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
@@ -23,7 +41,6 @@ jobs:
       - name: Extract changelog for version
         id: changelog
         run: |
-          # Extract the section for this version from CHANGELOG.md
           awk '/^## \[${{ steps.version.outputs.version }}\]/{found=1; next} /^## \[/{if(found) exit} found{print}' CHANGELOG.md > release_notes.md
           echo "notes<<EOF" >> $GITHUB_OUTPUT
           cat release_notes.md >> $GITHUB_OUTPUT
@@ -34,3 +51,8 @@ jobs:
         with:
           body: ${{ steps.changelog.outputs.notes }}
           generate_release_notes: false
+
+      - name: Publish to GitHub Packages
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
