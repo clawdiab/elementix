@@ -24,6 +24,7 @@ export * from './components/menu/menu';
 export * from './components/file-upload/file-upload';
 export * from './components/stepper/stepper';
 export * from './components/calendar/calendar';
+export * from './components/skeleton/skeleton';
 export * from './components/dropdown/dropdown';
 export * from './components/popover/popover';
 export * from './components/progress/progress';

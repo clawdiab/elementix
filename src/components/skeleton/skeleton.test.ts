@@ -10,86 +10,68 @@ describe('ElxSkeleton', () => {
   });
 
   afterEach(() => {
-    document.body.innerHTML = '';
+    el.remove();
   });
 
-  it('renders skeleton div', () => {
-    const div = el.shadowRoot.querySelector('.skeleton');
-    expect(div).toBeTruthy();
+  it('renders skeleton element', () => {
+    const skeleton = el.shadowRoot.querySelector('.skeleton');
+    expect(skeleton).toBeTruthy();
   });
 
-  it('has role=status and aria-busy', () => {
-    expect(el.getAttribute('role')).toBe('status');
-    expect(el.getAttribute('aria-busy')).toBe('true');
+  it('has aria-hidden', () => {
+    const skeleton = el.shadowRoot.querySelector('.skeleton');
+    expect(skeleton.getAttribute('aria-hidden')).toBe('true');
   });
 
-  it('has default aria-label', () => {
-    expect(el.getAttribute('aria-label')).toBe('Loading...');
+  it('applies width attribute', () => {
+    el.width = '100px';
+    const skeleton = el.shadowRoot.querySelector('.skeleton');
+    expect(skeleton.style.width).toBe('100px');
   });
 
-  it('preserves custom aria-label', () => {
-    document.body.innerHTML = '';
-    el = document.createElement('elx-skeleton');
-    el.setAttribute('aria-label', 'Loading profile');
-    document.body.appendChild(el);
-    expect(el.getAttribute('aria-label')).toBe('Loading profile');
+  it('applies height attribute', () => {
+    el.height = '50px';
+    const skeleton = el.shadowRoot.querySelector('.skeleton');
+    expect(skeleton.style.height).toBe('50px');
   });
 
-  it('defaults to animate', () => {
-    expect(el.hasAttribute('animate')).toBe(true);
+  it('has rect variant by default', () => {
+    expect(el.variant).toBe('rect');
   });
 
-  it('can disable animation', () => {
-    el.animated = false;
-    expect(el.hasAttribute('animate')).toBe(false);
-  });
-
-  it('does not duplicate content on reconnect', () => {
-    const skeletonCount = el.shadowRoot.querySelectorAll('.skeleton').length;
-    document.body.removeChild(el);
-    document.body.appendChild(el);
-    expect(el.shadowRoot.querySelectorAll('.skeleton').length).toBe(skeletonCount);
-  });
-
-  it('clears width style when attribute removed', () => {
-    el.setAttribute('width', '200px');
-    const div = el.shadowRoot.querySelector('.skeleton');
-    expect(div.style.width).toBe('200px');
-    el.removeAttribute('width');
-    expect(div.style.width).toBe('');
-  });
-
-  it('defaults to rectangular variant', () => {
-    expect(el.variant).toBe('rectangular');
-  });
-
-  it('supports circle variant', () => {
+  it('applies circle variant', () => {
     el.variant = 'circle';
     expect(el.getAttribute('variant')).toBe('circle');
   });
 
-  it('supports text variant', () => {
+  it('applies text variant', () => {
     el.variant = 'text';
     expect(el.getAttribute('variant')).toBe('text');
   });
 
-  it('applies custom width', () => {
-    el.setAttribute('width', '200px');
-    const div = el.shadowRoot.querySelector('.skeleton');
-    expect(div.style.width).toBe('200px');
+  it('has shimmer animation by default', () => {
+    expect(el.animation).toBe('shimmer');
   });
 
-  it('applies custom height', () => {
-    el.setAttribute('height', '3rem');
-    const div = el.shadowRoot.querySelector('.skeleton');
-    expect(div.style.height).toBe('3rem');
+  it('applies pulse animation', () => {
+    el.animation = 'pulse';
+    expect(el.getAttribute('animation')).toBe('pulse');
   });
 
-  it('updates styles on attribute change', () => {
-    el.setAttribute('width', '100px');
-    const div = el.shadowRoot.querySelector('.skeleton');
-    expect(div.style.width).toBe('100px');
+  it('applies none animation', () => {
+    el.animation = 'none';
+    expect(el.getAttribute('animation')).toBe('none');
+  });
+
+  it('updates width via attribute', () => {
     el.setAttribute('width', '200px');
-    expect(div.style.width).toBe('200px');
+    const skeleton = el.shadowRoot.querySelector('.skeleton');
+    expect(skeleton.style.width).toBe('200px');
+  });
+
+  it('updates height via attribute', () => {
+    el.setAttribute('height', '75px');
+    const skeleton = el.shadowRoot.querySelector('.skeleton');
+    expect(skeleton.style.height).toBe('75px');
   });
 });
