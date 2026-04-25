@@ -1,11 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import './file-upload';
 
-function createFile(name: string, size: number, type: string): File {
-  const content = new Uint8Array(size);
-  return new File([content], name, { type });
-}
-
 describe('ElxFileUpload', () => {
   let el: any;
 
