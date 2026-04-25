@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elementix - Web Components Design System</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #1f2937;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      background: #f9fafb;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .tagline {
+      color: #6b7280;
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+    section {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
+    }
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #374151;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 8px;
+    }
+    .demo-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .demo-row:last-child {
+      margin-bottom: 0;
+    }
+    code {
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.875rem;
+    }
+    footer {
+      text-align: center;
+      color: #9ca3af;
+      margin-top: 40px;
+    }
+    footer a {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Elementix</h1>
+  <p class="tagline">A Radix-like Web Components design system built with TypeScript</p>
+
+  <section>
+    <h2>Button</h2>
+    <div class="demo-row">
+      <elx-button variant="primary">Primary</elx-button>
+      <elx-button variant="secondary">Secondary</elx-button>
+      <elx-button variant="danger">Danger</elx-button>
+      <elx-button variant="ghost">Ghost</elx-button>
+    </div>
+    <div class="demo-row">
+      <elx-button size="sm">Small</elx-button>
+      <elx-button size="md">Medium</elx-button>
+      <elx-button size="lg">Large</elx-button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Input</h2>
+    <div class="demo-row">
+      <elx-input placeholder="Default input"></elx-input>
+      <elx-input type="password" placeholder="Password"></elx-input>
+    </div>
+    <div class="demo-row">
+      <elx-input disabled placeholder="Disabled"></elx-input>
+    </div>
+  </section>
+
+  <section>
+    <h2>Checkbox & Switch</h2>
+    <div class="demo-row">
+      <elx-checkbox>Unchecked</elx-checkbox>
+      <elx-checkbox checked>Checked</elx-checkbox>
+      <elx-checkbox disabled>Disabled</elx-checkbox>
+    </div>
+    <div class="demo-row">
+      <elx-switch>Off</elx-switch>
+      <elx-switch checked>On</elx-switch>
+    </div>
+  </section>
+
+  <section>
+    <h2>Radio</h2>
+    <elx-radio-group name="demo-radio">
+      <elx-radio value="a">Option A</elx-radio>
+      <elx-radio value="b">Option B</elx-radio>
+      <elx-radio value="c">Option C</elx-radio>
+    </elx-radio-group>
+  </section>
+
+  <section>
+    <h2>Badge</h2>
+    <div class="demo-row">
+      <elx-badge>Default</elx-badge>
+      <elx-badge variant="success">Success</elx-badge>
+      <elx-badge variant="warning">Warning</elx-badge>
+      <elx-badge variant="danger">Danger</elx-badge>
+    </div>
+  </section>
+
+  <section>
+    <h2>Avatar</h2>
+    <div class="demo-row">
+      <elx-avatar src="https://api.dicebear.com/7.x/avataaars/svg?seed=1"></elx-avatar>
+      <elx-avatar src="https://api.dicebear.com/7.x/avataaars/svg?seed=2" size="lg"></elx-avatar>
+      <elx-avatar initials="JD"></elx-avatar>
+    </div>
+  </section>
+
+  <section>
+    <h2>Card</h2>
+    <elx-card>
+      <h3 slot="header">Card Title</h3>
+      <p>This is the card content. Cards can contain any elements.</p>
+      <div slot="footer">
+        <elx-button size="sm" variant="primary">Action</elx-button>
+      </div>
+    </elx-card>
+  </section>
+
+  <section>
+    <h2>Alert</h2>
+    <elx-alert variant="info">This is an info alert.</elx-alert>
+    <elx-alert variant="success">This is a success alert.</elx-alert>
+    <elx-alert variant="warning">This is a warning alert.</elx-alert>
+    <elx-alert variant="danger">This is a danger alert.</elx-alert>
+  </section>
+
+  <section>
+    <h2>Dialog</h2>
+    <elx-button id="open-dialog" variant="primary">Open Dialog</elx-button>
+    <elx-dialog id="demo-dialog">
+      <h2 slot="header">Dialog Title</h2>
+      <p>This is a modal dialog. Press Escape or click outside to close.</p>
+      <div slot="footer">
+        <elx-button id="close-dialog" variant="secondary">Close</elx-button>
+      </div>
+    </elx-dialog>
+  </section>
+
+  <section>
+    <h2>Tabs</h2>
+    <elx-tabs>
+      <elx-tab-panel name="tab1" label="First">Content for first tab</elx-tab-panel>
+      <elx-tab-panel name="tab2" label="Second">Content for second tab</elx-tab-panel>
+      <elx-tab-panel name="tab3" label="Third">Content for third tab</elx-tab-panel>
+    </elx-tabs>
+  </section>
+
+  <section>
+    <h2>Tooltip</h2>
+    <div class="demo-row">
+      <elx-tooltip content="Top tooltip" position="top">
+        <elx-button>Top</elx-button>
+      </elx-tooltip>
+      <elx-tooltip content="Right tooltip" position="right">
+        <elx-button>Right</elx-button>
+      </elx-tooltip>
+      <elx-tooltip content="Bottom tooltip" position="bottom">
+        <elx-button>Bottom</elx-button>
+      </elx-tooltip>
+      <elx-tooltip content="Left tooltip" position="left">
+        <elx-button>Left</elx-button>
+      </elx-tooltip>
+    </div>
+  </section>
+
+  <section>
+    <h2>Select</h2>
+    <elx-select id="demo-select" placeholder="Choose a fruit..."></elx-select>
+  </section>
+
+  <section>
+    <h2>Separator</h2>
+    <p>Content above</p>
+    <elx-separator></elx-separator>
+    <p>Content below</p>
+    <div class="demo-row" style="height: 24px;">
+      <span>Left</span>
+      <elx-separator orientation="vertical" style="height: 16px;"></elx-separator>
+      <span>Right</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Accordion</h2>
+    <elx-accordion>
+      <elx-accordion-item value="a" label="Section 1">
+        Content for section 1. Only one section can be open at a time in single mode.
+      </elx-accordion-item>
+      <elx-accordion-item value="b" label="Section 2">
+        Content for section 2. Click the header to expand.
+      </elx-accordion-item>
+      <elx-accordion-item value="c" label="Section 3">
+        Content for section 3. Keyboard navigation works with Arrow Up/Down.
+      </elx-accordion-item>
+    </elx-accordion>
+  </section>
+
+  <footer>
+    <p>
+      <a href="https://github.com/clawdiab/elementix">GitHub</a> • 
+      Built with ❤️ by <a href="https://github.com/clawdiab">clawdiab</a>
+    </p>
+  </footer>
+
+  <script type="module">
+    import './src/index.ts';
+
+    // Setup select options
+    const select = document.getElementById('demo-select');
+    select.options = [
+      { value: 'apple', label: 'Apple' },
+      { value: 'banana', label: 'Banana' },
+      { value: 'cherry', label: 'Cherry' },
+    ];
+
+    // Setup dialog
+    const dialog = document.getElementById('demo-dialog');
+    document.getElementById('open-dialog').addEventListener('click', () => dialog.open = true);
+    document.getElementById('close-dialog').addEventListener('click', () => dialog.open = false);
+  </script>
+</body>
+</html>
