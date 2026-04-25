@@ -3,6 +3,7 @@ export class ElxPopover extends HTMLElement {
 
   private _onClickOutside: (e: Event) => void;
   private _onKeydown: (e: KeyboardEvent) => void;
+  private _contentId = `elx-popover-${Math.random().toString(36).slice(2, 9)}`;
 
   constructor() {
     super();
@@ -12,7 +13,7 @@ export class ElxPopover extends HTMLElement {
   }
 
   connectedCallback() {
-    this._buildDom();
+    if (!this.shadowRoot?.querySelector('.content')) this._buildDom();
     this._update();
     document.addEventListener('click', this._onClickOutside);
     document.addEventListener('keydown', this._onKeydown);
@@ -21,9 +22,15 @@ export class ElxPopover extends HTMLElement {
   disconnectedCallback() {
     document.removeEventListener('click', this._onClickOutside);
     document.removeEventListener('keydown', this._onKeydown);
+    const triggerSlot = this.shadowRoot?.querySelector('slot[name="trigger"]');
+    if (triggerSlot) {
+      triggerSlot.removeEventListener('click', this._onTriggerClick);
+      triggerSlot.removeEventListener('keydown', this._onTriggerKeydown);
+    }
   }
 
-  attributeChangedCallback() {
+  attributeChangedCallback(_name: string, oldVal: string | null, newVal: string | null) {
+    if (oldVal === newVal) return;
     this._update();
   }
 
@@ -52,6 +59,8 @@ export class ElxPopover extends HTMLElement {
     if (!this.disabled) {
       this.open = true;
       this.dispatchEvent(new CustomEvent('open', { bubbles: true, composed: true }));
+      const content = this.shadowRoot?.querySelector('.content') as HTMLElement;
+      content?.focus();
     }
   }
 
@@ -83,8 +92,8 @@ export class ElxPopover extends HTMLElement {
   }
 
   private _onTriggerClick = (e: Event) => {
-    e.preventDefault();
     if (this.disabled) return;
+    e.preventDefault();
     this.toggle();
   };
 
@@ -159,6 +168,8 @@ export class ElxPopover extends HTMLElement {
 
     const content = document.createElement('div');
     content.className = 'content';
+    content.id = this._contentId;
+    content.setAttribute('tabindex', '-1');
     content.setAttribute('role', 'dialog');
     content.setAttribute('aria-modal', 'false');
     const contentSlot = document.createElement('slot');
@@ -182,6 +193,7 @@ export class ElxPopover extends HTMLElement {
     if (trigger) {
       trigger.setAttribute('aria-haspopup', 'dialog');
       trigger.setAttribute('aria-expanded', String(this.open));
+      trigger.setAttribute('aria-controls', this._contentId);
     }
   }
 }

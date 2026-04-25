@@ -128,4 +128,64 @@ describe('elx-popover', () => {
     const content = el.shadowRoot!.querySelector('.content') as HTMLElement;
     expect(content.style.bottom).toBe('100%');
   });
+
+  it('has aria-controls linking trigger to content', () => {
+    const el = document.createElement('elx-popover') as any;
+    const btn = document.createElement('button');
+    btn.slot = 'trigger';
+    el.appendChild(btn);
+    document.body.appendChild(el);
+    const content = el.shadowRoot!.querySelector('.content');
+    expect(btn.getAttribute('aria-controls')).toBe(content!.id);
+  });
+
+  it('content has tabindex=-1 for focus', () => {
+    const el = document.createElement('elx-popover');
+    document.body.appendChild(el);
+    const content = el.shadowRoot!.querySelector('.content');
+    expect(content!.getAttribute('tabindex')).toBe('-1');
+  });
+
+  it('focuses content when opened', () => {
+    const el = document.createElement('elx-popover') as any;
+    document.body.appendChild(el);
+    el.show();
+    const content = el.shadowRoot!.querySelector('.content') as HTMLElement;
+    expect(el.shadowRoot!.activeElement).toBe(content);
+  });
+
+  it('trigger click toggles popover', () => {
+    const el = document.createElement('elx-popover') as any;
+    const btn = document.createElement('button');
+    btn.slot = 'trigger';
+    el.appendChild(btn);
+    document.body.appendChild(el);
+    btn.click();
+    expect(el.hasAttribute('open')).toBe(true);
+    btn.click();
+    expect(el.hasAttribute('open')).toBe(false);
+  });
+
+  it('Enter/Space on trigger toggles popover', () => {
+    const el = document.createElement('elx-popover') as any;
+    const btn = document.createElement('button');
+    btn.slot = 'trigger';
+    el.appendChild(btn);
+    document.body.appendChild(el);
+    btn.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(el.hasAttribute('open')).toBe(true);
+    btn.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+    expect(el.hasAttribute('open')).toBe(false);
+  });
+
+  it('disabled popover does not toggle on trigger click', () => {
+    const el = document.createElement('elx-popover') as any;
+    el.disabled = true;
+    const btn = document.createElement('button');
+    btn.slot = 'trigger';
+    el.appendChild(btn);
+    document.body.appendChild(el);
+    btn.click();
+    expect(el.hasAttribute('open')).toBe(false);
+  });
 });
