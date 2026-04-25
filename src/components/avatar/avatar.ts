@@ -51,12 +51,12 @@ export class ElxAvatar extends HTMLElement {
         align-items: center;
         justify-content: center;
         overflow: hidden;
-        background: #e5e7eb;
+        background: var(--elx-color-neutral-200);
         flex-shrink: 0;
       }
 
       .avatar.circle { border-radius: 50%; }
-      .avatar.square { border-radius: 4px; }
+      .avatar.square { border-radius: var(--elx-radius-md); }
 
       .avatar.xs { width: 24px; height: 24px; }
       .avatar.sm { width: 32px; height: 32px; }
@@ -77,9 +77,9 @@ export class ElxAvatar extends HTMLElement {
         justify-content: center;
         width: 100%;
         height: 100%;
-        color: #6b7280;
-        font-family: inherit;
-        font-weight: 500;
+        color: var(--elx-color-neutral-500);
+        font-family: var(--elx-font-family-sans);
+        font-weight: var(--elx-font-weight-medium);
         text-transform: uppercase;
       }
 

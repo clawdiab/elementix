@@ -83,30 +83,30 @@ export class ElxInput extends HTMLElement {
     style.textContent = `
       :host { display: block; }
       .input-wrapper { display: flex; flex-direction: column; gap: 4px; }
-      label { font-size: 14px; font-weight: 500; color: #374151; }
+      label { font-size: 14px; font-weight: var(--elx-font-weight-medium); color: var(--elx-color-neutral-700); }
       input {
-        font-family: inherit;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        background: #fff;
-        color: #1f2937;
+        font-family: var(--elx-font-family-sans);
+        border: 1px solid var(--elx-color-neutral-300);
+        border-radius: var(--elx-radius-lg);
+        background: var(--elx-color-white);
+        color: var(--elx-color-neutral-800);
         transition: border-color 0.15s ease, box-shadow 0.15s ease;
         width: 100%;
         box-sizing: border-box;
       }
       input:focus, input:focus-visible {
         outline: none;
-        border-color: #2563eb;
+        border-color: var(--elx-color-primary-600);
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
       }
-      input:disabled { background: #f3f4f6; color: #9ca3af; cursor: not-allowed; }
-      input:read-only { background: #f9fafb; }
-      input.error { border-color: #dc2626; }
-      input.error:focus { border-color: #dc2626; box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1); }
+      input:disabled { background: var(--elx-color-neutral-100); color: var(--elx-color-neutral-400); cursor: not-allowed; }
+      input:read-only { background: var(--elx-color-neutral-50); }
+      input.error { border-color: var(--elx-color-danger-600); }
+      input.error:focus { border-color: var(--elx-color-danger-600); box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1); }
       input.sm { padding: 6px 10px; font-size: 13px; }
       input.md { padding: 8px 12px; font-size: 14px; }
       input.lg { padding: 12px 16px; font-size: 16px; }
-      input::placeholder { color: #9ca3af; }
+      input::placeholder { color: var(--elx-color-neutral-400); }
     `;
 
     const wrapper = document.createElement('div');

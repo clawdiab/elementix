@@ -48,15 +48,15 @@ export class ElxAlert extends HTMLElement {
         align-items: flex-start;
         gap: 12px;
         padding: 12px 16px;
-        border-radius: 6px;
-        font-family: inherit;
+        border-radius: var(--elx-radius-lg);
+        font-family: var(--elx-font-family-sans);
         font-size: 14px;
       }
 
-      .alert.info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
-      .alert.success { background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; }
-      .alert.warning { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
-      .alert.error { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+      .alert.info { background: var(--elx-color-primary-50); border: 1px solid var(--elx-color-primary-100); color: var(--elx-color-primary-700); }
+      .alert.success { background: var(--elx-color-success-50); border: 1px solid var(--elx-color-success-500, #a7f3d0); color: var(--elx-color-success-700); }
+      .alert.warning { background: var(--elx-color-warning-50); border: 1px solid var(--elx-color-warning-100); color: var(--elx-color-warning-700); }
+      .alert.error { background: var(--elx-color-danger-50); border: 1px solid var(--elx-color-danger-500, #fecaca); color: var(--elx-color-danger-700); }
 
       .icon { flex-shrink: 0; font-size: 16px; line-height: 1; }
       .content { flex: 1; min-width: 0; }

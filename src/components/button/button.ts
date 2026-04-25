@@ -50,11 +50,11 @@ export class ElxButton extends HTMLElement {
       }
 
       button {
-        font-family: inherit;
+        font-family: var(--elx-font-family-sans);
         cursor: pointer;
         border: none;
-        border-radius: 6px;
-        font-weight: 500;
+        border-radius: var(--elx-radius-lg);
+        font-weight: var(--elx-font-weight-medium);
         transition: background-color 0.15s ease, opacity 0.15s ease;
         line-height: 1;
       }
@@ -65,7 +65,7 @@ export class ElxButton extends HTMLElement {
       }
 
       button:focus-visible {
-        outline: 2px solid #2563eb;
+        outline: 2px solid var(--elx-color-primary-600);
         outline-offset: 2px;
       }
 
@@ -75,17 +75,17 @@ export class ElxButton extends HTMLElement {
       button.lg { padding: 12px 24px; font-size: 16px; }
 
       /* Variants */
-      button.primary { background: #2563eb; color: #fff; }
-      button.primary:hover:not(:disabled) { background: #1d4ed8; }
+      button.primary { background: var(--elx-color-primary-600); color: var(--elx-color-white); }
+      button.primary:hover:not(:disabled) { background: var(--elx-color-primary-700); }
 
-      button.secondary { background: #e5e7eb; color: #1f2937; }
-      button.secondary:hover:not(:disabled) { background: #d1d5db; }
+      button.secondary { background: var(--elx-color-neutral-200); color: var(--elx-color-neutral-800); }
+      button.secondary:hover:not(:disabled) { background: var(--elx-color-neutral-300); }
 
-      button.danger { background: #dc2626; color: #fff; }
-      button.danger:hover:not(:disabled) { background: #b91c1c; }
+      button.danger { background: var(--elx-color-danger-600); color: var(--elx-color-white); }
+      button.danger:hover:not(:disabled) { background: var(--elx-color-danger-700); }
 
-      button.ghost { background: transparent; color: #2563eb; }
-      button.ghost:hover:not(:disabled) { background: #eff6ff; }
+      button.ghost { background: transparent; color: var(--elx-color-primary-600); }
+      button.ghost:hover:not(:disabled) { background: var(--elx-color-primary-50); }
     `;
 
     this._button = document.createElement('button');

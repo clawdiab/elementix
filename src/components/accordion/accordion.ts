@@ -56,7 +56,7 @@ export class ElxAccordionItem extends HTMLElement {
     style.textContent = `
       :host {
         display: block;
-        border-bottom: 1px solid #e5e7eb;
+        border-bottom: 1px solid var(--elx-color-neutral-200);
       }
 
       .trigger {
@@ -68,8 +68,8 @@ export class ElxAccordionItem extends HTMLElement {
         background: none;
         border: none;
         font-size: 14px;
-        font-weight: 500;
-        font-family: inherit;
+        font-weight: var(--elx-font-weight-medium);
+        font-family: var(--elx-font-family-sans);
         cursor: pointer;
         text-align: left;
         color: inherit;
@@ -77,13 +77,13 @@ export class ElxAccordionItem extends HTMLElement {
       }
 
       .trigger:hover:not(:disabled) {
-        color: #111827;
+        color: var(--elx-color-neutral-900);
       }
 
       .trigger:focus-visible {
         outline: none;
-        box-shadow: 0 0 0 2px #3b82f6;
-        border-radius: 4px;
+        box-shadow: 0 0 0 2px var(--elx-color-primary-500);
+        border-radius: var(--elx-radius-md);
       }
 
       .trigger:disabled {
@@ -116,7 +116,7 @@ export class ElxAccordionItem extends HTMLElement {
       .content-inner {
         padding: 0 0 16px 0;
         font-size: 14px;
-        color: #6b7280;
+        color: var(--elx-color-neutral-500);
       }
     `;
 

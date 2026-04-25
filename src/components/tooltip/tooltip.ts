@@ -63,11 +63,11 @@ export class ElxTooltip extends HTMLElement {
         position: absolute;
         z-index: 1000;
         padding: 6px 12px;
-        background-color: #1f2937;
-        color: white;
+        background-color: var(--elx-color-neutral-800);
+        color: var(--elx-color-white);
         font-size: 12px;
-        font-family: inherit;
-        border-radius: 6px;
+        font-family: var(--elx-font-family-sans);
+        border-radius: var(--elx-radius-lg);
         pointer-events: none;
         white-space: nowrap;
         opacity: 0;

@@ -1,3 +1,4 @@
+import '../src/theme.css';
 import '../src/index.ts';
 
 /** @type { import('@storybook/web-components').Preview } */

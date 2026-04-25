@@ -36,21 +36,21 @@ export class ElxCard extends HTMLElement {
       :host { display: block; }
 
       .card {
-        border-radius: 8px;
-        font-family: inherit;
+        border-radius: var(--elx-radius-lg);
+        font-family: var(--elx-font-family-sans);
         transition: box-shadow 0.15s ease, transform 0.15s ease;
       }
 
       .card.elevated {
-        background: #fff;
+        background: var(--elx-color-white);
         box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
       }
       .card.outlined {
-        background: #fff;
-        border: 1px solid #e5e7eb;
+        background: var(--elx-color-white);
+        border: 1px solid var(--elx-color-neutral-200);
       }
       .card.filled {
-        background: #f3f4f6;
+        background: var(--elx-color-neutral-100);
       }
 
       .card.pad-none { padding: 0; }
@@ -68,7 +68,7 @@ export class ElxCard extends HTMLElement {
       }
 
       :host(:focus-visible) .card.interactive {
-        outline: 2px solid #3b82f6;
+        outline: 2px solid var(--elx-color-primary-500);
         outline-offset: 2px;
       }
 

@@ -55,10 +55,10 @@ export class ElxSwitch extends HTMLElement {
         gap: 10px;
         cursor: pointer;
         user-select: none;
-        font-family: inherit;
-        color: #1f2937;
+        font-family: var(--elx-font-family-sans);
+        color: var(--elx-color-neutral-800);
       }
-      label.disabled { cursor: not-allowed; color: #9ca3af; }
+      label.disabled { cursor: not-allowed; color: var(--elx-color-neutral-400); }
 
       input {
         position: absolute;
@@ -72,8 +72,8 @@ export class ElxSwitch extends HTMLElement {
 
       .track {
         position: relative;
-        border-radius: 9999px;
-        background: #d1d5db;
+        border-radius: var(--elx-radius-full);
+        background: var(--elx-color-neutral-300);
         transition: background 0.2s ease;
         flex-shrink: 0;
       }
@@ -81,14 +81,14 @@ export class ElxSwitch extends HTMLElement {
       .track.md { width: 44px; height: 24px; }
       .track.lg { width: 56px; height: 30px; }
 
-      .track.checked { background: #2563eb; }
+      .track.checked { background: var(--elx-color-primary-600); }
       .track.disabled { opacity: 0.5; }
 
       .thumb {
         position: absolute;
         top: 2px; left: 2px;
         border-radius: 50%;
-        background: #fff;
+        background: var(--elx-color-white);
         box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         transition: transform 0.2s ease;
       }
