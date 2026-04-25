@@ -31,8 +31,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build library
+        run: npm run build
+
       - name: Build Storybook
         run: npm run build-storybook
+
+      - name: Copy dist to Storybook static
+        run: cp -r dist storybook-static/dist
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
