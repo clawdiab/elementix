@@ -1,41 +1,32 @@
-const styles = `
+const skeletonStyles = `
   :host {
+    --elx-skeleton-bg: var(--elx-color-surface-muted, #f1f5f9);
+    --elx-skeleton-shine: var(--elx-color-surface, #ffffff);
+    --elx-skeleton-radius: var(--elx-radius, 0.375rem);
     display: block;
-    --elx-skeleton-bg: var(--elx-color-neutral-200, #e2e8f0);
-    --elx-skeleton-shine: var(--elx-color-neutral-100, #f1f5f9);
-    --elx-skeleton-radius: var(--elx-radius-md, 0.375rem);
-    --elx-skeleton-height: 1rem;
-    --elx-skeleton-width: 100%;
   }
 
   .skeleton {
     background: var(--elx-skeleton-bg);
     border-radius: var(--elx-skeleton-radius);
-    height: var(--elx-skeleton-height);
-    width: var(--elx-skeleton-width);
     position: relative;
     overflow: hidden;
+    min-height: 1em;
+    min-width: 3em;
   }
 
-  :host([variant="circle"]) .skeleton {
-    border-radius: 50%;
-    height: var(--elx-skeleton-height);
-    width: var(--elx-skeleton-height);
-  }
-
-  :host([variant="text"]) .skeleton {
-    border-radius: var(--elx-radius-sm, 0.25rem);
-  }
-
-  :host([animate]) .skeleton::after {
+  .skeleton::after {
     content: '';
     position: absolute;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: linear-gradient(
       90deg,
-      transparent 0%,
+      transparent,
       var(--elx-skeleton-shine) 50%,
-      transparent 100%
+      transparent
     );
     animation: shimmer 1.5s infinite;
   }
@@ -45,20 +36,35 @@ const styles = `
     100% { transform: translateX(100%); }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    :host([animate]) .skeleton::after {
-      animation: pulse 2s ease-in-out infinite;
-    }
+  :host([variant='circle']) .skeleton {
+    border-radius: 50%;
+  }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 0; }
-      50% { opacity: 0.5; }
-    }
+  :host([variant='text']) .skeleton {
+    border-radius: 0.25em;
+    margin-bottom: 0.25em;
+  }
+
+  :host([animation='none']) .skeleton::after {
+    animation: none;
+  }
+
+  :host([animation='pulse']) .skeleton::after {
+    animation: pulse 1.5s ease-in-out infinite;
+    background: var(--elx-skeleton-shine);
+    opacity: 0;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.5; }
   }
 `;
 
 export class ElxSkeleton extends HTMLElement {
-  static observedAttributes = ['variant', 'animate', 'width', 'height'];
+  static observedAttributes = ['width', 'height', 'variant', 'animation'];
+
+  private _rendered = false;
 
   constructor() {
     super();
@@ -66,70 +72,80 @@ export class ElxSkeleton extends HTMLElement {
   }
 
   connectedCallback() {
-    this.setAttribute('role', 'status');
-    this.setAttribute('aria-busy', 'true');
-    if (!this.hasAttribute('aria-label')) {
-      this.setAttribute('aria-label', 'Loading...');
+    if (!this._rendered) {
+      this._render();
+      this._rendered = true;
     }
-    if (!this.hasAttribute('animate')) {
-      this.setAttribute('animate', '');
+  }
+
+  attributeChangedCallback(name: string, _oldVal: string | null, newVal: string | null) {
+    if (!this._rendered) return;
+    
+    const skeleton = this.shadowRoot?.querySelector('.skeleton') as HTMLElement | null;
+    if (!skeleton) return;
+
+    if (name === 'width') {
+      skeleton.style.width = newVal || '';
     }
-    if (!this.shadowRoot?.querySelector('.skeleton')) {
+    if (name === 'height') {
+      skeleton.style.height = newVal || '';
+    }
+    if (name === 'variant' || name === 'animation') {
       this._render();
     }
   }
 
-  attributeChangedCallback(_name: string, oldVal: string | null, newVal: string | null) {
-    if (oldVal === newVal) return;
-    if (this.shadowRoot?.querySelector('.skeleton')) {
-      this._updateStyles();
-    }
+  get width(): string {
+    return this.getAttribute('width') || '';
   }
 
-  get variant(): string {
-    return this.getAttribute('variant') || 'rectangular';
+  set width(val: string) {
+    if (val) this.setAttribute('width', val);
+    else this.removeAttribute('width');
   }
 
-  set variant(val: string) {
+  get height(): string {
+    return this.getAttribute('height') || '';
+  }
+
+  set height(val: string) {
+    if (val) this.setAttribute('height', val);
+    else this.removeAttribute('height');
+  }
+
+  get variant(): 'rect' | 'circle' | 'text' {
+    return (this.getAttribute('variant') as 'rect' | 'circle' | 'text') || 'rect';
+  }
+
+  set variant(val: 'rect' | 'circle' | 'text') {
     this.setAttribute('variant', val);
   }
 
-  get animated(): boolean {
-    return this.hasAttribute('animate');
+  get animation(): 'shimmer' | 'pulse' | 'none' {
+    return (this.getAttribute('animation') as 'shimmer' | 'pulse' | 'none') || 'shimmer';
   }
 
-  set animated(val: boolean) {
-    val ? this.setAttribute('animate', '') : this.removeAttribute('animate');
+  set animation(val: 'shimmer' | 'pulse' | 'none') {
+    this.setAttribute('animation', val);
   }
 
   private _render() {
-    const style = document.createElement('style');
-    style.textContent = styles;
+    const width = this.getAttribute('width') || '';
+    const height = this.getAttribute('height') || '';
 
-    const div = document.createElement('div');
-    div.className = 'skeleton';
-    this._applyInlineStyles(div);
-
-    this.shadowRoot!.appendChild(style);
-    this.shadowRoot!.appendChild(div);
-  }
-
-  private _applyInlineStyles(el: HTMLElement) {
-    const width = this.getAttribute('width');
-    const height = this.getAttribute('height');
-    if (width) el.style.width = width;
-    if (height) el.style.height = height;
-  }
-
-  private _updateStyles() {
-    const div = this.shadowRoot!.querySelector('.skeleton') as HTMLElement;
-    if (!div) return;
-    div.style.width = '';
-    div.style.height = '';
-    this._applyInlineStyles(div);
+    this.shadowRoot!.innerHTML = `
+      <style>${skeletonStyles}</style>
+      <div class="skeleton" style="${width ? `width:${width};` : ''}${height ? `height:${height};` : ''}" aria-hidden="true"></div>
+    `;
   }
 }
 
 if (!customElements.get('elx-skeleton')) {
   customElements.define('elx-skeleton', ElxSkeleton);
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'elx-skeleton': ElxSkeleton;
+  }
 }
