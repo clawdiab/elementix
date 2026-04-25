@@ -24,9 +24,9 @@ describe('ElxStepper', () => {
     expect(customElements.get('elx-step')).toBeDefined();
   });
 
-  it('renders with navigation role', () => {
+  it('renders with list role', () => {
     const nav = stepper.shadowRoot.querySelector('.stepper');
-    expect(nav.getAttribute('role')).toBe('navigation');
+    expect(nav.getAttribute('role')).toBe('list');
     expect(nav.getAttribute('aria-label')).toBe('Progress steps');
   });
 

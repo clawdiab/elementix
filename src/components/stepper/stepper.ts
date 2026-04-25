@@ -149,10 +149,12 @@ export class ElxStepper extends HTMLElement {
 
   private _steps: HTMLElement[] = [];
   private _rendered = false;
+  private _boundSlotChange: () => void;
 
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
+    this._boundSlotChange = this._handleSlotChange.bind(this);
   }
 
   connectedCallback() {
@@ -160,6 +162,21 @@ export class ElxStepper extends HTMLElement {
       this._render();
       this._rendered = true;
     }
+    this._updateSteps();
+    const slot = this.shadowRoot?.querySelector('slot');
+    if (slot) {
+      slot.addEventListener('slotchange', this._boundSlotChange);
+    }
+  }
+
+  disconnectedCallback() {
+    const slot = this.shadowRoot?.querySelector('slot');
+    if (slot) {
+      slot.removeEventListener('slotchange', this._boundSlotChange);
+    }
+  }
+
+  private _handleSlotChange() {
     this._updateSteps();
   }
 
@@ -209,7 +226,7 @@ export class ElxStepper extends HTMLElement {
   private _render() {
     this.shadowRoot!.innerHTML = `
       <style>${stepperStyles}</style>
-      <div class="stepper" role="navigation" aria-label="Progress steps">
+      <div class="stepper" role="list" aria-label="Progress steps">
         <slot></slot>
       </div>
     `;
