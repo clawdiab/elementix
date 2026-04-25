@@ -16,7 +16,7 @@ export class ElxPopover extends HTMLElement {
     if (!this.shadowRoot?.querySelector('.content')) this._buildDom();
     this._update();
     document.addEventListener('click', this._onClickOutside);
-    document.addEventListener('keydown', this._onKeydown);
+    document.addEventListener('keydown', this._onKeydown as EventListener);
   }
 
   disconnectedCallback() {
@@ -25,7 +25,7 @@ export class ElxPopover extends HTMLElement {
     const triggerSlot = this.shadowRoot?.querySelector('slot[name="trigger"]');
     if (triggerSlot) {
       triggerSlot.removeEventListener('click', this._onTriggerClick);
-      triggerSlot.removeEventListener('keydown', this._onTriggerKeydown);
+      triggerSlot.removeEventListener('keydown', this._onTriggerKeydown as EventListener);
     }
   }
 
@@ -76,7 +76,7 @@ export class ElxPopover extends HTMLElement {
   private _handleClickOutside(e: Event) {
     if (!this.open) return;
     const path = e.composedPath();
-    if (!path.includes(this)) {
+    if (path.indexOf(this) === -1) {
       this.hide();
     }
   }
@@ -180,7 +180,7 @@ export class ElxPopover extends HTMLElement {
     this.shadowRoot!.appendChild(content);
 
     triggerSlot.addEventListener('click', this._onTriggerClick);
-    triggerSlot.addEventListener('keydown', this._onTriggerKeydown);
+    triggerSlot.addEventListener('keydown', this._onTriggerKeydown as EventListener);
   }
 
   private _update() {

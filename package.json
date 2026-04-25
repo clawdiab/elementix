@@ -55,6 +55,6 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./theme.css": "./dist/style.css"
+    "./theme.css": "./dist/theme.css"
   }
 }

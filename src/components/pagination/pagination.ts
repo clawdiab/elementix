@@ -125,7 +125,7 @@ export class ElxPagination extends HTMLElement {
 
     // Page numbers
     const pages = this._getPages();
-    pages.forEach((p, i) => {
+    pages.forEach((p) => {
       if (p === 'ellipsis') {
         const ellipsis = document.createElement('span');
         ellipsis.className = 'ellipsis';
