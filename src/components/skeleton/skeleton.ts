@@ -74,7 +74,9 @@ export class ElxSkeleton extends HTMLElement {
     if (!this.hasAttribute('animate')) {
       this.setAttribute('animate', '');
     }
-    this._render();
+    if (!this.shadowRoot?.querySelector('.skeleton')) {
+      this._render();
+    }
   }
 
   attributeChangedCallback(_name: string, oldVal: string | null, newVal: string | null) {
@@ -128,4 +130,6 @@ export class ElxSkeleton extends HTMLElement {
   }
 }
 
-customElements.define('elx-skeleton', ElxSkeleton);
+if (!customElements.get('elx-skeleton')) {
+  customElements.define('elx-skeleton', ElxSkeleton);
+}

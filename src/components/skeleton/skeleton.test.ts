@@ -44,6 +44,21 @@ describe('ElxSkeleton', () => {
     expect(el.hasAttribute('animate')).toBe(false);
   });
 
+  it('does not duplicate content on reconnect', () => {
+    const skeletonCount = el.shadowRoot.querySelectorAll('.skeleton').length;
+    document.body.removeChild(el);
+    document.body.appendChild(el);
+    expect(el.shadowRoot.querySelectorAll('.skeleton').length).toBe(skeletonCount);
+  });
+
+  it('clears width style when attribute removed', () => {
+    el.setAttribute('width', '200px');
+    const div = el.shadowRoot.querySelector('.skeleton');
+    expect(div.style.width).toBe('200px');
+    el.removeAttribute('width');
+    expect(div.style.width).toBe('');
+  });
+
   it('defaults to rectangular variant', () => {
     expect(el.variant).toBe('rectangular');
   });
