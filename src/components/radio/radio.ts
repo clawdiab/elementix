@@ -54,10 +54,10 @@ export class ElxRadio extends HTMLElement {
         gap: 8px;
         cursor: pointer;
         user-select: none;
-        font-family: inherit;
-        color: #1f2937;
+        font-family: var(--elx-font-family-sans);
+        color: var(--elx-color-neutral-800);
       }
-      label.disabled { cursor: not-allowed; color: #9ca3af; }
+      label.disabled { cursor: not-allowed; color: var(--elx-color-neutral-400); }
 
       input {
         position: absolute;
@@ -73,9 +73,9 @@ export class ElxRadio extends HTMLElement {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        border: 2px solid #d1d5db;
+        border: 2px solid var(--elx-color-neutral-300);
         border-radius: 50%;
-        background: #fff;
+        background: var(--elx-color-white);
         transition: all 0.15s ease;
         flex-shrink: 0;
       }
@@ -83,13 +83,13 @@ export class ElxRadio extends HTMLElement {
       .radio-circle.md { width: 18px; height: 18px; }
       .radio-circle.lg { width: 22px; height: 22px; }
 
-      .radio-circle.checked { border-color: #2563eb; }
-      .radio-circle.disabled { background: #f3f4f6; border-color: #e5e7eb; }
+      .radio-circle.checked { border-color: var(--elx-color-primary-600); }
+      .radio-circle.disabled { background: var(--elx-color-neutral-100); border-color: var(--elx-color-neutral-200); }
       .radio-circle.checked.disabled { border-color: #93c5fd; }
 
       .dot {
         border-radius: 50%;
-        background: #2563eb;
+        background: var(--elx-color-primary-600);
         display: none;
       }
       .dot.visible { display: block; }
@@ -100,7 +100,7 @@ export class ElxRadio extends HTMLElement {
 
       input:focus-visible + .radio-circle {
         box-shadow: 0 0 0 3px rgba(37,99,235,0.3);
-        border-color: #2563eb;
+        border-color: var(--elx-color-primary-600);
       }
 
       .label-text.sm { font-size: 13px; }

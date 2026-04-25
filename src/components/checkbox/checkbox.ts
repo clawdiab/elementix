@@ -63,20 +63,20 @@ export class ElxCheckbox extends HTMLElement {
         gap: 8px;
         cursor: pointer;
         user-select: none;
-        font-family: inherit;
-        color: #1f2937;
+        font-family: var(--elx-font-family-sans);
+        color: var(--elx-color-neutral-800);
       }
 
-      label.disabled { cursor: not-allowed; color: #9ca3af; }
+      label.disabled { cursor: not-allowed; color: var(--elx-color-neutral-400); }
 
       .checkbox-box {
         position: relative;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        border: 2px solid #d1d5db;
-        border-radius: 4px;
-        background: #fff;
+        border: 2px solid var(--elx-color-neutral-300);
+        border-radius: var(--elx-radius-md);
+        background: var(--elx-color-white);
         transition: all 0.15s ease;
         flex-shrink: 0;
       }
@@ -86,18 +86,18 @@ export class ElxCheckbox extends HTMLElement {
       .checkbox-box.lg { width: 22px; height: 22px; }
 
       .checkbox-box.checked {
-        background: #2563eb;
-        border-color: #2563eb;
+        background: var(--elx-color-primary-600);
+        border-color: var(--elx-color-primary-600);
       }
 
       .checkbox-box.indeterminate {
-        background: #2563eb;
-        border-color: #2563eb;
+        background: var(--elx-color-primary-600);
+        border-color: var(--elx-color-primary-600);
       }
 
       .checkbox-box.disabled {
-        background: #f3f4f6;
-        border-color: #e5e7eb;
+        background: var(--elx-color-neutral-100);
+        border-color: var(--elx-color-neutral-200);
       }
 
       .checkbox-box.checked.disabled {
@@ -107,7 +107,7 @@ export class ElxCheckbox extends HTMLElement {
 
       .checkmark {
         display: none;
-        color: #fff;
+        color: var(--elx-color-white);
       }
 
       .checkmark.visible { display: block; }
@@ -132,7 +132,7 @@ export class ElxCheckbox extends HTMLElement {
 
       input:focus-visible + .checkbox-box {
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
-        border-color: #2563eb;
+        border-color: var(--elx-color-primary-600);
       }
     `;
 
