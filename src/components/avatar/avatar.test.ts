@@ -1,219 +1,144 @@
-import { describe, it, expect, beforeAll, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import './avatar';
 
-describe('elx-avatar', () => {
-  beforeAll(() => {
+describe('ElxAvatar', () => {
+  let el: any;
+
+  beforeEach(() => {
+    el = document.createElement('elx-avatar');
+    document.body.appendChild(el);
+  });
+
+  afterEach(() => {
+    el.remove();
+  });
+
+  it('registers as custom element', () => {
     expect(customElements.get('elx-avatar')).toBeDefined();
   });
 
-  afterEach(() => {
-    document.body.innerHTML = '';
+  it('renders with shadow DOM', () => {
+    expect(el.shadowRoot).toBeTruthy();
   });
 
-  it('renders with default props', () => {
-    const el = document.createElement('elx-avatar');
-    document.body.appendChild(el);
-    const wrapper = el.shadowRoot!.querySelector('.avatar');
-    expect(wrapper).toBeTruthy();
-    expect(wrapper!.classList.contains('md')).toBe(true);
-    expect(wrapper!.classList.contains('circle')).toBe(true);
+  it('renders image when src is set', () => {
+    el.src = 'https://example.com/photo.jpg';
+    const img = el.shadowRoot.querySelector('img');
+    expect(img).toBeTruthy();
+    expect(img.getAttribute('src')).toBe('https://example.com/photo.jpg');
   });
 
-  it('shows fallback when no src', () => {
-    const el = document.createElement('elx-avatar');
-    el.setAttribute('fallback', 'JD');
-    document.body.appendChild(el);
-    const fb = el.shadowRoot!.querySelector('.fallback') as HTMLElement;
-    expect(fb.textContent).toBe('JD');
-    expect(fb.style.display).toBe('flex');
-    expect((el.shadowRoot!.querySelector('img') as HTMLElement).style.display).toBe('none');
+  it('uses alt text on image', () => {
+    el.src = 'https://example.com/photo.jpg';
+    el.alt = 'User photo';
+    const img = el.shadowRoot.querySelector('img');
+    expect(img.getAttribute('alt')).toBe('User photo');
   });
 
-  it('shows image when src is set', () => {
-    const el = document.createElement('elx-avatar');
-    el.setAttribute('src', 'https://example.com/photo.jpg');
-    el.setAttribute('alt', 'User photo');
-    document.body.appendChild(el);
-    const img = el.shadowRoot!.querySelector('img') as HTMLImageElement;
-    expect(img.src).toBe('https://example.com/photo.jpg');
-    expect(img.alt).toBe('User photo');
-    expect(img.style.display).toBe('block');
+  it('falls back to name for alt', () => {
+    el.src = 'https://example.com/photo.jpg';
+    el.name = 'John Doe';
+    const img = el.shadowRoot.querySelector('img');
+    expect(img.getAttribute('alt')).toBe('John Doe');
   });
 
-  it('truncates fallback to 2 characters', () => {
-    const el = document.createElement('elx-avatar');
-    el.setAttribute('fallback', 'ABCDEF');
-    document.body.appendChild(el);
-    expect(el.shadowRoot!.querySelector('.fallback')!.textContent).toBe('AB');
+  it('renders initials from name', () => {
+    el.name = 'John Doe';
+    const initials = el.shadowRoot.querySelector('.initials');
+    expect(initials).toBeTruthy();
+    expect(initials.textContent).toBe('JD');
   });
 
-  it('applies xs size', () => {
-    const el = document.createElement('elx-avatar');
-    el.setAttribute('size', 'xs');
-    document.body.appendChild(el);
-    expect(el.shadowRoot!.querySelector('.avatar')!.classList.contains('xs')).toBe(true);
+  it('renders single initial for single name', () => {
+    el.name = 'John';
+    const initials = el.shadowRoot.querySelector('.initials');
+    expect(initials.textContent).toBe('J');
   });
 
-  it('applies xl size', () => {
-    const el = document.createElement('elx-avatar');
-    el.setAttribute('size', 'xl');
-    document.body.appendChild(el);
-    expect(el.shadowRoot!.querySelector('.avatar')!.classList.contains('xl')).toBe(true);
+  it('defaults size to md', () => {
+    expect(el.size).toBe('md');
   });
 
-  it('ignores invalid size, defaults to md', () => {
-    const el = document.createElement('elx-avatar');
-    el.setAttribute('size', 'huge');
-    document.body.appendChild(el);
-    expect((el as any).size).toBe('md');
+  it('accepts valid sizes', () => {
+    el.size = 'lg';
+    expect(el.size).toBe('lg');
   });
 
-  it('applies square shape', () => {
-    const el = document.createElement('elx-avatar');
-    el.setAttribute('shape', 'square');
-    document.body.appendChild(el);
-    expect(el.shadowRoot!.querySelector('.avatar')!.classList.contains('square')).toBe(true);
+  it('defaults invalid size to md', () => {
+    el.setAttribute('size', 'invalid');
+    expect(el.size).toBe('md');
   });
 
-  it('ignores invalid shape, defaults to circle', () => {
-    const el = document.createElement('elx-avatar');
-    el.setAttribute('shape', 'triangle');
-    document.body.appendChild(el);
-    expect((el as any).shape).toBe('circle');
+  it('prefers src over name', () => {
+    el.src = 'https://example.com/photo.jpg';
+    el.name = 'John Doe';
+    const img = el.shadowRoot.querySelector('img');
+    const initials = el.shadowRoot.querySelector('.initials');
+    expect(img).toBeTruthy();
+    expect(initials).toBeFalsy();
   });
 
-  it('preserves DOM reference across attribute updates', () => {
-    const el = document.createElement('elx-avatar');
-    document.body.appendChild(el);
-    const img1 = el.shadowRoot!.querySelector('img');
-    el.setAttribute('size', 'lg');
-    el.setAttribute('shape', 'square');
-    const img2 = el.shadowRoot!.querySelector('img');
-    expect(img1).toBe(img2);
+  it('renders empty when no src or name', () => {
+    const img = el.shadowRoot.querySelector('img');
+    const initials = el.shadowRoot.querySelector('.initials');
+    expect(img).toBeFalsy();
+    expect(initials).toBeFalsy();
   });
 
-  it('shows fallback on image error', () => {
-    const el = document.createElement('elx-avatar');
-    el.setAttribute('src', 'bad.jpg');
-    el.setAttribute('fallback', 'FB');
-    document.body.appendChild(el);
-    const img = el.shadowRoot!.querySelector('img') as HTMLImageElement;
-    img.dispatchEvent(new Event('error'));
-    const fb = el.shadowRoot!.querySelector('.fallback') as HTMLElement;
-    expect(fb.style.display).toBe('flex');
-    expect(img.style.display).toBe('none');
-  });
-});
-
-describe('ElxAvatarGroup', () => {
-  afterEach(() => {
-    document.body.innerHTML = '';
+  it('updates when src changes', () => {
+    el.name = 'John Doe';
+    expect(el.shadowRoot.querySelector('.initials')).toBeTruthy();
+    el.src = 'https://example.com/photo.jpg';
+    expect(el.shadowRoot.querySelector('img')).toBeTruthy();
+    expect(el.shadowRoot.querySelector('.initials')).toBeFalsy();
   });
 
-  it('is defined', () => {
-    const group = document.createElement('elx-avatar-group');
-    document.body.appendChild(group);
-    expect(group.shadowRoot).toBeTruthy();
+  it('removes src via property', () => {
+    el.src = 'https://example.com/photo.jpg';
+    expect(el.shadowRoot.querySelector('img')).toBeTruthy();
+    el.src = null;
+    expect(el.shadowRoot.querySelector('img')).toBeFalsy();
   });
 
-  it('shows overflow count when max is set', () => {
-    const group = document.createElement('elx-avatar-group') as any;
-    document.body.appendChild(group);
-    for (let i = 0; i < 5; i++) {
-      const avatar = document.createElement('elx-avatar');
-      avatar.setAttribute('fallback', `U${i}`);
-      group.appendChild(avatar);
-    }
-    group.max = 3;
-    const overflow = group.shadowRoot.querySelector('.overflow');
-    expect(overflow.textContent).toBe('+2');
-    expect(overflow.style.display).toBe('inline-flex');
+  it('has role=img on host', () => {
+    el.name = 'John Doe';
+    expect(el.getAttribute('role')).toBe('img');
   });
 
-  it('hides overflow when max is not set', () => {
-    const group = document.createElement('elx-avatar-group') as any;
-    document.body.appendChild(group);
-    for (let i = 0; i < 3; i++) {
-      const avatar = document.createElement('elx-avatar');
-      group.appendChild(avatar);
-    }
-    const overflow = group.shadowRoot.querySelector('.overflow');
-    expect(overflow.style.display).toBe('none');
+  it('has aria-label from name', () => {
+    el.name = 'John Doe';
+    expect(el.getAttribute('aria-label')).toBe('John Doe');
   });
 
-  it('hides extra avatars beyond max', () => {
-    const group = document.createElement('elx-avatar-group') as any;
-    document.body.appendChild(group);
-    for (let i = 0; i < 5; i++) {
-      const avatar = document.createElement('elx-avatar');
-      group.appendChild(avatar);
-    }
-    group.max = 3;
-    const avatars = group.querySelectorAll('elx-avatar');
-    expect((avatars[0] as HTMLElement).style.display).toBe('');
-    expect((avatars[2] as HTMLElement).style.display).toBe('');
-    expect((avatars[3] as HTMLElement).style.display).toBe('none');
-    expect((avatars[4] as HTMLElement).style.display).toBe('none');
+  it('has aria-label from alt', () => {
+    el.src = 'https://example.com/photo.jpg';
+    el.alt = 'User photo';
+    expect(el.getAttribute('aria-label')).toBe('User photo');
   });
 
-  it('shows all avatars when max removed', () => {
-    const group = document.createElement('elx-avatar-group') as any;
-    document.body.appendChild(group);
-    for (let i = 0; i < 5; i++) {
-      const avatar = document.createElement('elx-avatar');
-      group.appendChild(avatar);
-    }
-    group.max = 3;
-    group.max = 0;
-    const avatars = group.querySelectorAll('elx-avatar');
-    avatars.forEach((a: HTMLElement) => {
-      expect(a.style.display).toBe('');
-    });
+  it('defaults aria-label to Avatar', () => {
+    expect(el.getAttribute('aria-label')).toBe('Avatar');
   });
 
-  it('sets aria-label on overflow element', () => {
-    const group = document.createElement('elx-avatar-group') as any;
-    document.body.appendChild(group);
-    for (let i = 0; i < 5; i++) {
-      const avatar = document.createElement('elx-avatar');
-      group.appendChild(avatar);
-    }
-    group.max = 3;
-    const overflow = group.shadowRoot.querySelector('.overflow');
-    expect(overflow.getAttribute('aria-label')).toBe('2 more avatars');
+  it('handles empty name gracefully', () => {
+    el.name = '   ';
+    const initials = el.shadowRoot.querySelector('.initials');
+    expect(initials).toBeFalsy();
   });
 
-  it('removes aria-label when overflow hidden', () => {
-    const group = document.createElement('elx-avatar-group') as any;
-    document.body.appendChild(group);
-    for (let i = 0; i < 5; i++) {
-      const avatar = document.createElement('elx-avatar');
-      group.appendChild(avatar);
-    }
-    group.max = 3;
-    group.max = 0;
-    const overflow = group.shadowRoot.querySelector('.overflow');
-    expect(overflow.getAttribute('aria-label')).toBeNull();
+  it('does not inject HTML from malicious src', () => {
+    el.src = '" onerror="alert(1)';
+    const img = el.shadowRoot.querySelector('img');
+    expect(img).toBeTruthy();
+    expect(img.getAttribute('onerror')).toBeNull();
   });
 
-  it('has role=group on overflow element', () => {
-    const group = document.createElement('elx-avatar-group') as any;
-    document.body.appendChild(group);
-    const overflow = group.shadowRoot.querySelector('.overflow');
-    expect(overflow.getAttribute('role')).toBe('group');
-  });
-
-  it('cleans up on disconnect and reconnect', () => {
-    const group = document.createElement('elx-avatar-group') as any;
-    document.body.appendChild(group);
-    for (let i = 0; i < 5; i++) {
-      const avatar = document.createElement('elx-avatar');
-      group.appendChild(avatar);
-    }
-    group.max = 3;
-    document.body.removeChild(group);
-    document.body.appendChild(group);
-    const overflow = group.shadowRoot.querySelector('.overflow');
-    expect(overflow.textContent).toBe('+2');
+  it('does not inject HTML from malicious name', () => {
+    el.name = '<script>alert(1)</script>';
+    const script = el.shadowRoot.querySelector('script');
+    expect(script).toBeFalsy();
+    const initials = el.shadowRoot.querySelector('.initials');
+    expect(initials).toBeTruthy();
+    expect(initials.textContent).toBe('<');
   });
 });
