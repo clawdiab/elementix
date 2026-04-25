@@ -400,7 +400,7 @@ export class ElxCalendar extends HTMLElement {
         this._value.getDate() === dayNum && 
         this._value.getMonth() === this._currentMonth && 
         this._value.getFullYear() === this._currentYear;
-      day.classList.toggle('selected', isSelected);
+      day.classList.toggle('selected', !!isSelected);
       if (isSelected) {
         day.setAttribute('aria-selected', 'true');
       } else {
