@@ -52,6 +52,14 @@ describe('ElxFileUpload', () => {
     expect(dropzone.classList.contains('disabled')).toBe(true);
   });
 
+  it('sets aria-disabled when disabled', () => {
+    el.disabled = true;
+    const dropzone = el.shadowRoot.querySelector('.dropzone');
+    expect(dropzone.getAttribute('aria-disabled')).toBe('true');
+    el.disabled = false;
+    expect(dropzone.getAttribute('aria-disabled')).toBe('false');
+  });
+
   it('does not open file dialog when disabled', () => {
     el.disabled = true;
     const input = el.shadowRoot.querySelector('input[type="file"]');

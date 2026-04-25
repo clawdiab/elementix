@@ -118,6 +118,7 @@ export class ElxFileUpload extends HTMLElement {
   private _boundDrop: (e: DragEvent) => void;
   private _boundClick: () => void;
   private _boundInputChange: () => void;
+  private _boundKeydown: (e: KeyboardEvent) => void;
 
   constructor() {
     super();
@@ -127,6 +128,7 @@ export class ElxFileUpload extends HTMLElement {
     this._boundDrop = this._handleDrop.bind(this);
     this._boundClick = this._handleClick.bind(this);
     this._boundInputChange = this._handleInputChange.bind(this);
+    this._boundKeydown = this._handleKeydown.bind(this);
   }
 
   connectedCallback() {
@@ -151,6 +153,9 @@ export class ElxFileUpload extends HTMLElement {
     }
     if (name === 'disabled') {
       this._dropzone?.classList.toggle('disabled', newVal !== null);
+      if (this._dropzone) {
+        this._dropzone.setAttribute('aria-disabled', newVal !== null ? 'true' : 'false');
+      }
     }
   }
 
@@ -220,12 +225,7 @@ export class ElxFileUpload extends HTMLElement {
     this._dropzone.addEventListener('dragleave', this._boundDragLeave);
     this._dropzone.addEventListener('drop', this._boundDrop as EventListener);
     this._dropzone.addEventListener('click', this._boundClick);
-    this._dropzone.addEventListener('keydown', ((e: KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        this._handleClick();
-      }
-    }) as EventListener);
+    this._dropzone.addEventListener('keydown', this._boundKeydown as EventListener);
     this._input.addEventListener('change', this._boundInputChange);
   }
 
@@ -235,6 +235,7 @@ export class ElxFileUpload extends HTMLElement {
     this._dropzone.removeEventListener('dragleave', this._boundDragLeave);
     this._dropzone.removeEventListener('drop', this._boundDrop as EventListener);
     this._dropzone.removeEventListener('click', this._boundClick);
+    this._dropzone.removeEventListener('keydown', this._boundKeydown as EventListener);
     this._input.removeEventListener('change', this._boundInputChange);
   }
 
@@ -259,6 +260,14 @@ export class ElxFileUpload extends HTMLElement {
   private _handleClick() {
     if (this.disabled) return;
     this._input?.click();
+  }
+
+  private _handleKeydown(e: KeyboardEvent) {
+    if (this.disabled) return;
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      this._handleClick();
+    }
   }
 
   private _handleInputChange() {
