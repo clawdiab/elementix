@@ -15,3 +15,4 @@ export * from './components/tooltip/tooltip';
 export * from './components/select/select';
 export * from './components/separator/separator';
 export * from './components/accordion/accordion';
+export * from './components/text/text';
