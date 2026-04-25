@@ -77,7 +77,7 @@ export class ElxSkeleton extends HTMLElement {
     this._render();
   }
 
-  attributeChangedCallback(name: string, oldVal: string | null, newVal: string | null) {
+  attributeChangedCallback(_name: string, oldVal: string | null, newVal: string | null) {
     if (oldVal === newVal) return;
     if (this.shadowRoot?.querySelector('.skeleton')) {
       this._updateStyles();
