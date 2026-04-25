@@ -114,12 +114,18 @@ export class ElxMenu extends HTMLElement {
       this._render();
       this._rendered = true;
     }
-    this.shadowRoot!.querySelector('.menu')?.addEventListener('keydown', this._boundHandleKeydown);
-    this.shadowRoot!.querySelector('.menu')?.setAttribute('aria-orientation', 'vertical');
+    const menu = this.shadowRoot!.querySelector('.menu');
+    if (menu) {
+      menu.addEventListener('keydown', this._boundHandleKeydown as EventListener);
+      menu.setAttribute('aria-orientation', 'vertical');
+    }
   }
 
   disconnectedCallback() {
-    this.shadowRoot!.querySelector('.menu')?.removeEventListener('keydown', this._boundHandleKeydown);
+    const menu = this.shadowRoot!.querySelector('.menu');
+    if (menu) {
+      menu.removeEventListener('keydown', this._boundHandleKeydown as EventListener);
+    }
   }
 
   private _render() {
