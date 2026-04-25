@@ -68,24 +68,24 @@ export class ElxBadge extends HTMLElement {
       .badge.solid.red { background: var(--elx-color-danger-500); color: var(--elx-color-white); }
       .badge.solid.green { background: var(--elx-color-success-500); color: var(--elx-color-white); }
       .badge.solid.blue { background: var(--elx-color-primary-500); color: var(--elx-color-white); }
-      .badge.solid.yellow { background: #eab308; color: var(--elx-color-white); }
-      .badge.solid.purple { background: #a855f7; color: var(--elx-color-white); }
+      .badge.solid.yellow { background: var(--elx-color-warning-500); color: var(--elx-color-white); }
+      .badge.solid.purple { background: var(--elx-color-purple-500); color: var(--elx-color-white); }
 
       /* Soft variants */
       .badge.soft.gray { background: var(--elx-color-neutral-100); color: var(--elx-color-neutral-600); }
-      .badge.soft.red { background: var(--elx-color-danger-50); color: #dc2626; }
-      .badge.soft.green { background: var(--elx-color-success-50); color: #16a34a; }
-      .badge.soft.blue { background: var(--elx-color-primary-50); color: #2563eb; }
-      .badge.soft.yellow { background: #fefce8; color: #ca8a04; }
-      .badge.soft.purple { background: #faf5ff; color: #9333ea; }
+      .badge.soft.red { background: var(--elx-color-danger-50); color: var(--elx-color-danger-600); }
+      .badge.soft.green { background: var(--elx-color-success-50); color: var(--elx-color-success-600); }
+      .badge.soft.blue { background: var(--elx-color-primary-50); color: var(--elx-color-primary-600); }
+      .badge.soft.yellow { background: var(--elx-color-warning-50); color: var(--elx-color-warning-600); }
+      .badge.soft.purple { background: var(--elx-color-purple-50); color: var(--elx-color-purple-600); }
 
       /* Outline variants */
-      .badge.outline.gray { background: transparent; color: var(--elx-color-neutral-600); border: 1px solid #d1d5db; }
-      .badge.outline.red { background: transparent; color: #dc2626; border: 1px solid #fca5a5; }
-      .badge.outline.green { background: transparent; color: #16a34a; border: 1px solid #86efac; }
-      .badge.outline.blue { background: transparent; color: #2563eb; border: 1px solid #93c5fd; }
-      .badge.outline.yellow { background: transparent; color: #ca8a04; border: 1px solid #fde047; }
-      .badge.outline.purple { background: transparent; color: #9333ea; border: 1px solid #d8b4fe; }
+      .badge.outline.gray { background: transparent; color: var(--elx-color-neutral-600); border: 1px solid var(--elx-color-neutral-300); }
+      .badge.outline.red { background: transparent; color: var(--elx-color-danger-600); border: 1px solid var(--elx-color-danger-500); }
+      .badge.outline.green { background: transparent; color: var(--elx-color-success-600); border: 1px solid var(--elx-color-success-500); }
+      .badge.outline.blue { background: transparent; color: var(--elx-color-primary-600); border: 1px solid var(--elx-color-primary-500); }
+      .badge.outline.yellow { background: transparent; color: var(--elx-color-warning-600); border: 1px solid var(--elx-color-warning-500); }
+      .badge.outline.purple { background: transparent; color: var(--elx-color-purple-600); border: 1px solid var(--elx-color-purple-500); }
     `;
 
     this._span = document.createElement('span');

@@ -16,6 +16,18 @@
   --elx-color-success-600: #16a34a;
   --elx-color-success-700: #15803d;
 
+  --elx-color-warning-50: #fffbeb;
+  --elx-color-warning-100: #fef3c7;
+  --elx-color-warning-500: #f59e0b;
+  --elx-color-warning-600: #d97706;
+  --elx-color-warning-700: #b45309;
+
+  --elx-color-purple-50: #faf5ff;
+  --elx-color-purple-100: #f3e8ff;
+  --elx-color-purple-500: #a855f7;
+  --elx-color-purple-600: #9333ea;
+  --elx-color-purple-700: #7e22ce;
+
   --elx-color-neutral-50: #f9fafb;
   --elx-color-neutral-100: #f3f4f6;
   --elx-color-neutral-200: #e5e7eb;
