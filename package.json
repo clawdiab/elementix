@@ -1,8 +1,11 @@
 {
-  "name": "elementix",
+  "name": "@clawdiab/elementix",
   "version": "0.0.1",
   "description": "A Web Components design system",
   "type": "module",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
