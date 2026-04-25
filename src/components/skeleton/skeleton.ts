@@ -59,6 +59,11 @@ const skeletonStyles = `
     0%, 100% { opacity: 0; }
     50% { opacity: 0.5; }
   }
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton::after {
+      animation: none !important;
+    }
+  }
 `;
 
 export class ElxSkeleton extends HTMLElement {
@@ -73,6 +78,7 @@ export class ElxSkeleton extends HTMLElement {
 
   connectedCallback() {
     if (!this._rendered) {
+      this.setAttribute('aria-hidden', 'true');
       this._render();
       this._rendered = true;
     }
@@ -89,9 +95,6 @@ export class ElxSkeleton extends HTMLElement {
     }
     if (name === 'height') {
       skeleton.style.height = newVal || '';
-    }
-    if (name === 'variant' || name === 'animation') {
-      this._render();
     }
   }
 
@@ -114,7 +117,8 @@ export class ElxSkeleton extends HTMLElement {
   }
 
   get variant(): 'rect' | 'circle' | 'text' {
-    return (this.getAttribute('variant') as 'rect' | 'circle' | 'text') || 'rect';
+    const val = this.getAttribute('variant');
+    return val === 'circle' || val === 'text' ? val : 'rect';
   }
 
   set variant(val: 'rect' | 'circle' | 'text') {
@@ -122,7 +126,8 @@ export class ElxSkeleton extends HTMLElement {
   }
 
   get animation(): 'shimmer' | 'pulse' | 'none' {
-    return (this.getAttribute('animation') as 'shimmer' | 'pulse' | 'none') || 'shimmer';
+    const val = this.getAttribute('animation');
+    return val === 'pulse' || val === 'none' ? val : 'shimmer';
   }
 
   set animation(val: 'shimmer' | 'pulse' | 'none') {

@@ -18,7 +18,11 @@ describe('ElxSkeleton', () => {
     expect(skeleton).toBeTruthy();
   });
 
-  it('has aria-hidden', () => {
+  it('has aria-hidden on host', () => {
+    expect(el.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('has aria-hidden on inner skeleton', () => {
     const skeleton = el.shadowRoot.querySelector('.skeleton');
     expect(skeleton.getAttribute('aria-hidden')).toBe('true');
   });
@@ -73,5 +77,15 @@ describe('ElxSkeleton', () => {
     el.setAttribute('height', '75px');
     const skeleton = el.shadowRoot.querySelector('.skeleton');
     expect(skeleton.style.height).toBe('75px');
+  });
+
+  it('defaults invalid variant to rect', () => {
+    el.setAttribute('variant', 'invalid');
+    expect(el.variant).toBe('rect');
+  });
+
+  it('defaults invalid animation to shimmer', () => {
+    el.setAttribute('animation', 'invalid');
+    expect(el.animation).toBe('shimmer');
   });
 });
