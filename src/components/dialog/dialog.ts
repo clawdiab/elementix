@@ -46,13 +46,13 @@ export class ElxDialog extends HTMLElement {
       }
 
       .dialog {
-        background: #fff;
-        border-radius: 8px;
+        background: var(--elx-color-white);
+        border-radius: var(--elx-radius-lg);
         box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
         max-width: 90vw;
         max-height: 90vh;
         overflow: auto;
-        font-family: inherit;
+        font-family: var(--elx-font-family-sans);
       }
 
       .header {
@@ -60,12 +60,12 @@ export class ElxDialog extends HTMLElement {
         align-items: center;
         justify-content: space-between;
         padding: 16px;
-        border-bottom: 1px solid #e5e7eb;
+        border-bottom: 1px solid var(--elx-color-neutral-200);
       }
 
       .title {
         font-size: 18px;
-        font-weight: 600;
+        font-weight: var(--elx-font-weight-semibold);
         margin: 0;
       }
 
@@ -76,9 +76,9 @@ export class ElxDialog extends HTMLElement {
         padding: 4px;
         font-size: 20px;
         line-height: 1;
-        color: #6b7280;
+        color: var(--elx-color-neutral-500);
       }
-      .close-btn:hover { color: #111; }
+      .close-btn:hover { color: var(--elx-color-neutral-900); }
 
       .content { padding: 16px; }
       .footer {
@@ -86,7 +86,7 @@ export class ElxDialog extends HTMLElement {
         justify-content: flex-end;
         gap: 8px;
         padding: 16px;
-        border-top: 1px solid #e5e7eb;
+        border-top: 1px solid var(--elx-color-neutral-200);
       }
     `;
 

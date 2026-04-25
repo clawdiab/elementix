@@ -43,7 +43,7 @@ export class ElxSeparator extends HTMLElement {
 
       .separator {
         border: none;
-        background-color: #e5e7eb;
+        background-color: var(--elx-color-neutral-200);
       }
 
       .separator.horizontal {

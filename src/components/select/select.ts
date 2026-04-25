@@ -72,7 +72,7 @@ export class ElxSelect extends HTMLElement {
       :host {
         display: inline-block;
         position: relative;
-        font-family: inherit;
+        font-family: var(--elx-font-family-sans);
       }
 
       .trigger {
@@ -82,9 +82,9 @@ export class ElxSelect extends HTMLElement {
         gap: 8px;
         padding: 8px 12px;
         min-width: 160px;
-        background: white;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
+        background: var(--elx-color-white);
+        border: 1px solid var(--elx-color-neutral-300);
+        border-radius: var(--elx-radius-lg);
         font-size: 14px;
         cursor: pointer;
         text-align: left;
@@ -92,12 +92,12 @@ export class ElxSelect extends HTMLElement {
       }
 
       .trigger:hover:not(:disabled) {
-        border-color: #9ca3af;
+        border-color: var(--elx-color-neutral-400);
       }
 
       .trigger:focus-visible {
         outline: none;
-        border-color: #3b82f6;
+        border-color: var(--elx-color-primary-500);
         box-shadow: 0 0 0 3px rgb(59 130 246 / 0.2);
       }
 
@@ -114,7 +114,7 @@ export class ElxSelect extends HTMLElement {
       }
 
       .trigger-text.placeholder {
-        color: #9ca3af;
+        color: var(--elx-color-neutral-400);
       }
 
       .arrow {
@@ -133,9 +133,9 @@ export class ElxSelect extends HTMLElement {
         left: 0;
         right: 0;
         margin-top: 4px;
-        background: white;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
+        background: var(--elx-color-white);
+        border: 1px solid var(--elx-color-neutral-300);
+        border-radius: var(--elx-radius-lg);
         box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
         max-height: 240px;
         overflow-y: auto;
@@ -161,12 +161,12 @@ export class ElxSelect extends HTMLElement {
 
       .option:hover,
       .option.focused {
-        background-color: #f3f4f6;
+        background-color: var(--elx-color-neutral-100);
       }
 
       .option.selected {
-        background-color: #eff6ff;
-        color: #2563eb;
+        background-color: var(--elx-color-primary-50);
+        color: var(--elx-color-primary-600);
       }
 
       .option.disabled {

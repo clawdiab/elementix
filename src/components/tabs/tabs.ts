@@ -67,7 +67,7 @@ export class ElxTabs extends HTMLElement {
 
       .tab-list {
         display: flex;
-        border-bottom: 1px solid #e5e7eb;
+        border-bottom: 1px solid var(--elx-color-neutral-200);
         gap: 0;
       }
 
@@ -76,24 +76,24 @@ export class ElxTabs extends HTMLElement {
         border: none;
         background: transparent;
         cursor: pointer;
-        font-family: inherit;
+        font-family: var(--elx-font-family-sans);
         font-size: 14px;
-        color: #6b7280;
+        color: var(--elx-color-neutral-500);
         border-bottom: 2px solid transparent;
         transition: color 0.15s, border-color 0.15s;
         position: relative;
         bottom: -1px;
       }
 
-      .tab:hover { color: #111; }
+      .tab:hover { color: var(--elx-color-neutral-900); }
       .tab[aria-selected="true"] {
-        color: #3b82f6;
-        border-bottom-color: #3b82f6;
-        font-weight: 500;
+        color: var(--elx-color-primary-500);
+        border-bottom-color: var(--elx-color-primary-500);
+        font-weight: var(--elx-font-weight-medium);
       }
 
       .tab:focus-visible {
-        outline: 2px solid #3b82f6;
+        outline: 2px solid var(--elx-color-primary-500);
         outline-offset: -2px;
       }
     `;
