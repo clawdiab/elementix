@@ -43,7 +43,7 @@ Elementix uses CSS custom properties defined in `src/theme.css` for all design t
 
 Available token categories:
 
-- **Colors**: `--elx-color-primary-*`, `--elx-color-danger-*`, `--elx-color-success-*`, `--elx-color-neutral-*`
+- **Colors**: `--elx-color-primary-*`, `--elx-color-danger-*`, `--elx-color-success-*`, `--elx-color-warning-*`, `--elx-color-purple-*`, `--elx-color-neutral-*`
 - **Typography**: `--elx-font-family-*`, `--elx-font-size-*`, `--elx-font-weight-*`, `--elx-line-height-*`
 - **Border Radius**: `--elx-radius-sm`, `--elx-radius-md`, `--elx-radius-lg`, `--elx-radius-full`
 
