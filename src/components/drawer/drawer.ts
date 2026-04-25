@@ -133,6 +133,7 @@ export class ElxDrawer extends HTMLElement {
 
   private _closeButton: HTMLButtonElement | null = null;
   private _previousActiveElement: HTMLElement | null = null;
+  private _boundHandleKeydown: (e: KeyboardEvent) => void;
 
   get open(): boolean {
     return this.hasAttribute('open');
@@ -157,6 +158,7 @@ export class ElxDrawer extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
+    this._boundHandleKeydown = this._handleKeydown.bind(this);
   }
 
   connectedCallback() {
@@ -239,13 +241,56 @@ export class ElxDrawer extends HTMLElement {
     if (this.open) {
       drawer?.setAttribute('aria-hidden', 'false');
       backdrop?.setAttribute('aria-hidden', 'false');
-      this._trapFocus();
       this._previousActiveElement = document.activeElement as HTMLElement;
+      this._trapFocus();
+      document.addEventListener('keydown', this._boundHandleKeydown);
     } else {
       drawer?.setAttribute('aria-hidden', 'true');
       backdrop?.setAttribute('aria-hidden', 'true');
+      document.removeEventListener('keydown', this._boundHandleKeydown);
       this._restoreFocus();
     }
+  }
+
+  private _handleKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape') {
+      this.close();
+      return;
+    }
+
+    if (e.key === 'Tab') {
+      this._handleTab(e);
+    }
+  }
+
+  private _handleTab(e: KeyboardEvent) {
+    const drawer = this.shadowRoot?.querySelector('.drawer');
+    if (!drawer) return;
+
+    const focusables = drawer.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+
+    if (focusables.length === 0) {
+      e.preventDefault();
+      return;
+    }
+
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+
+  disconnectedCallback() {
+    document.removeEventListener('keydown', this._boundHandleKeydown);
+    this._restoreFocus();
   }
 
   private _trapFocus() {

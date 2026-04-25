@@ -99,7 +99,7 @@ describe('ElxDrawer', () => {
 
   it('has title, default, and footer slots', () => {
     const slots = el.shadowRoot.querySelectorAll('slot');
-    const names = Array.from(slots).map((s: any) => s.name || 'default');
+    const names = [...el.shadowRoot.querySelectorAll('slot')].map((s: any) => s.name || 'default');
     expect(names).toContain('title');
     expect(names).toContain('default');
     expect(names).toContain('footer');
@@ -110,5 +110,20 @@ describe('ElxDrawer', () => {
     document.body.removeChild(el);
     document.body.appendChild(el);
     expect(el.shadowRoot.querySelectorAll('.drawer').length).toBe(count);
+  });
+
+  it('closes on Escape key', () => {
+    el.show();
+    const event = new KeyboardEvent('keydown', { key: 'Escape' });
+    document.dispatchEvent(event);
+    expect(el.open).toBe(false);
+  });
+
+  it('does not close on Escape when closed', () => {
+    let fired = false;
+    el.addEventListener('elx-drawer-close', () => { fired = true; });
+    const event = new KeyboardEvent('keydown', { key: 'Escape' });
+    document.dispatchEvent(event);
+    expect(fired).toBe(false);
   });
 });
