@@ -104,3 +104,116 @@ describe('elx-avatar', () => {
     expect(img.style.display).toBe('none');
   });
 });
+
+describe('ElxAvatarGroup', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  it('is defined', () => {
+    const group = document.createElement('elx-avatar-group');
+    document.body.appendChild(group);
+    expect(group.shadowRoot).toBeTruthy();
+  });
+
+  it('shows overflow count when max is set', () => {
+    const group = document.createElement('elx-avatar-group') as any;
+    document.body.appendChild(group);
+    for (let i = 0; i < 5; i++) {
+      const avatar = document.createElement('elx-avatar');
+      avatar.setAttribute('fallback', `U${i}`);
+      group.appendChild(avatar);
+    }
+    group.max = 3;
+    const overflow = group.shadowRoot.querySelector('.overflow');
+    expect(overflow.textContent).toBe('+2');
+    expect(overflow.style.display).toBe('inline-flex');
+  });
+
+  it('hides overflow when max is not set', () => {
+    const group = document.createElement('elx-avatar-group') as any;
+    document.body.appendChild(group);
+    for (let i = 0; i < 3; i++) {
+      const avatar = document.createElement('elx-avatar');
+      group.appendChild(avatar);
+    }
+    const overflow = group.shadowRoot.querySelector('.overflow');
+    expect(overflow.style.display).toBe('none');
+  });
+
+  it('hides extra avatars beyond max', () => {
+    const group = document.createElement('elx-avatar-group') as any;
+    document.body.appendChild(group);
+    for (let i = 0; i < 5; i++) {
+      const avatar = document.createElement('elx-avatar');
+      group.appendChild(avatar);
+    }
+    group.max = 3;
+    const avatars = group.querySelectorAll('elx-avatar');
+    expect((avatars[0] as HTMLElement).style.display).toBe('');
+    expect((avatars[2] as HTMLElement).style.display).toBe('');
+    expect((avatars[3] as HTMLElement).style.display).toBe('none');
+    expect((avatars[4] as HTMLElement).style.display).toBe('none');
+  });
+
+  it('shows all avatars when max removed', () => {
+    const group = document.createElement('elx-avatar-group') as any;
+    document.body.appendChild(group);
+    for (let i = 0; i < 5; i++) {
+      const avatar = document.createElement('elx-avatar');
+      group.appendChild(avatar);
+    }
+    group.max = 3;
+    group.max = 0;
+    const avatars = group.querySelectorAll('elx-avatar');
+    avatars.forEach((a: HTMLElement) => {
+      expect(a.style.display).toBe('');
+    });
+  });
+
+  it('sets aria-label on overflow element', () => {
+    const group = document.createElement('elx-avatar-group') as any;
+    document.body.appendChild(group);
+    for (let i = 0; i < 5; i++) {
+      const avatar = document.createElement('elx-avatar');
+      group.appendChild(avatar);
+    }
+    group.max = 3;
+    const overflow = group.shadowRoot.querySelector('.overflow');
+    expect(overflow.getAttribute('aria-label')).toBe('2 more avatars');
+  });
+
+  it('removes aria-label when overflow hidden', () => {
+    const group = document.createElement('elx-avatar-group') as any;
+    document.body.appendChild(group);
+    for (let i = 0; i < 5; i++) {
+      const avatar = document.createElement('elx-avatar');
+      group.appendChild(avatar);
+    }
+    group.max = 3;
+    group.max = 0;
+    const overflow = group.shadowRoot.querySelector('.overflow');
+    expect(overflow.getAttribute('aria-label')).toBeNull();
+  });
+
+  it('has role=group on overflow element', () => {
+    const group = document.createElement('elx-avatar-group') as any;
+    document.body.appendChild(group);
+    const overflow = group.shadowRoot.querySelector('.overflow');
+    expect(overflow.getAttribute('role')).toBe('group');
+  });
+
+  it('cleans up on disconnect and reconnect', () => {
+    const group = document.createElement('elx-avatar-group') as any;
+    document.body.appendChild(group);
+    for (let i = 0; i < 5; i++) {
+      const avatar = document.createElement('elx-avatar');
+      group.appendChild(avatar);
+    }
+    group.max = 3;
+    document.body.removeChild(group);
+    document.body.appendChild(group);
+    const overflow = group.shadowRoot.querySelector('.overflow');
+    expect(overflow.textContent).toBe('+2');
+  });
+});
