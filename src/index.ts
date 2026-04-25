@@ -18,3 +18,4 @@ export * from './components/accordion/accordion';
 export * from './components/text/text';
 export * from './components/toast/toast';
 export * from './components/dropdown/dropdown';
+export * from './components/popover/popover';
