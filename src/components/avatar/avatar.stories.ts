@@ -1,52 +1,32 @@
-import { html } from 'lit';
-import './avatar';
+import type { Meta, StoryObj } from '@storybook/web-components';
+import './avatar.js';
 
-export default {
+const meta: Meta = {
   title: 'Components/Avatar',
   tags: ['autodocs'],
-  argTypes: {
-    src: { control: 'text' },
-    alt: { control: 'text' },
-    fallback: { control: 'text' },
-    size: { control: { type: 'select' }, options: ['xs', 'sm', 'md', 'lg', 'xl'] },
-    shape: { control: { type: 'select' }, options: ['circle', 'square'] },
-  },
 };
 
-const Template = ({ src, alt, fallback, size, shape }: any) => html`
-  <elx-avatar src=${src} alt=${alt} fallback=${fallback} size=${size} shape=${shape}></elx-avatar>
-`;
+export default meta;
+type Story = StoryObj;
 
-export const Default = Template.bind({});
-(Default as any).args = {
-  src: 'https://i.pravatar.cc/150?img=1',
-  alt: 'User',
-  fallback: 'JD',
-  size: 'md',
-  shape: 'circle',
+export const WithImage: Story = {
+  render: () => `<elx-avatar src="https://i.pravatar.cc/150?img=1" alt="User"></elx-avatar>`,
 };
 
-export const Fallback = Template.bind({});
-(Fallback as any).args = { src: '', alt: '', fallback: 'AB', size: 'md', shape: 'circle' };
+export const WithInitials: Story = {
+  render: () => `<elx-avatar name="John Doe"></elx-avatar>`,
+};
 
-export const Sizes = () => html`
-  <div style="display:flex;gap:12px;align-items:center">
-    <elx-avatar size="xs" fallback="XS"></elx-avatar>
-    <elx-avatar size="sm" fallback="SM"></elx-avatar>
-    <elx-avatar size="md" fallback="MD"></elx-avatar>
-    <elx-avatar size="lg" fallback="LG"></elx-avatar>
-    <elx-avatar size="xl" fallback="XL"></elx-avatar>
-  </div>
-`;
+export const SingleName: Story = {
+  render: () => `<elx-avatar name="John"></elx-avatar>`,
+};
 
-export const Square = () => html`
-  <div style="display:flex;gap:12px;align-items:center">
-    <elx-avatar shape="square" size="md" fallback="SQ"></elx-avatar>
-    <elx-avatar
-      shape="square"
-      size="lg"
-      src="https://i.pravatar.cc/150?img=3"
-      alt="Square avatar"
-    ></elx-avatar>
-  </div>
-`;
+export const Sizes: Story = {
+  render: () => `
+    <elx-avatar name="XS" size="xs"></elx-avatar>
+    <elx-avatar name="SM" size="sm"></elx-avatar>
+    <elx-avatar name="MD" size="md"></elx-avatar>
+    <elx-avatar name="LG" size="lg"></elx-avatar>
+    <elx-avatar name="XL" size="xl"></elx-avatar>
+  `,
+};
