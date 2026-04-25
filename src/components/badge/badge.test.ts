@@ -49,7 +49,7 @@ describe('elx-badge', () => {
     const el = document.createElement('elx-badge');
     el.setAttribute('variant', 'fancy');
     document.body.appendChild(el);
-    expect(el.variant).toBe('solid');
+    expect((el as any).variant).toBe('solid');
   });
 
   it('applies red color', () => {
@@ -77,7 +77,7 @@ describe('elx-badge', () => {
     const el = document.createElement('elx-badge');
     el.setAttribute('color', 'neon');
     document.body.appendChild(el);
-    expect(el.color).toBe('gray');
+    expect((el as any).color).toBe('gray');
   });
 
   it('applies sm size', () => {
@@ -98,7 +98,7 @@ describe('elx-badge', () => {
     const el = document.createElement('elx-badge');
     el.setAttribute('size', 'xxl');
     document.body.appendChild(el);
-    expect(el.size).toBe('md');
+    expect((el as any).size).toBe('md');
   });
 
   it('updates class when attributes change', () => {

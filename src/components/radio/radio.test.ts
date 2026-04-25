@@ -50,7 +50,7 @@ describe('elx-radio', () => {
     const el = document.createElement('elx-radio');
     el.setAttribute('size', 'xlarge');
     document.body.appendChild(el);
-    expect(el.size).toBe('md');
+    expect((el as any).size).toBe('md');
   });
 
   it('dot is visible when checked', () => {

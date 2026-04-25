@@ -35,7 +35,7 @@ describe('elx-card', () => {
     const el = document.createElement('elx-card');
     el.setAttribute('variant', 'fancy');
     document.body.appendChild(el);
-    expect(el.variant).toBe('elevated');
+    expect((el as any).variant).toBe('elevated');
   });
 
   it('applies padding sizes', () => {
@@ -52,7 +52,7 @@ describe('elx-card', () => {
     const el = document.createElement('elx-card');
     el.setAttribute('padding', 'xl');
     document.body.appendChild(el);
-    expect(el.padding).toBe('md');
+    expect((el as any).padding).toBe('md');
   });
 
   it('sets interactive attributes', () => {

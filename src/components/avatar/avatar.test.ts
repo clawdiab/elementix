@@ -63,7 +63,7 @@ describe('elx-avatar', () => {
     const el = document.createElement('elx-avatar');
     el.setAttribute('size', 'huge');
     document.body.appendChild(el);
-    expect(el.size).toBe('md');
+    expect((el as any).size).toBe('md');
   });
 
   it('applies square shape', () => {
@@ -77,7 +77,7 @@ describe('elx-avatar', () => {
     const el = document.createElement('elx-avatar');
     el.setAttribute('shape', 'triangle');
     document.body.appendChild(el);
-    expect(el.shape).toBe('circle');
+    expect((el as any).shape).toBe('circle');
   });
 
   it('preserves DOM reference across attribute updates', () => {

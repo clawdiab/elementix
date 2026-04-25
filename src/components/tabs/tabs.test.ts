@@ -70,7 +70,7 @@ describe('elx-tabs', () => {
     const tabs = el.shadowRoot!.querySelectorAll<HTMLButtonElement>('.tab');
     expect(tabs[1].getAttribute('aria-selected')).toBe('true');
     expect(tabs[0].getAttribute('aria-selected')).toBe('false');
-    expect(el.value).toBe('b');
+    expect((el as any).value).toBe('b');
   });
 
   it('fires change event on tab selection', () => {
@@ -121,7 +121,7 @@ describe('elx-tabs', () => {
     el.shadowRoot!.querySelector('.tab-list')!.dispatchEvent(
       new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })
     );
-    expect(el.value).toBe('b');
+    expect((el as any).value).toBe('b');
   });
 
   it('ArrowLeft moves to previous tab', () => {
@@ -137,7 +137,7 @@ describe('elx-tabs', () => {
     el.shadowRoot!.querySelector('.tab-list')!.dispatchEvent(
       new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true })
     );
-    expect(el.value).toBe('a');
+    expect((el as any).value).toBe('a');
   });
 
   it('Home key selects first tab', () => {
@@ -151,7 +151,7 @@ describe('elx-tabs', () => {
     el.shadowRoot!.querySelector('.tab-list')!.dispatchEvent(
       new KeyboardEvent('keydown', { key: 'Home', bubbles: true })
     );
-    expect(el.value).toBe('a');
+    expect((el as any).value).toBe('a');
   });
 
   it('End key selects last tab', () => {
@@ -165,7 +165,7 @@ describe('elx-tabs', () => {
     el.shadowRoot!.querySelector('.tab-list')!.dispatchEvent(
       new KeyboardEvent('keydown', { key: 'End', bubbles: true })
     );
-    expect(el.value).toBe('c');
+    expect((el as any).value).toBe('c');
   });
 });
 

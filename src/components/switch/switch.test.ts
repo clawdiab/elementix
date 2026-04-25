@@ -65,7 +65,7 @@ describe('elx-switch', () => {
     const el = document.createElement('elx-switch');
     el.setAttribute('size', 'xxl');
     document.body.appendChild(el);
-    expect(el.size).toBe('md');
+    expect((el as any).size).toBe('md');
   });
 
   it('sets name and value on input', () => {
