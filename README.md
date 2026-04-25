@@ -28,6 +28,26 @@ A Radix-inspired Web Components design system built with TypeScript, Lit, Vite, 
 | Select | `<elx-select>` | Dropdown select with search |
 | Separator | `<elx-separator>` | Horizontal/vertical divider |
 | Accordion | `<elx-accordion>` | Collapsible accordion panels |
+| Text | `<elx-text>` | Typography component with semantic variants |
+
+## Theming
+
+Elementix uses CSS custom properties defined in `src/theme.css` for all design tokens (colors, typography, spacing, radii). You can customize the look and feel by overriding these variables on `:root` or any scoping selector:
+
+```css
+:root {
+  --elx-color-primary-600: #your-brand-color;
+  --elx-font-family-sans: 'Inter', sans-serif;
+}
+```
+
+Available token categories:
+
+- **Colors**: `--elx-color-primary-*`, `--elx-color-danger-*`, `--elx-color-success-*`, `--elx-color-neutral-*`
+- **Typography**: `--elx-font-family-*`, `--elx-font-size-*`, `--elx-font-weight-*`, `--elx-line-height-*`
+- **Border Radius**: `--elx-radius-sm`, `--elx-radius-md`, `--elx-radius-lg`, `--elx-radius-full`
+
+See [`src/theme.css`](./src/theme.css) for the full list of available variables and their defaults.
 
 ## Installation
 
