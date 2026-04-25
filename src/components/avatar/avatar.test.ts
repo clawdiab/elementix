@@ -99,4 +99,46 @@ describe('ElxAvatar', () => {
     el.src = null;
     expect(el.shadowRoot.querySelector('img')).toBeFalsy();
   });
+
+  it('has role=img on host', () => {
+    el.name = 'John Doe';
+    expect(el.getAttribute('role')).toBe('img');
+  });
+
+  it('has aria-label from name', () => {
+    el.name = 'John Doe';
+    expect(el.getAttribute('aria-label')).toBe('John Doe');
+  });
+
+  it('has aria-label from alt', () => {
+    el.src = 'https://example.com/photo.jpg';
+    el.alt = 'User photo';
+    expect(el.getAttribute('aria-label')).toBe('User photo');
+  });
+
+  it('defaults aria-label to Avatar', () => {
+    expect(el.getAttribute('aria-label')).toBe('Avatar');
+  });
+
+  it('handles empty name gracefully', () => {
+    el.name = '   ';
+    const initials = el.shadowRoot.querySelector('.initials');
+    expect(initials).toBeFalsy();
+  });
+
+  it('does not inject HTML from malicious src', () => {
+    el.src = '" onerror="alert(1)';
+    const img = el.shadowRoot.querySelector('img');
+    expect(img).toBeTruthy();
+    expect(img.getAttribute('onerror')).toBeNull();
+  });
+
+  it('does not inject HTML from malicious name', () => {
+    el.name = '<script>alert(1)</script>';
+    const script = el.shadowRoot.querySelector('script');
+    expect(script).toBeFalsy();
+    const initials = el.shadowRoot.querySelector('.initials');
+    expect(initials).toBeTruthy();
+    expect(initials.textContent).toBe('<');
+  });
 });

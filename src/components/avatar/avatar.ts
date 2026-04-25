@@ -92,29 +92,44 @@ export class ElxAvatar extends HTMLElement {
   }
 
   private _getInitials(name: string): string {
-    const words = name.trim().split(/\s+/);
+    const trimmed = name.trim();
+    if (!trimmed) return '';
+    const words = trimmed.split(/\s+/);
     if (words.length === 1) {
       return words[0].charAt(0).toUpperCase();
     }
     return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
   }
 
+  private _onImgError = () => {
+    this.removeAttribute('src');
+  };
+
   private _render() {
+    const shadow = this.shadowRoot!;
+    shadow.innerHTML = `<style>${avatarStyles}</style>`;
+
     const src = this.src;
     const name = this.name;
-    const alt = this.alt;
+    const label = this.alt || (name ? name : 'Avatar');
 
-    let content = '';
+    this.setAttribute('role', 'img');
+    this.setAttribute('aria-label', label);
+
     if (src) {
-      content = `<img src="${src}" alt="${alt || name || 'Avatar'}" part="image" />`;
-    } else if (name) {
-      content = `<span class="initials" part="initials">${this._getInitials(name)}</span>`;
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = label;
+      img.setAttribute('part', 'image');
+      img.addEventListener('error', this._onImgError);
+      shadow.appendChild(img);
+    } else if (name && name.trim()) {
+      const span = document.createElement('span');
+      span.className = 'initials';
+      span.setAttribute('part', 'initials');
+      span.textContent = this._getInitials(name);
+      shadow.appendChild(span);
     }
-
-    this.shadowRoot!.innerHTML = `
-      <style>${avatarStyles}</style>
-      ${content}
-    `;
   }
 }
 
