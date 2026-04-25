@@ -24,7 +24,8 @@ export class ElxProgress extends HTMLElement {
   }
 
   get max(): number {
-    return Number(this.getAttribute('max')) || 100;
+    const val = Number(this.getAttribute('max'));
+    return isNaN(val) || val <= 0 ? 100 : val;
   }
   set max(val: number) {
     this.setAttribute('max', String(val));
@@ -118,7 +119,7 @@ export class ElxProgress extends HTMLElement {
     const labelPercent = this.shadowRoot?.querySelector('.label-percent') as HTMLElement;
     if (!track || !bar) return;
 
-    const percent = Math.min(100, Math.max(0, (this.value / this.max) * 100));
+    const percent = this.max > 0 ? Math.min(100, Math.max(0, (this.value / this.max) * 100)) : 0;
 
     track.className = `progress ${this.size}`;
     track.setAttribute('aria-valuenow', String(this.value));
@@ -221,6 +222,7 @@ export class ElxSpinner extends HTMLElement {
     if (!spinner) return;
     spinner.className = `spinner ${this.size} ${this.variant}`;
     spinner.setAttribute('role', 'status');
+    spinner.setAttribute('aria-busy', 'true');
     spinner.setAttribute('aria-label', this.label);
   }
 }

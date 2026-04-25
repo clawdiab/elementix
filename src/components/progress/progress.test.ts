@@ -102,6 +102,16 @@ describe('elx-progress', () => {
     expect(labelDiv.style.display).toBe('none');
   });
 
+  it('handles max=0 by defaulting to 100', () => {
+    const el = document.createElement('elx-progress') as any;
+    el.value = 50;
+    el.max = 0;
+    document.body.appendChild(el);
+    expect(el.max).toBe(100);
+    const bar = el.shadowRoot!.querySelector('.bar') as HTMLElement;
+    expect(bar.style.width).toBe('50%');
+  });
+
   it('updates bar when value changes', () => {
     const el = document.createElement('elx-progress') as any;
     el.value = 20;
@@ -164,6 +174,13 @@ describe('elx-spinner', () => {
     document.body.appendChild(el);
     const spinner = el.shadowRoot!.querySelector('.spinner');
     expect(spinner!.classList.contains('danger')).toBe(true);
+  });
+
+  it('has aria-busy=true', () => {
+    const el = document.createElement('elx-spinner');
+    document.body.appendChild(el);
+    const spinner = el.shadowRoot!.querySelector('.spinner');
+    expect(spinner!.getAttribute('aria-busy')).toBe('true');
   });
 
   it('defaults to md size and primary variant', () => {
