@@ -38,13 +38,46 @@ jobs:
         id: version
         run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
-      - name: Extract changelog for version
+      - name: Generate changelog from merged PRs
         id: changelog
         run: |
-          awk '/^## \[${{ steps.version.outputs.version }}\]/{found=1; next} /^## \[/{if(found) exit} found{print}' CHANGELOG.md > release_notes.md
+          chmod +x scripts/generate-changelog.sh
+          VERSION="${{ steps.version.outputs.version }}"
+          
+          # Get the previous tag (if any) - use git tag to list tags sorted by version
+          PREV_TAG=$(git tag --sort=-version:refname | grep -E '^v[0-9]' | head -1 | sed 's/^v//' 2>/dev/null || echo "")
+          
+          # Generate new changelog entries with the version label
+          if [ -n "$PREV_TAG" ]; then
+            ./scripts/generate-changelog.sh "v${PREV_TAG}" "v${VERSION}" > new_changes.md
+          else
+            ./scripts/generate-changelog.sh "" "v${VERSION}" > new_changes.md
+          fi
+          
+          # Update CHANGELOG.md: insert new section at the placeholder marker
+          if [ -s new_changes.md ]; then
+            # Replace the placeholder comment with actual entries
+            sed '/CHANGELOG_ENTRIES_PLACEHOLDER/r new_changes.md' CHANGELOG.md > CHANGELOG_new.md
+            # Remove the marker comment line
+            sed -i '/CHANGELOG_ENTRIES_PLACEHOLDER/d' CHANGELOG_new.md
+            mv CHANGELOG_new.md CHANGELOG.md
+            rm new_changes.md
+          fi
+          
+          # Extract release notes for this version
+          awk "/^## \\[v${VERSION}\\]/{found=1; next} /^## \\[/{if(found) exit} found{print}" CHANGELOG.md > release_notes.md
+          
           echo "notes<<EOF" >> $GITHUB_OUTPUT
           cat release_notes.md >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Commit updated CHANGELOG.md
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG.md
+          git diff --cached --quiet || git commit -m "chore: update CHANGELOG.md for v${{ steps.version.outputs.version }}"
+          git push origin HEAD:main || echo "Warning: Could not push CHANGELOG update (branch may be protected)"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
