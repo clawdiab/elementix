@@ -38,13 +38,45 @@ jobs:
         id: version
         run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
-      - name: Extract changelog for version
+      - name: Generate changelog from merged PRs
         id: changelog
         run: |
-          awk '/^## \[${{ steps.version.outputs.version }}\]/{found=1; next} /^## \[/{if(found) exit} found{print}' CHANGELOG.md > release_notes.md
+          chmod +x scripts/generate-changelog.sh
+          
+          # Get the previous tag (if any)
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          
+          # Generate new changelog entries
+          if [ -n "$PREV_TAG" ]; then
+            ./scripts/generate-changelog.sh "$PREV_TAG" > new_changes.md
+          else
+            ./scripts/generate-changelog.sh > new_changes.md
+          fi
+          
+          # Update CHANGELOG.md: insert new section after the header
+          if [ -s new_changes.md ]; then
+            # Create temp file with new changelog entry
+            head -n 7 CHANGELOG.md > changelog_header.md
+            cat changelog_header.md new_changes.md > CHANGELOG_new.md
+            tail -n +8 CHANGELOG.md >> CHANGELOG_new.md
+            mv CHANGELOG_new.md CHANGELOG.md
+            rm changelog_header.md new_changes.md
+          fi
+          
+          # Extract just this version's notes for the release
+          awk '/^## \[Unreleased\]/{found=1; next} /^## \[/{if(found) exit} found{print}' CHANGELOG.md > release_notes.md
+          
           echo "notes<<EOF" >> $GITHUB_OUTPUT
           cat release_notes.md >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Commit updated CHANGELOG.md
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG.md
+          git diff --cached --quiet || git commit -m "chore: update CHANGELOG.md for v${{ steps.version.outputs.version }}"
+          git push origin HEAD:main
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
