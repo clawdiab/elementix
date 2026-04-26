@@ -2,13 +2,11 @@ export class ElxSlider extends HTMLElement {
   static observedAttributes = ['value', 'min', 'max', 'step', 'disabled', 'label', 'size', 'variant'];
 
   private _boundHandleInput: (e: Event) => void;
-  private _boundHandleKeydown: (e: KeyboardEvent) => void;
 
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
     this._boundHandleInput = this._handleInput.bind(this);
-    this._boundHandleKeydown = this._handleKeydown.bind(this);
   }
 
   connectedCallback() {
@@ -16,14 +14,12 @@ export class ElxSlider extends HTMLElement {
     this._update();
     const input = this.shadowRoot!.querySelector('input') as HTMLInputElement;
     input.addEventListener('input', this._boundHandleInput);
-    input.addEventListener('keydown', this._boundHandleKeydown);
   }
 
   disconnectedCallback() {
     const input = this.shadowRoot?.querySelector('input') as HTMLInputElement;
     if (input) {
       input.removeEventListener('input', this._boundHandleInput);
-      input.removeEventListener('keydown', this._boundHandleKeydown);
     }
   }
 
@@ -40,7 +36,7 @@ export class ElxSlider extends HTMLElement {
 
   get max(): number {
     const v = Number(this.getAttribute('max'));
-    return isNaN(v) || v === 0 ? 100 : v;
+    return isNaN(v) || v <= 0 ? 100 : v;
   }
   set max(val: number) { this.setAttribute('max', String(val)); }
 
@@ -68,10 +64,6 @@ export class ElxSlider extends HTMLElement {
       bubbles: true,
       composed: true,
     }));
-  }
-
-  private _handleKeydown(e: KeyboardEvent) {
-    if (this.disabled) { e.preventDefault(); return; }
   }
 
   private _buildDom() {
@@ -137,6 +129,9 @@ export class ElxSlider extends HTMLElement {
       input[type="range"]:focus-visible::-webkit-slider-thumb {
         box-shadow: 0 0 0 3px var(--elx-color-primary-200, #c7d2fe);
       }
+      input[type="range"]:focus-visible::-moz-range-thumb {
+        box-shadow: 0 0 0 3px var(--elx-color-primary-200, #c7d2fe);
+      }
 
       input[type="range"]::-webkit-slider-thumb {
         -webkit-appearance: none;
@@ -187,7 +182,6 @@ export class ElxSlider extends HTMLElement {
 
     const input = document.createElement('input');
     input.type = 'range';
-    input.setAttribute('role', 'slider');
 
     track.appendChild(trackBg);
     track.appendChild(trackFill);

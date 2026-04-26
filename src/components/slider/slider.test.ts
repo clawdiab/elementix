@@ -61,7 +61,7 @@ describe('elx-slider', () => {
     el.max = 100;
     document.body.appendChild(el);
     const input = el.shadowRoot!.querySelector('input');
-    expect(input!.getAttribute('role')).toBe('slider');
+    // input[type="range"] has implicit role="slider" — no explicit role needed
     expect(input!.getAttribute('aria-valuemin')).toBe('0');
     expect(input!.getAttribute('aria-valuemax')).toBe('100');
     expect(input!.getAttribute('aria-valuenow')).toBe('30');

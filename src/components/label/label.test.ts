@@ -24,12 +24,11 @@ describe('elx-label', () => {
     expect(slot).toBeTruthy();
   });
 
-  it('sets for attribute on inner label', () => {
+  it('sets for attribute on host', () => {
     const el = document.createElement('elx-label') as any;
     el.for = 'my-input';
     document.body.appendChild(el);
-    const label = el.shadowRoot!.querySelector('label');
-    expect(label!.getAttribute('for')).toBe('my-input');
+    expect(el.getAttribute('for')).toBe('my-input');
   });
 
   it('removes for attribute when empty', () => {
@@ -37,9 +36,7 @@ describe('elx-label', () => {
     el.for = 'test';
     document.body.appendChild(el);
     el.for = '';
-    el.removeAttribute('for');
-    const label = el.shadowRoot!.querySelector('label');
-    expect(label!.hasAttribute('for')).toBe(false);
+    expect(el.hasAttribute('for')).toBe(false);
   });
 
   it('shows required indicator when required', () => {
@@ -69,16 +66,16 @@ describe('elx-label', () => {
     const el = document.createElement('elx-label') as any;
     el.size = 'lg';
     document.body.appendChild(el);
-    const label = el.shadowRoot!.querySelector('.label');
-    expect(label!.classList.contains('lg')).toBe(true);
+    const textSpan = el.shadowRoot!.querySelector('.label-text');
+    expect(textSpan!.classList.contains('lg')).toBe(true);
   });
 
   it('defaults to md size', () => {
     const el = document.createElement('elx-label') as any;
     document.body.appendChild(el);
     expect(el.size).toBe('md');
-    const label = el.shadowRoot!.querySelector('.label');
-    expect(label!.classList.contains('md')).toBe(true);
+    const textSpan = el.shadowRoot!.querySelector('.label-text');
+    expect(textSpan!.classList.contains('md')).toBe(true);
   });
 
   it('applies disabled state', () => {
@@ -97,11 +94,13 @@ describe('elx-label', () => {
     expect(el.hasAttribute('disabled')).toBe(false);
   });
 
-  it('has label element inside shadow DOM', () => {
+  it('has span wrapper inside shadow DOM (not label element)', () => {
     const el = document.createElement('elx-label');
     document.body.appendChild(el);
     const label = el.shadowRoot!.querySelector('label');
-    expect(label).toBeTruthy();
+    expect(label).toBeNull();
+    const wrapper = el.shadowRoot!.querySelector('.label-wrapper');
+    expect(wrapper).toBeTruthy();
   });
 
   it('property getters return correct defaults', () => {
@@ -122,5 +121,27 @@ describe('elx-label', () => {
     expect(asterisk.style.display).toBe('inline');
     el.required = false;
     expect(asterisk.style.display).toBe('none');
+  });
+
+  it('clicking label with for attribute focuses target input', () => {
+    const input = document.createElement('input');
+    input.id = 'target-input';
+    document.body.appendChild(input);
+
+    const el = document.createElement('elx-label') as any;
+    el.for = 'target-input';
+    el.textContent = 'Label';
+    document.body.appendChild(el);
+
+    el.click();
+    expect(document.activeElement).toBe(input);
+  });
+
+  it('clicking label without for does not throw', () => {
+    const el = document.createElement('elx-label') as any;
+    el.textContent = 'Label';
+    document.body.appendChild(el);
+
+    expect(() => el.click()).not.toThrow();
   });
 });

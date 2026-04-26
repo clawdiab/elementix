@@ -1,14 +1,28 @@
+let formFieldIdCounter = 0;
+
 export class ElxFormField extends HTMLElement {
   static observedAttributes = ['label', 'helper-text', 'error-text', 'required', 'disabled', 'size'];
+
+  private _uniqueId: string;
+  private _boundSlotChange: () => void;
 
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
+    this._uniqueId = `elx-ff-${++formFieldIdCounter}`;
+    this._boundSlotChange = this._handleSlotChange.bind(this);
   }
 
   connectedCallback() {
     if (!this.shadowRoot?.querySelector('.form-field')) this._buildDom();
     this._update();
+    const slot = this.shadowRoot!.querySelector('slot');
+    slot?.addEventListener('slotchange', this._boundSlotChange);
+  }
+
+  disconnectedCallback() {
+    const slot = this.shadowRoot?.querySelector('slot');
+    slot?.removeEventListener('slotchange', this._boundSlotChange);
   }
 
   attributeChangedCallback(_name: string, oldVal: string | null, newVal: string | null) {
@@ -34,7 +48,41 @@ export class ElxFormField extends HTMLElement {
   get size(): string { return this.getAttribute('size') || 'md'; }
   set size(val: string) { this.setAttribute('size', val); }
 
+  /**
+   * When slotted content changes, associate the label with the first input-like element
+   * using aria-labelledby. This bridges the shadow DOM boundary for screen readers.
+   */
+  private _handleSlotChange() {
+    const slot = this.shadowRoot?.querySelector('slot') as HTMLSlotElement;
+    if (!slot) return;
+    const assigned = slot.assignedElements({ flatten: true });
+    const labelId = `${this._uniqueId}-label`;
+    const descId = `${this._uniqueId}-desc`;
+
+    for (const el of assigned) {
+      const target = (el.matches('input,select,textarea') ? el : el.querySelector('input,select,textarea')) as HTMLElement | null;
+      if (target) {
+        if (this.label) {
+          // Set the label id on the host so light-DOM aria-labelledby can reference it
+          this.setAttribute('id', this.id || this._uniqueId);
+          target.setAttribute('aria-labelledby', labelId);
+        }
+        // Associate description (helper or error text)
+        const hasDesc = this.helperText || this.errorText;
+        if (hasDesc) {
+          target.setAttribute('aria-describedby', descId);
+        } else {
+          target.removeAttribute('aria-describedby');
+        }
+        break;
+      }
+    }
+  }
+
   private _buildDom() {
+    const labelId = `${this._uniqueId}-label`;
+    const descId = `${this._uniqueId}-desc`;
+
     const style = document.createElement('style');
     style.textContent = `
       :host {
@@ -85,10 +133,6 @@ export class ElxFormField extends HTMLElement {
         line-height: 1.4;
       }
 
-      :host([error-text]:not([error-text=""])) .form-field {
-        /* Error state visual cue */
-      }
-
       ::slotted(*) {
         width: 100%;
       }
@@ -101,25 +145,30 @@ export class ElxFormField extends HTMLElement {
     const labelRow = document.createElement('div');
     labelRow.className = 'label-row';
 
-    const label = document.createElement('label');
-    label.className = 'label-text';
+    // Use span instead of label — <label for> can't cross shadow DOM boundary.
+    // Association is done via aria-labelledby in _handleSlotChange.
+    const labelSpan = document.createElement('span');
+    labelSpan.className = 'label-text';
+    labelSpan.id = labelId;
 
     const asterisk = document.createElement('span');
     asterisk.className = 'required-indicator';
     asterisk.textContent = '*';
     asterisk.setAttribute('aria-hidden', 'true');
 
-    labelRow.appendChild(label);
+    labelRow.appendChild(labelSpan);
     labelRow.appendChild(asterisk);
 
     const slot = document.createElement('slot');
 
     const helper = document.createElement('div');
     helper.className = 'helper-text';
+    helper.id = descId;
     helper.setAttribute('role', 'note');
 
     const error = document.createElement('div');
     error.className = 'error-text';
+    error.id = descId;
     error.setAttribute('role', 'alert');
     error.setAttribute('aria-live', 'polite');
 
@@ -133,16 +182,16 @@ export class ElxFormField extends HTMLElement {
   }
 
   private _update() {
-    const label = this.shadowRoot?.querySelector('.label-text') as HTMLLabelElement;
+    const labelSpan = this.shadowRoot?.querySelector('.label-text') as HTMLElement;
     const labelRow = this.shadowRoot?.querySelector('.label-row') as HTMLElement;
     const asterisk = this.shadowRoot?.querySelector('.required-indicator') as HTMLElement;
     const helper = this.shadowRoot?.querySelector('.helper-text') as HTMLElement;
     const error = this.shadowRoot?.querySelector('.error-text') as HTMLElement;
     const wrapper = this.shadowRoot?.querySelector('.form-field') as HTMLElement;
-    if (!label || !wrapper) return;
+    if (!labelSpan || !wrapper) return;
 
-    label.className = `label-text ${this.size}`;
-    label.textContent = this.label;
+    labelSpan.className = `label-text ${this.size}`;
+    labelSpan.textContent = this.label;
 
     if (labelRow) labelRow.style.display = this.label ? 'flex' : 'none';
     if (asterisk) asterisk.style.display = this.required ? 'inline' : 'none';
@@ -162,6 +211,9 @@ export class ElxFormField extends HTMLElement {
     } else {
       wrapper.removeAttribute('aria-label');
     }
+
+    // Re-run slot association in case label/helper/error text changed
+    this._handleSlotChange();
   }
 }
 
