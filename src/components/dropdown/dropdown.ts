@@ -186,12 +186,14 @@ export class ElxDropdown extends HTMLElement {
     `;
 
     const trigger = document.createElement('div');
+    trigger.setAttribute('part', 'trigger');
     trigger.className = 'trigger';
     const triggerSlot = document.createElement('slot');
     triggerSlot.name = 'trigger';
     trigger.appendChild(triggerSlot);
 
     const menu = document.createElement('div');
+    menu.setAttribute('part', 'menu');
     menu.className = 'menu';
     menu.setAttribute('role', 'menu');
     menu.setAttribute('aria-orientation', 'vertical');

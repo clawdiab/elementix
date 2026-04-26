@@ -58,6 +58,7 @@ export class ElxSeparator extends HTMLElement {
     `;
 
     const separator = document.createElement('div');
+    separator.setAttribute('part', 'separator');
     separator.className = `separator ${this.orientation}`;
     separator.setAttribute('role', 'separator');
     separator.setAttribute('aria-orientation', this.orientation);

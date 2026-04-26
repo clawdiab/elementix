@@ -139,6 +139,7 @@ export class ElxToast extends HTMLElement {
     `;
 
     const container = document.createElement('div');
+    container.setAttribute('part', 'toast');
     container.className = 'toast';
     container.setAttribute('role', 'alert');
     container.setAttribute('aria-atomic', 'true');
@@ -152,6 +153,7 @@ export class ElxToast extends HTMLElement {
     content.appendChild(slot);
 
     const closeBtn = document.createElement('button');
+    closeBtn.setAttribute('part', 'close-button');
     closeBtn.type = 'button';
     closeBtn.className = 'close-btn';
     closeBtn.setAttribute('aria-label', 'Close');

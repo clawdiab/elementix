@@ -140,6 +140,7 @@ export class ElxFormField extends HTMLElement {
     `;
 
     const wrapper = document.createElement('div');
+    wrapper.setAttribute('part', 'wrapper');
     wrapper.className = 'form-field';
     wrapper.setAttribute('role', 'group');
 
@@ -149,6 +150,7 @@ export class ElxFormField extends HTMLElement {
     // Use span instead of label — <label for> can't cross shadow DOM boundary.
     // Association is done via aria-labelledby in _handleSlotChange.
     const labelSpan = document.createElement('span');
+    labelSpan.setAttribute('part', 'label');
     labelSpan.className = 'label-text';
     labelSpan.id = labelId;
 
@@ -163,11 +165,13 @@ export class ElxFormField extends HTMLElement {
     const slot = document.createElement('slot');
 
     const helper = document.createElement('div');
+    helper.setAttribute('part', 'helper');
     helper.className = 'helper-text';
     helper.id = `${this._uniqueId}-helper`;
     helper.setAttribute('role', 'note');
 
     const error = document.createElement('div');
+    error.setAttribute('part', 'error');
     error.className = 'error-text';
     error.id = `${this._uniqueId}-error`;
     error.setAttribute('role', 'alert');

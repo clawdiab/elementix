@@ -186,6 +186,7 @@ export class ElxSelect extends HTMLElement {
     `;
 
     this._button = document.createElement('button');
+    this._button.setAttribute('part', 'trigger');
     this._button.type = 'button';
     this._button.className = 'trigger';
     this._button.setAttribute('role', 'combobox');
@@ -215,6 +216,7 @@ export class ElxSelect extends HTMLElement {
     this._button.appendChild(arrow);
 
     this._listbox = document.createElement('div');
+    this._listbox.setAttribute('part', 'listbox');
     this._listbox.className = 'listbox';
     this._listbox.setAttribute('role', 'listbox');
     this._listbox.setAttribute('id', this._id);

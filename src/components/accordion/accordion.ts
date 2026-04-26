@@ -135,6 +135,7 @@ export class ElxAccordionItem extends HTMLElement {
     `;
 
     this._trigger = document.createElement('button');
+    this._trigger.setAttribute('part', 'trigger');
     this._trigger.type = 'button';
     this._trigger.className = 'trigger';
     this._trigger.setAttribute('aria-expanded', 'false');
@@ -147,6 +148,7 @@ export class ElxAccordionItem extends HTMLElement {
     label.textContent = this.label;
 
     const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    arrow.setAttribute('part', 'icon');
     arrow.setAttribute('class', 'arrow');
     arrow.setAttribute('viewBox', '0 0 20 20');
     arrow.setAttribute('fill', 'currentColor');
@@ -163,6 +165,7 @@ export class ElxAccordionItem extends HTMLElement {
     this._trigger.appendChild(arrow);
 
     this._content = document.createElement('div');
+    this._content.setAttribute('part', 'panel');
     this._content.className = 'content';
     this._content.setAttribute('role', 'region');
     this._content.setAttribute('aria-labelledby', id);

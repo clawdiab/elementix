@@ -141,14 +141,17 @@ export class ElxSwitch extends HTMLElement {
     `;
 
     this._labelEl = document.createElement('label');
+    this._labelEl.setAttribute('part', 'label');
     this._labelEl.htmlFor = this._id;
 
     this._input = document.createElement('input');
+    this._input.setAttribute('part', 'input');
     this._input.type = 'checkbox';
     this._input.id = this._id;
     this._input.setAttribute('role', 'switch');
 
     this._track = document.createElement('span');
+    this._track.setAttribute('part', 'track');
     this._track.className = 'track';
 
     this._thumb = document.createElement('span');

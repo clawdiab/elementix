@@ -89,6 +89,7 @@ export class ElxButton extends HTMLElement {
     `;
 
     this._button = document.createElement('button');
+    this._button.setAttribute('part', 'button');
     this._button.type = 'button';
 
     this._slot = document.createElement('slot');

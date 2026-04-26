@@ -151,10 +151,12 @@ export class ElxInput extends HTMLElement {
     wrapper.className = 'input-wrapper';
 
     this._label = document.createElement('label');
+    this._label.setAttribute('part', 'label');
     this._label.style.display = 'none';
     this._label.htmlFor = this._inputId;
 
     this._input = document.createElement('input');
+    this._input.setAttribute('part', 'input');
     this._input.id = this._inputId;
 
     wrapper.appendChild(this._label);

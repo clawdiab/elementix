@@ -175,9 +175,11 @@ export class ElxCheckbox extends HTMLElement {
     `;
 
     this._labelEl = document.createElement('label');
+    this._labelEl.setAttribute('part', 'label');
     this._labelEl.htmlFor = this._id;
 
     this._input = document.createElement('input');
+    this._input.setAttribute('part', 'input');
     this._input.type = 'checkbox';
     this._input.id = this._id;
 
@@ -185,6 +187,7 @@ export class ElxCheckbox extends HTMLElement {
     box.className = 'checkbox-box';
 
     this._checkmark = document.createElement('span');
+    this._checkmark.setAttribute('part', 'checkmark');
     this._checkmark.className = 'checkmark';
 
     box.appendChild(this._checkmark);

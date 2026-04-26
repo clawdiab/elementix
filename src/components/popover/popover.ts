@@ -161,12 +161,14 @@ export class ElxPopover extends HTMLElement {
     `;
 
     const trigger = document.createElement('div');
+    trigger.setAttribute('part', 'trigger');
     trigger.className = 'trigger';
     const triggerSlot = document.createElement('slot');
     triggerSlot.name = 'trigger';
     trigger.appendChild(triggerSlot);
 
     const content = document.createElement('div');
+    content.setAttribute('part', 'content');
     content.className = 'content';
     content.id = this._contentId;
     content.setAttribute('tabindex', '-1');

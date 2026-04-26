@@ -224,8 +224,8 @@ export class ElxCalendar extends HTMLElement {
   private _render() {
     this.shadowRoot!.innerHTML = `
       <style>${calendarStyles}</style>
-      <div class="calendar" role="grid" aria-label="Calendar">
-        <div class="header">
+      <div class="calendar" role="grid" aria-label="Calendar" part="calendar">
+        <div class="header" part="header">
           <span class="month-year" aria-live="polite"></span>
           <div class="nav-buttons">
             <button class="nav-btn prev" aria-label="Previous month">&lt;</button>
@@ -233,7 +233,7 @@ export class ElxCalendar extends HTMLElement {
           </div>
         </div>
         <div class="weekdays" role="row"></div>
-        <div class="days" role="rowgroup"></div>
+        <div class="days" role="rowgroup" part="grid"></div>
       </div>
     `;
 

@@ -197,7 +197,7 @@ export class ElxFileUpload extends HTMLElement {
   private _render() {
     this.shadowRoot!.innerHTML = `
       <style>${fileUploadStyles}</style>
-      <div class="dropzone" role="button" tabindex="0" aria-label="Upload files">
+      <div class="dropzone" role="button" tabindex="0" aria-label="Upload files" part="dropzone">
         <span class="icon" aria-hidden="true">📁</span>
         <span class="label"><slot>Drop files here or click to browse</slot></span>
         <span class="hint"></span>

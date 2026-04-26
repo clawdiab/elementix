@@ -126,7 +126,7 @@ export class ElxAvatar extends HTMLElement {
     } else if (name && name.trim()) {
       const span = document.createElement('span');
       span.className = 'initials';
-      span.setAttribute('part', 'initials');
+      span.setAttribute('part', 'fallback');
       span.textContent = this._getInitials(name);
       shadow.appendChild(span);
     }

@@ -36,6 +36,7 @@ export class ElxTabPanel extends HTMLElement {
       .panel { padding: 16px 0; }
     `;
     const div = document.createElement('div');
+    div.setAttribute('part', 'panel');
     div.className = 'panel';
     div.setAttribute('role', 'tabpanel');
     const slot = document.createElement('slot');
@@ -118,6 +119,7 @@ export class ElxTabs extends HTMLElement {
     `;
 
     this._tabList = document.createElement('div');
+    this._tabList.setAttribute('part', 'tablist');
     this._tabList.className = 'tab-list';
     this._tabList.setAttribute('role', 'tablist');
     this._tabList.addEventListener('keydown', this._onKeydown);
@@ -147,6 +149,7 @@ export class ElxTabs extends HTMLElement {
       const isActive = name === currentValue;
 
       const btn = document.createElement('button');
+      btn.setAttribute('part', 'tab');
       btn.className = 'tab';
       btn.type = 'button';
       btn.setAttribute('role', 'tab');

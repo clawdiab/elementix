@@ -90,6 +90,7 @@ export class ElxTable extends HTMLElement {
     `;
 
     this._table = document.createElement('table');
+    this._table.setAttribute('part', 'table');
     this._table.setAttribute('role', 'table');
 
     const slot = document.createElement('slot');

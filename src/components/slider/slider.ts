@@ -172,6 +172,7 @@ export class ElxSlider extends HTMLElement {
     labelDiv.appendChild(labelValue);
 
     const track = document.createElement('div');
+    track.setAttribute('part', 'track');
     track.className = 'slider-track';
 
     const trackBg = document.createElement('div');
@@ -181,6 +182,7 @@ export class ElxSlider extends HTMLElement {
     trackFill.className = 'track-fill';
 
     const input = document.createElement('input');
+    input.setAttribute('part', 'input');
     input.type = 'range';
 
     track.appendChild(trackBg);

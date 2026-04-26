@@ -90,9 +90,11 @@ export class ElxAlert extends HTMLElement {
     `;
 
     const wrapper = document.createElement('div');
+    wrapper.setAttribute('part', 'alert');
     wrapper.className = 'alert';
 
     const icon = document.createElement('span');
+    icon.setAttribute('part', 'icon');
     icon.className = 'icon';
 
     const content = document.createElement('div');
@@ -101,6 +103,7 @@ export class ElxAlert extends HTMLElement {
     content.appendChild(slot);
 
     this._closeBtn = document.createElement('button');
+    this._closeBtn.setAttribute('part', 'close-button');
     this._closeBtn.className = 'close-btn';
     this._closeBtn.type = 'button';
     this._closeBtn.setAttribute('aria-label', 'Dismiss alert');
