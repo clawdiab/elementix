@@ -131,7 +131,7 @@ export class ElxMenu extends HTMLElement {
   private _render() {
     this.shadowRoot!.innerHTML = `
       <style>${menuStyles}</style>
-      <div class="menu" role="menu" tabindex="-1">
+      <div class="menu" role="menu" tabindex="-1" part="menu">
         <slot></slot>
       </div>
     `;

@@ -98,6 +98,7 @@ export class ElxCard extends HTMLElement {
     `;
 
     const wrapper = document.createElement('div');
+    wrapper.setAttribute('part', 'card');
     wrapper.className = 'card';
 
     const headerSlot = document.createElement('slot');

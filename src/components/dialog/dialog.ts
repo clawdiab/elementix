@@ -99,12 +99,14 @@ export class ElxDialog extends HTMLElement {
     `;
 
     const overlay = document.createElement('div');
+    overlay.setAttribute('part', 'overlay');
     overlay.className = 'overlay';
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) this.close();
     });
 
     const dialog = document.createElement('div');
+    dialog.setAttribute('part', 'dialog');
     dialog.className = 'dialog';
     dialog.setAttribute('role', 'dialog');
     dialog.setAttribute('aria-modal', 'true');
@@ -119,6 +121,7 @@ export class ElxDialog extends HTMLElement {
     title.appendChild(titleSlot);
 
     const closeBtn = document.createElement('button');
+    closeBtn.setAttribute('part', 'close-button');
     closeBtn.className = 'close-btn';
     closeBtn.type = 'button';
     closeBtn.setAttribute('aria-label', 'Close dialog');

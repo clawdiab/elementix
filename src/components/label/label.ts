@@ -96,6 +96,7 @@ export class ElxLabel extends HTMLElement {
     // to properly cross the shadow DOM boundary
 
     const textSpan = document.createElement('span');
+    textSpan.setAttribute('part', 'label');
     textSpan.className = 'label-text';
 
     const slot = document.createElement('slot');

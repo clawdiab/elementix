@@ -175,10 +175,12 @@ export class ElxDrawer extends HTMLElement {
     style.textContent = styles;
 
     const backdrop = document.createElement('div');
+    backdrop.setAttribute('part', 'overlay');
     backdrop.className = 'backdrop';
     backdrop.addEventListener('click', () => this.close());
 
     const drawer = document.createElement('div');
+    drawer.setAttribute('part', 'drawer');
     drawer.className = 'drawer';
     drawer.setAttribute('role', 'dialog');
     drawer.setAttribute('aria-modal', 'true');
@@ -193,6 +195,7 @@ export class ElxDrawer extends HTMLElement {
     title.appendChild(titleSlot);
 
     this._closeButton = document.createElement('button');
+    this._closeButton.setAttribute('part', 'close-button');
     this._closeButton.className = 'close-button';
     this._closeButton.setAttribute('aria-label', 'Close drawer');
     this._closeButton.innerHTML = `

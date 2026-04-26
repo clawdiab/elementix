@@ -226,7 +226,7 @@ export class ElxStepper extends HTMLElement {
   private _render() {
     this.shadowRoot!.innerHTML = `
       <style>${stepperStyles}</style>
-      <div class="stepper" role="list" aria-label="Progress steps">
+      <div class="stepper" role="list" aria-label="Progress steps" part="stepper">
         <slot></slot>
       </div>
     `;

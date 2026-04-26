@@ -140,9 +140,11 @@ export class ElxRadio extends HTMLElement {
     `;
 
     this._labelEl = document.createElement('label');
+    this._labelEl.setAttribute('part', 'label');
     this._labelEl.htmlFor = this._id;
 
     this._input = document.createElement('input');
+    this._input.setAttribute('part', 'input');
     this._input.type = 'radio';
     this._input.id = this._id;
 

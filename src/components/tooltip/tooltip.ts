@@ -132,6 +132,7 @@ export class ElxTooltip extends HTMLElement {
     `;
 
     this._tooltip = document.createElement('div');
+    this._tooltip.setAttribute('part', 'tooltip');
     this._tooltip.className = 'tooltip';
     this._tooltip.setAttribute('role', 'tooltip');
     this._tooltip.setAttribute('aria-hidden', 'true');
@@ -142,6 +143,7 @@ export class ElxTooltip extends HTMLElement {
     this._tooltip.id = `tooltip-${Math.random().toString(36).substring(2, 9)}`;
 
     const slot = document.createElement('slot');
+    slot.setAttribute('part', 'trigger');
 
     this.shadowRoot!.appendChild(style);
     this.shadowRoot!.appendChild(this._tooltip);

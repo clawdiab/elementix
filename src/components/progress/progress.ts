@@ -101,9 +101,11 @@ export class ElxProgress extends HTMLElement {
     labelDiv.appendChild(labelPercent);
 
     const track = document.createElement('div');
+    track.setAttribute('part', 'track');
     track.className = 'progress';
     track.setAttribute('role', 'progressbar');
     const bar = document.createElement('div');
+    bar.setAttribute('part', 'bar');
     bar.className = 'bar';
     track.appendChild(bar);
 

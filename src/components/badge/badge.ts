@@ -99,6 +99,7 @@ export class ElxBadge extends HTMLElement {
     `;
 
     this._span = document.createElement('span');
+    this._span.setAttribute('part', 'badge');
     this._span.className = 'badge';
 
     const slot = document.createElement('slot');

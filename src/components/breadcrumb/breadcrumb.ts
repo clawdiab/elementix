@@ -48,8 +48,10 @@ export class ElxBreadcrumb extends HTMLElement {
     `;
 
     const nav = document.createElement('nav');
+    nav.setAttribute('part', 'nav');
     nav.setAttribute('aria-label', 'Breadcrumb');
     const ol = document.createElement('ol');
+    ol.setAttribute('part', 'list');
     ol.className = 'crumbs';
     const slot = document.createElement('slot');
     ol.appendChild(slot);

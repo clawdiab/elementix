@@ -103,6 +103,7 @@ export class ElxPagination extends HTMLElement {
     `;
 
     const nav = document.createElement('nav');
+    nav.setAttribute('part', 'nav');
     nav.setAttribute('aria-label', 'Pagination');
 
     this.shadowRoot!.appendChild(style);

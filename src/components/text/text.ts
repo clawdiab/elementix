@@ -115,6 +115,7 @@ export class ElxText extends HTMLElement {
     `;
 
     this._element = document.createElement(this.as);
+    this._element.setAttribute('part', 'text');
     this._element.appendChild(document.createElement('slot'));
 
     this.shadowRoot!.appendChild(style);
@@ -127,6 +128,7 @@ export class ElxText extends HTMLElement {
     // Update tag if 'as' changed
     if (this._element.tagName.toLowerCase() !== this.as) {
       const newElement = document.createElement(this.as);
+      newElement.setAttribute('part', 'text');
       newElement.appendChild(document.createElement('slot'));
       this._element.replaceWith(newElement);
       this._element = newElement;

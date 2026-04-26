@@ -135,7 +135,7 @@ export class ElxSkeleton extends HTMLElement {
 
     this.shadowRoot!.innerHTML = `
       <style>${skeletonStyles}</style>
-      <div class="skeleton" style="${width ? `width:${width};` : ''}${height ? `height:${height};` : ''}" aria-hidden="true"></div>
+      <div class="skeleton" style="${width ? `width:${width};` : ''}${height ? `height:${height};` : ''}" aria-hidden="true" part="skeleton"></div>
     `;
   }
 }
