@@ -7,6 +7,8 @@ type InputType = (typeof VALID_TYPES)[number];
 let uid = 0;
 
 export class ElxInput extends HTMLElement {
+  static formAssociated = true;
+
   static observedAttributes = [
     'type',
     'size',
@@ -20,6 +22,7 @@ export class ElxInput extends HTMLElement {
     'label',
   ];
 
+  private _internals: ElementInternals;
   private _input: HTMLInputElement | null = null;
   private _label: HTMLLabelElement | null = null;
   private _inputId: string = `elx-input-${++uid}`;
@@ -27,6 +30,7 @@ export class ElxInput extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
+    this._internals = this.attachInternals?.() ?? ({} as ElementInternals);
   }
 
   connectedCallback() {
@@ -165,6 +169,7 @@ export class ElxInput extends HTMLElement {
     this.shadowRoot!.appendChild(wrapper);
 
     this._input.addEventListener('input', () => {
+      this._syncFormState();
       this.dispatchEvent(
         new CustomEvent('input', {
           detail: { value: this._input!.value },
@@ -175,6 +180,7 @@ export class ElxInput extends HTMLElement {
     });
 
     this._input.addEventListener('change', () => {
+      this._syncFormState();
       this.dispatchEvent(
         new CustomEvent('change', {
           detail: { value: this._input!.value },
@@ -234,6 +240,33 @@ export class ElxInput extends HTMLElement {
     } else {
       this._label!.style.display = 'none';
     }
+
+    this._syncFormState();
+  }
+
+  private _syncFormState() {
+    const value = this._input?.value ?? '';
+    this._internals.setFormValue?.(value);
+    
+    // Handle validation
+    if (this.required && !value) {
+      this._internals.setValidity?.({ valueMissing: true }, 'Please fill out this field');
+    } else if (this._input?.validity && !this._input.validity.valid) {
+      // Use native input's validity for type-based validation
+      this._internals.setValidity?.(this._input.validity, this._input.validationMessage);
+    } else {
+      this._internals.setValidity?.({});
+    }
+  }
+
+  formResetCallback() {
+    this.value = this.getAttribute('value') ?? '';
+    this._syncFormState();
+  }
+
+  formStateRestoreCallback(state: string) {
+    this.value = state;
+    this._syncFormState();
   }
 }
 

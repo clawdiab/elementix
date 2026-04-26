@@ -105,8 +105,11 @@ const fileUploadStyles = `
 `;
 
 export class ElxFileUpload extends HTMLElement {
+  static formAssociated = true;
+
   static observedAttributes = ['accept', 'multiple', 'disabled', 'max-size', 'max-files'];
 
+  private _internals: ElementInternals;
   private _input: HTMLInputElement | null = null;
   private _dropzone: HTMLElement | null = null;
   private _fileList: HTMLElement | null = null;
@@ -123,6 +126,7 @@ export class ElxFileUpload extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
+    this._internals = this.attachInternals?.() ?? ({} as ElementInternals);
     this._boundDragOver = this._handleDragOver.bind(this);
     this._boundDragLeave = this._handleDragLeave.bind(this);
     this._boundDrop = this._handleDrop.bind(this);
@@ -191,6 +195,7 @@ export class ElxFileUpload extends HTMLElement {
   clearFiles() {
     this._files = [];
     this._renderFileList();
+    this._syncFormState();
     this.dispatchEvent(new CustomEvent('elx-file-clear', { bubbles: true, composed: true }));
   }
 
@@ -317,6 +322,7 @@ export class ElxFileUpload extends HTMLElement {
     }
 
     this._renderFileList();
+    this._syncFormState();
 
     if (rejected.length > 0) {
       this.dispatchEvent(new CustomEvent('elx-file-reject', {
@@ -336,6 +342,7 @@ export class ElxFileUpload extends HTMLElement {
   private _removeFile(index: number) {
     this._files.splice(index, 1);
     this._renderFileList();
+    this._syncFormState();
     this.dispatchEvent(new CustomEvent('elx-file-change', {
       bubbles: true,
       composed: true,
@@ -390,6 +397,37 @@ export class ElxFileUpload extends HTMLElement {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  }
+
+  private _syncFormState() {
+    if (this._files.length === 0) {
+      this._internals.setFormValue?.(null);
+    } else if (this.multiple) {
+      const formData = new FormData();
+      this._files.forEach((file) => {
+        formData.append('files', file);
+      });
+      this._internals.setFormValue?.(formData);
+    } else {
+      this._internals.setFormValue?.(this._files[0]);
+    }
+    this._internals.setValidity?.({});
+  }
+
+  formResetCallback() {
+    this._files = [];
+    this._renderFileList();
+    this._syncFormState();
+  }
+
+  formStateRestoreCallback(state: File | File[]) {
+    if (Array.isArray(state)) {
+      this._files = state;
+    } else {
+      this._files = [state];
+    }
+    this._renderFileList();
+    this._syncFormState();
   }
 }
 

@@ -4,6 +4,8 @@ type Size = (typeof VALID_SIZES)[number];
 let uid = 0;
 
 export class ElxCheckbox extends HTMLElement {
+  static formAssociated = true;
+
   static observedAttributes = [
     'checked',
     'disabled',
@@ -14,6 +16,7 @@ export class ElxCheckbox extends HTMLElement {
     'value',
   ];
 
+  private _internals: ElementInternals;
   private _input: HTMLInputElement | null = null;
   private _labelEl: HTMLLabelElement | null = null;
   private _checkmark: HTMLSpanElement | null = null;
@@ -22,6 +25,7 @@ export class ElxCheckbox extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
+    this._internals = this.attachInternals?.() ?? ({} as ElementInternals);
   }
 
   connectedCallback() {
@@ -210,6 +214,7 @@ export class ElxCheckbox extends HTMLElement {
       } else {
         this.removeAttribute('checked');
       }
+      this._syncFormState();
       this.dispatchEvent(
         new CustomEvent('change', {
           detail: { checked: this.checked, value: this.value },
@@ -297,6 +302,24 @@ export class ElxCheckbox extends HTMLElement {
       labelSpan.textContent = this.label;
       labelSpan.style.display = this.label ? 'inline' : 'none';
     }
+
+    this._syncFormState();
+  }
+
+  private _syncFormState() {
+    const formValue = this.checked ? this.value || 'on' : null;
+    this._internals.setFormValue?.(formValue);
+    this._internals.setValidity?.({});
+  }
+
+  formResetCallback() {
+    this.checked = false;
+    this._syncFormState();
+  }
+
+  formStateRestoreCallback(state: string) {
+    this.checked = !!state;
+    this._syncFormState();
   }
 }
 

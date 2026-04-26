@@ -4,8 +4,11 @@ type Size = (typeof VALID_SIZES)[number];
 let uid = 0;
 
 export class ElxRadio extends HTMLElement {
+  static formAssociated = true;
+
   static observedAttributes = ['checked', 'disabled', 'size', 'label', 'name', 'value'];
 
+  private _internals: ElementInternals;
   private _input: HTMLInputElement | null = null;
   private _labelEl: HTMLLabelElement | null = null;
   private _dot: HTMLSpanElement | null = null;
@@ -14,6 +17,7 @@ export class ElxRadio extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
+    this._internals = this.attachInternals?.() ?? ({} as ElementInternals);
   }
 
   connectedCallback() {
@@ -170,6 +174,7 @@ export class ElxRadio extends HTMLElement {
       this.setAttribute('checked', '');
       // Uncheck siblings in same group
       this._uncheckSiblings();
+      this._syncFormState();
       this.dispatchEvent(
         new CustomEvent('change', {
           detail: { value: this.value, name: this.name },
@@ -220,6 +225,24 @@ export class ElxRadio extends HTMLElement {
       labelSpan.textContent = this.label;
       labelSpan.style.display = this.label ? 'inline' : 'none';
     }
+
+    this._syncFormState();
+  }
+
+  private _syncFormState() {
+    const formValue = this.checked ? this.value : null;
+    this._internals.setFormValue?.(formValue);
+    this._internals.setValidity?.({});
+  }
+
+  formResetCallback() {
+    this.checked = false;
+    this._syncFormState();
+  }
+
+  formStateRestoreCallback(state: string) {
+    this.checked = !!state;
+    this._syncFormState();
   }
 }
 

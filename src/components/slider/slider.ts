@@ -1,11 +1,15 @@
 export class ElxSlider extends HTMLElement {
+  static formAssociated = true;
+
   static observedAttributes = ['value', 'min', 'max', 'step', 'disabled', 'label', 'size', 'variant'];
 
+  private _internals: ElementInternals;
   private _boundHandleInput: (e: Event) => void;
 
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
+    this._internals = this.attachInternals?.() ?? ({} as ElementInternals);
     this._boundHandleInput = this._handleInput.bind(this);
   }
 
@@ -59,6 +63,7 @@ export class ElxSlider extends HTMLElement {
     const input = e.target as HTMLInputElement;
     this.setAttribute('value', input.value);
     this._updateFill();
+    this._syncFormState();
     this.dispatchEvent(new CustomEvent('elx-change', {
       detail: { value: Number(input.value) },
       bubbles: true,
@@ -229,6 +234,23 @@ export class ElxSlider extends HTMLElement {
     if (labelDiv) labelDiv.style.display = this.label ? 'flex' : 'none';
 
     this._updateFill();
+
+    this._syncFormState();
+  }
+
+  private _syncFormState() {
+    this._internals.setFormValue?.(String(this.value));
+    this._internals.setValidity?.({});
+  }
+
+  formResetCallback() {
+    this.value = 0;
+    this._syncFormState();
+  }
+
+  formStateRestoreCallback(state: string) {
+    this.value = Number(state) || 0;
+    this._syncFormState();
   }
 }
 
