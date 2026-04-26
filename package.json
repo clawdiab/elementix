@@ -69,7 +69,12 @@
     },
     {
       "path": "dist/theme.css",
-      "limit": "5 kB",
+      "limit": "2 kB",
+      "gzip": true
+    },
+    {
+      "path": "dist/style.css",
+      "limit": "2 kB",
       "gzip": true
     }
   ]
