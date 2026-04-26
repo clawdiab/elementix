@@ -13,13 +13,20 @@
 export type Theme = 'light' | 'dark' | 'system';
 
 const STORAGE_KEY = 'elx-theme';
+const VALID_THEMES: Theme[] = ['light', 'dark', 'system'];
+
+function isBrowser(): boolean {
+  return typeof document !== 'undefined' && typeof window !== 'undefined';
+}
 
 export function getTheme(): Theme {
-  if (typeof localStorage === 'undefined') return 'system';
-  return (localStorage.getItem(STORAGE_KEY) as Theme) || 'system';
+  if (!isBrowser() || typeof localStorage === 'undefined') return 'system';
+  const stored = localStorage.getItem(STORAGE_KEY);
+  return stored && VALID_THEMES.includes(stored as Theme) ? (stored as Theme) : 'system';
 }
 
 export function setTheme(theme: Theme): void {
+  if (!isBrowser()) return;
   const root = document.documentElement;
 
   if (theme === 'system') {
@@ -37,11 +44,13 @@ export function setTheme(theme: Theme): void {
 }
 
 export function toggleTheme(): void {
+  if (!isBrowser()) return;
   const current = getResolvedTheme();
   setTheme(current === 'dark' ? 'light' : 'dark');
 }
 
 export function getResolvedTheme(): 'light' | 'dark' {
+  if (!isBrowser()) return 'light';
   const stored = getTheme();
   if (stored !== 'system') return stored;
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -49,6 +58,7 @@ export function getResolvedTheme(): 'light' | 'dark' {
 
 /** Initialize theme from localStorage on page load. */
 export function initTheme(): void {
+  if (!isBrowser()) return;
   const stored = getTheme();
   if (stored !== 'system') {
     setTheme(stored);

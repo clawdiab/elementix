@@ -93,8 +93,19 @@
   --elx-color-border: #374151;
   --elx-color-on-primary: #ffffff;
   --elx-color-primary-light: #1e3a5f;
-  --elx-color-white: #111827;
-  --elx-color-black: #f9fafb;
+
+  /* Status backgrounds (fixed, not inverted) */
+  --elx-color-primary-50: #1e3a5f;
+  --elx-color-danger-50: #450a0a;
+  --elx-color-danger-100: #7f1d1d;
+  --elx-color-success-50: #052e16;
+  --elx-color-success-100: #14532d;
+  --elx-color-warning-50: #451a03;
+  --elx-color-warning-100: #78350f;
+  --elx-color-purple-50: #3b0764;
+  --elx-color-purple-100: #581c87;
+
+  /* Palette overrides for dark */
   --elx-color-neutral-50: #111827;
   --elx-color-neutral-100: #1f2937;
   --elx-color-neutral-200: #374151;
@@ -117,8 +128,15 @@
     --elx-color-border: #374151;
     --elx-color-on-primary: #ffffff;
     --elx-color-primary-light: #1e3a5f;
-    --elx-color-white: #111827;
-    --elx-color-black: #f9fafb;
+    --elx-color-primary-50: #1e3a5f;
+    --elx-color-danger-50: #450a0a;
+    --elx-color-danger-100: #7f1d1d;
+    --elx-color-success-50: #052e16;
+    --elx-color-success-100: #14532d;
+    --elx-color-warning-50: #451a03;
+    --elx-color-warning-100: #78350f;
+    --elx-color-purple-50: #3b0764;
+    --elx-color-purple-100: #581c87;
     --elx-color-neutral-50: #111827;
     --elx-color-neutral-100: #1f2937;
     --elx-color-neutral-200: #374151;
