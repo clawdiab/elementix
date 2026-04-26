@@ -5,8 +5,11 @@ export interface SelectOption {
 }
 
 export class ElxSelect extends HTMLElement {
+  static formAssociated = true;
+
   static observedAttributes = ['value', 'placeholder', 'disabled'];
 
+  private _internals: ElementInternals;
   private _options: SelectOption[] = [];
   private _value: string = '';
   private _open = false;
@@ -18,6 +21,7 @@ export class ElxSelect extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
+    this._internals = this.attachInternals?.() ?? ({} as ElementInternals);
   }
 
   connectedCallback() {
@@ -36,6 +40,7 @@ export class ElxSelect extends HTMLElement {
     if (name === 'value') {
       this._value = newVal;
       this._updateDisplay();
+      this._syncFormState();
     } else if (name === 'disabled') {
       if (this._button) {
         this._button.disabled = newVal !== null;
@@ -318,6 +323,7 @@ export class ElxSelect extends HTMLElement {
     this.setAttribute('value', opt.value);
     this._updateDisplay();
     this._close();
+    this._syncFormState();
     this.dispatchEvent(new CustomEvent('change', { detail: { value: opt.value }, bubbles: true }));
   }
 
@@ -388,6 +394,23 @@ export class ElxSelect extends HTMLElement {
       this._close();
     }
   };
+
+  private _syncFormState() {
+    this._internals.setFormValue?.(this._value || null);
+    this._internals.setValidity?.({});
+  }
+
+  formResetCallback() {
+    this._value = '';
+    this._updateDisplay();
+    this._syncFormState();
+  }
+
+  formStateRestoreCallback(state: string) {
+    this._value = state;
+    this._updateDisplay();
+    this._syncFormState();
+  }
 }
 
 if (!customElements.get('elx-select')) {
