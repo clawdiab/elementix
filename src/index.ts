@@ -1,5 +1,6 @@
 // Elementix - Web Components Design System
 import './theme.css';
+export * from './theme-switcher';
 export * from './components/button/button';
 export * from './components/input/input';
 export * from './components/checkbox/checkbox';
