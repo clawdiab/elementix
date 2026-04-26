@@ -57,7 +57,8 @@ export class ElxFormField extends HTMLElement {
     if (!slot) return;
     const assigned = slot.assignedElements({ flatten: true });
     const labelId = `${this._uniqueId}-label`;
-    const descId = `${this._uniqueId}-desc`;
+    const helperId = `${this._uniqueId}-helper`;
+    const errorId = `${this._uniqueId}-error`;
 
     for (const el of assigned) {
       const target = (el.matches('input,select,textarea') ? el : el.querySelector('input,select,textarea')) as HTMLElement | null;
@@ -67,10 +68,11 @@ export class ElxFormField extends HTMLElement {
           this.setAttribute('id', this.id || this._uniqueId);
           target.setAttribute('aria-labelledby', labelId);
         }
-        // Associate description (helper or error text)
-        const hasDesc = this.helperText || this.errorText;
-        if (hasDesc) {
-          target.setAttribute('aria-describedby', descId);
+        // Associate description — point to the visible one (error takes priority)
+        if (this.errorText) {
+          target.setAttribute('aria-describedby', errorId);
+        } else if (this.helperText) {
+          target.setAttribute('aria-describedby', helperId);
         } else {
           target.removeAttribute('aria-describedby');
         }
@@ -81,7 +83,6 @@ export class ElxFormField extends HTMLElement {
 
   private _buildDom() {
     const labelId = `${this._uniqueId}-label`;
-    const descId = `${this._uniqueId}-desc`;
 
     const style = document.createElement('style');
     style.textContent = `
@@ -163,12 +164,12 @@ export class ElxFormField extends HTMLElement {
 
     const helper = document.createElement('div');
     helper.className = 'helper-text';
-    helper.id = descId;
+    helper.id = `${this._uniqueId}-helper`;
     helper.setAttribute('role', 'note');
 
     const error = document.createElement('div');
     error.className = 'error-text';
-    error.id = descId;
+    error.id = `${this._uniqueId}-error`;
     error.setAttribute('role', 'alert');
     error.setAttribute('aria-live', 'polite');
 
