@@ -4,13 +4,13 @@
  */
 export class ElxScrollArea extends HTMLElement {
   private _viewport: HTMLDivElement | null = null;
-  private _content: HTMLDivElement | null = null;
   private _scrollbarX: HTMLDivElement | null = null;
   private _scrollbarY: HTMLDivElement | null = null;
   private _thumbX: HTMLDivElement | null = null;
   private _thumbY: HTMLDivElement | null = null;
   private _boundHandleScroll: () => void;
   private _boundHandleResize: () => void;
+  private _hideTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
   static observedAttributes = ['scrollbar-x', 'scrollbar-y', 'scroll-hide-delay'];
 
@@ -32,9 +32,13 @@ export class ElxScrollArea extends HTMLElement {
       this._viewport.removeEventListener('scroll', this._boundHandleScroll);
     }
     window.removeEventListener('resize', this._boundHandleResize);
+    if (this._hideTimeoutId !== null) {
+      clearTimeout(this._hideTimeoutId);
+      this._hideTimeoutId = null;
+    }
   }
 
-  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(_name: string, oldValue: string | null, newValue: string | null): void {
     if (oldValue === newValue) return;
     this._updateScrollbarVisibility();
   }
@@ -129,6 +133,17 @@ export class ElxScrollArea extends HTMLElement {
           width: var(--elx-scroll-area-scrollbar-size, 8px);
         }
 
+        :host([scrollbar-x="hover"]) .scrollbar-x,
+        :host([scrollbar-y="hover"]) .scrollbar-y {
+          opacity: 0;
+          transition: opacity 0.15s;
+        }
+
+        :host([scrollbar-x="hover"]):hover .scrollbar-x,
+        :host([scrollbar-y="hover"]):hover .scrollbar-y {
+          opacity: 1;
+        }
+
         :host([scrollbar-x="always"]) .scrollbar-x,
         :host([scrollbar-y="always"]) .scrollbar-y {
           opacity: 1;
@@ -162,15 +177,15 @@ export class ElxScrollArea extends HTMLElement {
         }
       </style>
       <div class="scroll-area">
-        <div class="viewport">
+        <div class="viewport" tabindex="0" role="region" aria-label="Scrollable content">
           <div class="content">
             <slot></slot>
           </div>
         </div>
-        <div class="scrollbar scrollbar-x">
+        <div class="scrollbar scrollbar-x" role="scrollbar" aria-orientation="horizontal" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
           <div class="thumb thumb-x"></div>
         </div>
-        <div class="scrollbar scrollbar-y">
+        <div class="scrollbar scrollbar-y" role="scrollbar" aria-orientation="vertical" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
           <div class="thumb thumb-y"></div>
         </div>
         <div class="corner"></div>
@@ -178,7 +193,6 @@ export class ElxScrollArea extends HTMLElement {
     `;
 
     this._viewport = this.shadowRoot.querySelector('.viewport');
-    this._content = this.shadowRoot.querySelector('.content');
     this._scrollbarX = this.shadowRoot.querySelector('.scrollbar-x');
     this._scrollbarY = this.shadowRoot.querySelector('.scrollbar-y');
     this._thumbX = this.shadowRoot.querySelector('.thumb-x');
@@ -223,10 +237,11 @@ export class ElxScrollArea extends HTMLElement {
     // Horizontal thumb
     if (scrollWidth > clientWidth) {
       const thumbWidthPercent = (clientWidth / scrollWidth) * 100;
-      const thumbLeftPercent = (scrollLeft / scrollWidth) * 100;
+      const scrollPercentX = Math.round((scrollLeft / (scrollWidth - clientWidth)) * 100);
       this._thumbX.style.width = thumbWidthPercent + '%';
       this._thumbX.style.transform = `translateX(${(scrollLeft / (scrollWidth - clientWidth)) * (100 - thumbWidthPercent)}%)`;
       this._scrollbarX.classList.add('visible');
+      this._scrollbarX.setAttribute('aria-valuenow', String(scrollPercentX));
     } else {
       this._scrollbarX.classList.remove('visible');
     }
@@ -234,10 +249,11 @@ export class ElxScrollArea extends HTMLElement {
     // Vertical thumb
     if (scrollHeight > clientHeight) {
       const thumbHeightPercent = (clientHeight / scrollHeight) * 100;
-      const thumbTopPercent = (scrollTop / scrollHeight) * 100;
+      const scrollPercentY = Math.round((scrollTop / (scrollHeight - clientHeight)) * 100);
       this._thumbY.style.height = thumbHeightPercent + '%';
       this._thumbY.style.transform = `translateY(${(scrollTop / (scrollHeight - clientHeight)) * (100 - thumbHeightPercent)}%)`;
       this._scrollbarY.classList.add('visible');
+      this._scrollbarY.setAttribute('aria-valuenow', String(scrollPercentY));
     } else {
       this._scrollbarY.classList.remove('visible');
     }
@@ -249,11 +265,17 @@ export class ElxScrollArea extends HTMLElement {
     this._scrollbarX.classList.add('visible');
     this._scrollbarY.classList.add('visible');
 
+    // Clear any existing timeout
+    if (this._hideTimeoutId !== null) {
+      clearTimeout(this._hideTimeoutId);
+    }
+
     // Auto-hide after delay (for auto mode)
     if (this.scrollbarX === 'auto' || this.scrollbarY === 'auto') {
-      setTimeout(() => {
+      this._hideTimeoutId = setTimeout(() => {
         if (this.scrollbarX !== 'always') this._scrollbarX?.classList.remove('visible');
         if (this.scrollbarY !== 'always') this._scrollbarY?.classList.remove('visible');
+        this._hideTimeoutId = null;
       }, this.scrollHideDelay);
     }
   }

@@ -167,4 +167,39 @@ describe('ElxScrollArea', () => {
     expect(style?.textContent).toContain('--elx-scroll-area-scrollbar-bg');
     expect(style?.textContent).toContain('--elx-scroll-area-thumb-bg');
   });
+
+  it('should have role="region" on viewport', () => {
+    const viewport = el.shadowRoot!.querySelector('.viewport');
+    expect(viewport.getAttribute('role')).toBe('region');
+  });
+
+  it('should have tabindex on viewport for keyboard focus', () => {
+    const viewport = el.shadowRoot!.querySelector('.viewport');
+    expect(viewport.getAttribute('tabindex')).toBe('0');
+  });
+
+  it('should have aria-label on viewport', () => {
+    const viewport = el.shadowRoot!.querySelector('.viewport');
+    expect(viewport.getAttribute('aria-label')).toBe('Scrollable content');
+  });
+
+  it('should have role="scrollbar" on scrollbar elements', () => {
+    const scrollbarX = el.shadowRoot!.querySelector('.scrollbar-x');
+    const scrollbarY = el.shadowRoot!.querySelector('.scrollbar-y');
+    expect(scrollbarX.getAttribute('role')).toBe('scrollbar');
+    expect(scrollbarY.getAttribute('role')).toBe('scrollbar');
+  });
+
+  it('should have aria-orientation on scrollbar elements', () => {
+    const scrollbarX = el.shadowRoot!.querySelector('.scrollbar-x');
+    const scrollbarY = el.shadowRoot!.querySelector('.scrollbar-y');
+    expect(scrollbarX.getAttribute('aria-orientation')).toBe('horizontal');
+    expect(scrollbarY.getAttribute('aria-orientation')).toBe('vertical');
+  });
+
+  it('should support hover scrollbar mode via CSS', () => {
+    const style = el.shadowRoot!.querySelector('style');
+    expect(style?.textContent).toContain('scrollbar-x="hover"');
+    expect(style?.textContent).toContain('scrollbar-y="hover"');
+  });
 });
