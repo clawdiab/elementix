@@ -36,3 +36,4 @@ export * from './components/slider/slider';
 export * from './components/label/label';
 export * from './components/form-field/form-field';
 export * from './components/toggle/toggle';
+export * from './components/collapsible/collapsible';
