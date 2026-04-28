@@ -1,4 +1,5 @@
-let uid = 0;
+const VALID_SIZES = ['sm', 'md', 'lg'] as const;
+const VALID_VARIANTS = ['default', 'outline'] as const;
 
 export class ElxToggle extends HTMLElement {
   static formAssociated = true;
@@ -28,10 +29,16 @@ export class ElxToggle extends HTMLElement {
   get disabled(): boolean { return this.hasAttribute('disabled'); }
   set disabled(val: boolean) { val ? this.setAttribute('disabled', '') : this.removeAttribute('disabled'); }
 
-  get size(): string { return this.getAttribute('size') ?? 'md'; }
+  get size(): string {
+    const val = this.getAttribute('size');
+    return (VALID_SIZES as readonly string[]).indexOf(val!) !== -1 ? val! : 'md';
+  }
   set size(val: string) { this.setAttribute('size', val); }
 
-  get variant(): string { return this.getAttribute('variant') ?? 'default'; }
+  get variant(): string {
+    const val = this.getAttribute('variant');
+    return (VALID_VARIANTS as readonly string[]).indexOf(val!) !== -1 ? val! : 'default';
+  }
   set variant(val: string) { this.setAttribute('variant', val); }
 
   get value(): string { return this.getAttribute('value') ?? 'on'; }
@@ -39,6 +46,9 @@ export class ElxToggle extends HTMLElement {
 
   get name(): string { return this.getAttribute('name') ?? ''; }
   set name(val: string) { this.setAttribute('name', val); }
+
+  focus() { this._btn?.focus(); }
+  blur() { this._btn?.blur(); }
 
   private _buildDom() {
     const style = document.createElement('style');
@@ -139,7 +149,7 @@ export class ElxToggle extends HTMLElement {
 }
 
 export class ElxToggleGroup extends HTMLElement {
-  static observedAttributes = ['type', 'disabled', 'value'];
+  static observedAttributes = ['type', 'disabled', 'value', 'aria-label'];
 
   constructor() {
     super();
@@ -177,19 +187,17 @@ export class ElxToggleGroup extends HTMLElement {
     this.setAttribute('role', 'group');
 
     this.addEventListener('change', (e: Event) => {
-      const ce = e as CustomEvent;
       const target = e.composedPath()[0] as ElxToggle;
       if (!(target instanceof ElxToggle)) return;
 
       if (this.type === 'single') {
-        // depress all others
         this._getToggles().forEach(t => {
           if (t !== target) t.pressed = false;
         });
         this.setAttribute('value', target.pressed ? target.value : '');
       } else {
-        // multi — collect all pressed values
-        const vals = this._getToggles().filter(t => t.pressed).map(t => t.value);
+        const vals: string[] = [];
+        this._getToggles().forEach(t => { if (t.pressed) vals.push(t.value); });
         this.setAttribute('value', vals.join(','));
       }
 
@@ -199,6 +207,27 @@ export class ElxToggleGroup extends HTMLElement {
         composed: true,
       }));
     });
+
+    this.addEventListener('keydown', (e: KeyboardEvent) => this._handleKeydown(e));
+  }
+
+  private _handleKeydown(e: KeyboardEvent) {
+    const toggles = this._getToggles().filter(t => !t.disabled);
+    if (!toggles.length) return;
+    const active = document.activeElement;
+    let idx = -1;
+    for (let i = 0; i < toggles.length; i++) {
+      if (toggles[i] === active || toggles[i].shadowRoot!.contains(active as Node)) { idx = i; break; }
+    }
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = toggles[(idx + 1) % toggles.length];
+      (next as any).focus?.() || next.shadowRoot!.querySelector('button')?.focus();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prev = toggles[(idx - 1 + toggles.length) % toggles.length];
+      (prev as any).focus?.() || prev.shadowRoot!.querySelector('button')?.focus();
+    }
   }
 
   private _getToggles(): ElxToggle[] {

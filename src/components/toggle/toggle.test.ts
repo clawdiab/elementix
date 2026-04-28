@@ -92,6 +92,12 @@ describe('ElxToggle', () => {
     expect(btn.getAttribute('type')).toBe('button');
   });
 
+  it('resets pressed state on form reset', () => {
+    (el as any).pressed = true;
+    (el as any).formResetCallback();
+    expect((el as any).pressed).toBe(false);
+  });
+
   it('has role="button" implicitly via button element', () => {
     const btn = el.shadowRoot!.querySelector('button')!;
     expect(btn.tagName).toBe('BUTTON');
@@ -125,7 +131,7 @@ describe('ElxToggleGroup', () => {
   });
 
   it('allows only one toggle pressed in single mode', () => {
-    const toggles = [...group.querySelectorAll('elx-toggle')] as any[];
+    const toggles = group.querySelectorAll('elx-toggle') as any;
     toggles[0].shadowRoot!.querySelector('button').click();
     expect(toggles[0].pressed).toBe(true);
     toggles[1].shadowRoot!.querySelector('button').click();
@@ -135,7 +141,7 @@ describe('ElxToggleGroup', () => {
 
   it('allows multiple toggles pressed in multiple mode', () => {
     (group as any).type = 'multiple';
-    const toggles = [...group.querySelectorAll('elx-toggle')] as any[];
+    const toggles = group.querySelectorAll('elx-toggle') as any;
     toggles[0].shadowRoot!.querySelector('button').click();
     toggles[1].shadowRoot!.querySelector('button').click();
     expect(toggles[0].pressed).toBe(true);
@@ -143,14 +149,14 @@ describe('ElxToggleGroup', () => {
   });
 
   it('updates value attribute in single mode', () => {
-    const toggles = [...group.querySelectorAll('elx-toggle')] as any[];
+    const toggles = group.querySelectorAll('elx-toggle') as any;
     toggles[0].shadowRoot!.querySelector('button').click();
     expect((group as any).value).toBe('bold');
   });
 
   it('updates value attribute with comma-separated values in multiple mode', () => {
     (group as any).type = 'multiple';
-    const toggles = [...group.querySelectorAll('elx-toggle')] as any[];
+    const toggles = group.querySelectorAll('elx-toggle') as any;
     toggles[0].shadowRoot!.querySelector('button').click();
     toggles[2].shadowRoot!.querySelector('button').click();
     expect((group as any).value).toBe('bold,underline');
@@ -165,8 +171,18 @@ describe('ElxToggleGroup', () => {
     group.addEventListener('change', (e: Event) => {
       detail = (e as CustomEvent).detail;
     });
-    const toggles = [...group.querySelectorAll('elx-toggle')] as any[];
+    const toggles = group.querySelectorAll('elx-toggle') as any;
     toggles[0].shadowRoot!.querySelector('button').click();
     expect(detail.value).toBe('bold');
+  });
+
+  it('supports aria-label attribute', () => {
+    group.setAttribute('aria-label', 'Text formatting');
+    expect(group.getAttribute('aria-label')).toBe('Text formatting');
+  });
+
+  it('sets value via setter', () => {
+    (group as any).value = 'test';
+    expect(group.getAttribute('value')).toBe('test');
   });
 });
