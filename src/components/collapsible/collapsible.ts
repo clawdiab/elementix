@@ -2,26 +2,26 @@
  * ElxCollapsible - A collapsible content container
  * Expands/collapses content with smooth animation
  */
+let collapsibleIdCounter = 0;
+
 export class ElxCollapsible extends HTMLElement {
   private _trigger: HTMLButtonElement | null = null;
   private _content: HTMLDivElement | null = null;
   private _open = false;
   private _disabled = false;
+  private _id = '';
   private _boundHandleClick: () => void;
-  private _boundHandleKeydown: (e: KeyboardEvent) => void;
 
-  static get observedAttributes(): string[] {
-    return ['open', 'disabled', 'aria-label'];
-  }
+  static observedAttributes = ['open', 'disabled', 'aria-label'];
 
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
     this._boundHandleClick = this._handleClick.bind(this);
-    this._boundHandleKeydown = this._handleKeydown.bind(this);
   }
 
   connectedCallback(): void {
+    this._id = 'elx-collapsible-' + (++collapsibleIdCounter);
     this._buildDom();
     this._update();
   }
@@ -29,7 +29,6 @@ export class ElxCollapsible extends HTMLElement {
   disconnectedCallback(): void {
     if (this._trigger) {
       this._trigger.removeEventListener('click', this._boundHandleClick);
-      this._trigger.removeEventListener('keydown', this._boundHandleKeydown);
     }
   }
 
@@ -126,6 +125,7 @@ export class ElxCollapsible extends HTMLElement {
 
         .content-wrapper {
           overflow: hidden;
+          height: 0;
           transition: height 0.2s ease;
         }
 
@@ -137,13 +137,13 @@ export class ElxCollapsible extends HTMLElement {
           background: var(--elx-collapsible-content-bg, #ffffff);
         }
       </style>
-      <button class="trigger" type="button" aria-expanded="false" aria-controls="content">
+      <button class="trigger" type="button" aria-expanded="false" id="${this._id}-trigger" aria-controls="${this._id}-content">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="6 9 12 15 18 9"></polyline>
         </svg>
         <slot name="trigger">Toggle</slot>
       </button>
-      <div class="content-wrapper" id="content" role="region">
+      <div class="content-wrapper" id="${this._id}-content" role="region" aria-labelledby="${this._id}-trigger">
         <div class="content">
           <slot name="content"></slot>
         </div>
@@ -155,7 +155,6 @@ export class ElxCollapsible extends HTMLElement {
 
     if (this._trigger) {
       this._trigger.addEventListener('click', this._boundHandleClick);
-      this._trigger.addEventListener('keydown', this._boundHandleKeydown);
     }
   }
 
@@ -169,6 +168,8 @@ export class ElxCollapsible extends HTMLElement {
     const label = this.getAttribute('aria-label');
     if (label) {
       this._trigger.setAttribute('aria-label', label);
+    } else {
+      this._trigger.removeAttribute('aria-label');
     }
 
     // Update content visibility
@@ -193,15 +194,6 @@ export class ElxCollapsible extends HTMLElement {
   private _handleClick(): void {
     if (this._disabled) return;
     this.toggle();
-  }
-
-  private _handleKeydown(e: KeyboardEvent): void {
-    if (this._disabled) return;
-    
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      this.toggle();
-    }
   }
 
   public toggle(): void {

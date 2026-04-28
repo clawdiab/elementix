@@ -102,15 +102,46 @@ describe('ElxCollapsible', () => {
     expect(content.getAttribute('role')).toBe('region');
   });
 
-  it('should have aria-controls on trigger', () => {
+  it('should have aria-controls on trigger pointing to unique content id', () => {
     const trigger = el.shadowRoot!.querySelector('.trigger');
-    expect(trigger.getAttribute('aria-controls')).toBe('content');
+    const content = el.shadowRoot!.querySelector('.content-wrapper');
+    expect(trigger.getAttribute('aria-controls')).toBe(content.id);
+  });
+
+  it('should have aria-labelledby on content pointing to trigger id', () => {
+    const trigger = el.shadowRoot!.querySelector('.trigger');
+    const content = el.shadowRoot!.querySelector('.content-wrapper');
+    expect(content.getAttribute('aria-labelledby')).toBe(trigger.id);
   });
 
   it('should forward aria-label to trigger', () => {
     el.setAttribute('aria-label', 'Toggle section');
     const trigger = el.shadowRoot!.querySelector('.trigger');
     expect(trigger.getAttribute('aria-label')).toBe('Toggle section');
+  });
+
+  it('should remove aria-label from trigger when removed from host', () => {
+    el.setAttribute('aria-label', 'Toggle section');
+    el.removeAttribute('aria-label');
+    const trigger = el.shadowRoot!.querySelector('.trigger');
+    expect(trigger.hasAttribute('aria-label')).toBe(false);
+  });
+
+  it('should not dispatch event when clicking while disabled', () => {
+    el.disabled = true;
+    let eventFired = false;
+    el.addEventListener('elx-collapsible-toggle', () => { eventFired = true; });
+    const trigger = el.shadowRoot!.querySelector('.trigger');
+    trigger.click();
+    expect(eventFired).toBe(false);
+  });
+
+  it('should generate unique IDs for multiple instances', () => {
+    const el2 = document.createElement('elx-collapsible') as any;
+    document.body.appendChild(el2);
+    const id1 = el.shadowRoot!.querySelector('.content-wrapper').id;
+    const id2 = el2.shadowRoot!.querySelector('.content-wrapper').id;
+    expect(id1).not.toBe(id2);
   });
 
   it('should toggle via toggle() method', () => {
@@ -159,20 +190,22 @@ describe('ElxCollapsible', () => {
 
   it('should handle keyboard Enter on trigger', () => {
     const trigger = el.shadowRoot!.querySelector('.trigger');
-    trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    // Native button handles Enter/Space → click
+    trigger.click();
     expect(el.open).toBe(true);
   });
 
   it('should handle keyboard Space on trigger', () => {
     const trigger = el.shadowRoot!.querySelector('.trigger');
-    trigger.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+    // Native button handles Enter/Space → click
+    trigger.click();
     expect(el.open).toBe(true);
   });
 
   it('should not toggle on keyboard when disabled', () => {
     el.disabled = true;
     const trigger = el.shadowRoot!.querySelector('.trigger');
-    trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    trigger.click();
     expect(el.open).toBe(false);
   });
 
