@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/clawdiab/elementix/actions/workflows/ci.yml/badge.svg)](https://github.com/clawdiab/elementix/actions/workflows/ci.yml)
 
-A Radix-inspired Web Components design system built with TypeScript, Lit, Vite, and Vitest.
+A Radix-inspired Web Components design system built with vanilla custom elements, TypeScript, Vite, and Vitest.
 
 ## Documentation
 
@@ -52,6 +52,16 @@ Status legend: ![stable](https://img.shields.io/badge/stable-green) ![beta](http
 | Slider | `<elx-slider>` | Range input with track and thumb | ![beta](https://img.shields.io/badge/beta-yellow) |
 | Label | `<elx-label>` | Accessible label for form controls | ![beta](https://img.shields.io/badge/beta-yellow) |
 | FormField | `<elx-form-field>` | Layout wrapper for label + input + helper text | ![beta](https://img.shields.io/badge/beta-yellow) |
+| AspectRatio | `<elx-aspect-ratio>` | Maintain consistent width/height ratio | ![beta](https://img.shields.io/badge/beta-yellow) |
+| Collapsible | `<elx-collapsible>` | Expandable/collapsible content section | ![beta](https://img.shields.io/badge/beta-yellow) |
+| Toggle | `<elx-toggle>` | Toggle button with group support | ![beta](https://img.shields.io/badge/beta-yellow) |
+| ScrollArea | `<elx-scroll-area>` | Custom scrollbar container | ![beta](https://img.shields.io/badge/beta-yellow) |
+| HoverCard | `<elx-hover-card>` | Card that appears on hover | ![beta](https://img.shields.io/badge/beta-yellow) |
+| NavigationMenu | `<elx-navigation-menu>` | Accessible navigation menu with submenus | ![beta](https://img.shields.io/badge/beta-yellow) |
+| ContextMenu | `<elx-context-menu>` | Right-click context menu | ![beta](https://img.shields.io/badge/beta-yellow) |
+| Menubar | `<elx-menubar>` | Horizontal menu bar with dropdowns | ![beta](https://img.shields.io/badge/beta-yellow) |
+| Command | `<elx-command-palette>` | Command palette with search and keyboard navigation | ![beta](https://img.shields.io/badge/beta-yellow) |
+| DataList | `<elx-datalist>` | Searchable list with grouping and selection | ![beta](https://img.shields.io/badge/beta-yellow) |
 
 ## Theming
 
