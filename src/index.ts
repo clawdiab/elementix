@@ -39,3 +39,4 @@ export * from './components/toggle/toggle';
 export * from './components/collapsible/collapsible';
 export * from './components/scroll-area/scroll-area';
 export * from './components/aspect-ratio/aspect-ratio';
+export * from './components/hover-card/hover-card';
