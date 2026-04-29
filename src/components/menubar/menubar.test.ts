@@ -395,7 +395,7 @@ describe('elx-menubar-item', () => {
     const el = createMenubar();
     const menu = el.querySelector('elx-menubar-menu') as any;
     menu.show();
-    const item = el.querySelector('elx-menubar-item')!;
+    const item = el.querySelector('elx-menubar-item') as HTMLElement;
     const spy = vi.fn();
     el.addEventListener('elx-menubar-select', spy);
     item.click();
@@ -407,7 +407,7 @@ describe('elx-menubar-item', () => {
     const el = createMenubar();
     const menu = el.querySelector('elx-menubar-menu') as any;
     menu.show();
-    const item = el.querySelector('elx-menubar-item')!;
+    const item = el.querySelector('elx-menubar-item') as HTMLElement;
     item.removeAttribute('value');
     const spy = vi.fn();
     el.addEventListener('elx-menubar-select', spy);
@@ -420,7 +420,7 @@ describe('elx-menubar-item', () => {
     const el = createMenubar();
     const menu = el.querySelector('elx-menubar-menu') as any;
     menu.show();
-    const item = el.querySelector('elx-menubar-item')!;
+    const item = el.querySelector('elx-menubar-item') as HTMLElement;
     item.click();
     expect(menu.open).toBe(false);
   });
