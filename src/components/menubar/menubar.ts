@@ -40,7 +40,6 @@ const menubarMenuStyles = `
     cursor: pointer;
     border-radius: var(--elx-radius-sm, 0.25rem);
     transition: background-color 0.15s;
-    outline: none;
     white-space: nowrap;
     font-size: 0.875rem;
   }
@@ -108,7 +107,6 @@ const menubarItemStyles = `
     font: inherit;
     font-size: 0.875rem;
     color: inherit;
-    outline: none;
     transition: background-color 0.15s;
   }
 
@@ -178,9 +176,13 @@ export class ElxMenubar extends HTMLElement {
 
   private _getMenus(): ElxMenubarMenu[] {
     const menus: ElxMenubarMenu[] = [];
-    this.querySelectorAll('elx-menubar-menu').forEach(el => {
-      menus.push(el as ElxMenubarMenu);
-    });
+    // Only direct children
+    for (let i = 0; i < this.children.length; i++) {
+      const child = this.children[i];
+      if (child.tagName === 'ELX-MENUBAR-MENU') {
+        menus.push(child as ElxMenubarMenu);
+      }
+    }
     return menus;
   }
 
@@ -218,21 +220,33 @@ export class ElxMenubar extends HTMLElement {
       e.preventDefault();
       const wasOpen = menus[activeIndex].open;
       this._closeAll();
-      const next = (activeIndex + 1) % menus.length;
+      // Skip disabled menus
+      let next = (activeIndex + 1) % menus.length;
+      let count = 0;
+      while (menus[next].disabled && count < menus.length) {
+        next = (next + 1) % menus.length;
+        count++;
+      }
       menus[next].focusTrigger();
-      if (wasOpen) menus[next].show();
+      if (wasOpen && !menus[next].disabled) menus[next].show();
     } else if (e.key === 'ArrowLeft') {
       e.preventDefault();
       const wasOpen = menus[activeIndex].open;
       this._closeAll();
-      const prev = (activeIndex - 1 + menus.length) % menus.length;
+      // Skip disabled menus
+      let prev = (activeIndex - 1 + menus.length) % menus.length;
+      let count = 0;
+      while (menus[prev].disabled && count < menus.length) {
+        prev = (prev - 1 + menus.length) % menus.length;
+        count++;
+      }
       menus[prev].focusTrigger();
-      if (wasOpen) menus[prev].show();
-    } else if (e.key === 'Escape') {
+      if (wasOpen && !menus[prev].disabled) menus[prev].show();
+    } else if (e.key === 'Escape' || e.key === 'Tab') {
       e.preventDefault();
       const wasOpen = menus[activeIndex].open;
       this._closeAll();
-      if (wasOpen) menus[activeIndex].focusTrigger();
+      if (wasOpen && e.key === 'Escape') menus[activeIndex].focusTrigger();
     }
   }
 
@@ -269,10 +283,12 @@ export class ElxMenubarMenu extends HTMLElement {
 
   private _rendered = false;
   private _triggerEl: HTMLElement | null = null;
+  private _onMenuKeydown: (e: KeyboardEvent) => void;
 
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
+    this._onMenuKeydown = (e: KeyboardEvent) => this._handleMenuKeydown(e);
   }
 
   connectedCallback() {
@@ -281,6 +297,12 @@ export class ElxMenubarMenu extends HTMLElement {
       this._rendered = true;
     }
     this._update();
+    // Attach keydown listener to host (not shadow div) to catch events from slotted items
+    this.addEventListener('keydown', this._onMenuKeydown);
+  }
+
+  disconnectedCallback() {
+    this.removeEventListener('keydown', this._onMenuKeydown);
   }
 
   attributeChangedCallback() {
@@ -331,8 +353,7 @@ export class ElxMenubarMenu extends HTMLElement {
   private _focusFirstItem() {
     const items = this._getItems();
     if (items.length > 0) {
-      const inner = items[0].shadowRoot?.querySelector('.item') as HTMLElement;
-      inner?.focus();
+      items[0].focus();
     }
   }
 
@@ -362,22 +383,22 @@ export class ElxMenubarMenu extends HTMLElement {
         // Focus last item
         const items = this._getItems();
         if (items.length > 0) {
-          const inner = items[items.length - 1].shadowRoot?.querySelector('.item') as HTMLElement;
-          inner?.focus();
+          items[items.length - 1].focus();
         }
       }
     }
   };
 
-  private _onMenuKeydown = (e: KeyboardEvent) => {
+  private _handleMenuKeydown(e: KeyboardEvent) {
     if (!this.open) return;
     const items = this._getItems();
     if (items.length === 0) return;
 
+    // Find current item by checking if it or its shadow contains activeElement
     const active = document.activeElement as HTMLElement;
     let currentIndex = -1;
     for (let i = 0; i < items.length; i++) {
-      if (items[i].shadowRoot?.contains(active)) {
+      if (items[i] === active || items[i].shadowRoot?.contains(active)) {
         currentIndex = i;
         break;
       }
@@ -386,23 +407,19 @@ export class ElxMenubarMenu extends HTMLElement {
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       const next = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
-      const inner = items[next].shadowRoot?.querySelector('.item') as HTMLElement;
-      inner?.focus();
+      items[next].focus();
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       const prev = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
-      const inner = items[prev].shadowRoot?.querySelector('.item') as HTMLElement;
-      inner?.focus();
+      items[prev].focus();
     } else if (e.key === 'Home') {
       e.preventDefault();
-      const inner = items[0].shadowRoot?.querySelector('.item') as HTMLElement;
-      inner?.focus();
+      items[0].focus();
     } else if (e.key === 'End') {
       e.preventDefault();
-      const inner = items[items.length - 1].shadowRoot?.querySelector('.item') as HTMLElement;
-      inner?.focus();
+      items[items.length - 1].focus();
     }
-  };
+  }
 
   private _buildDom() {
     const style = document.createElement('style');
@@ -429,7 +446,6 @@ export class ElxMenubarMenu extends HTMLElement {
 
     trigger.addEventListener('click', this._onTriggerClick);
     trigger.addEventListener('keydown', this._onTriggerKeydown);
-    menu.addEventListener('keydown', this._onMenuKeydown);
 
     this.shadowRoot!.appendChild(style);
     this.shadowRoot!.appendChild(trigger);
@@ -441,7 +457,12 @@ export class ElxMenubarMenu extends HTMLElement {
     const menu = this.shadowRoot?.querySelector('.menu');
     if (trigger) {
       trigger.setAttribute('aria-expanded', String(this.open));
-      trigger.setAttribute('aria-label', this.label);
+      // Only set aria-label if label attribute is present (otherwise slotted content provides name)
+      if (this.label) {
+        trigger.setAttribute('aria-label', this.label);
+      } else {
+        trigger.removeAttribute('aria-label');
+      }
       if (this.disabled) {
         trigger.setAttribute('disabled', '');
       } else {
@@ -472,8 +493,10 @@ export class ElxMenubarItem extends HTMLElement {
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'menuitem');
     }
+    // Use tabindex="-1" by default (roving tabindex pattern)
+    // The parent menu will call focus() on the host element
     if (!this.hasAttribute('tabindex')) {
-      this.setAttribute('tabindex', this.hasAttribute('disabled') ? '-1' : '0');
+      this.setAttribute('tabindex', '-1');
     }
     if (this.hasAttribute('disabled')) {
       this.setAttribute('aria-disabled', 'true');
@@ -497,20 +520,26 @@ export class ElxMenubarItem extends HTMLElement {
       this.setAttribute('tabindex', '-1');
     } else {
       this.removeAttribute('disabled');
-      this.setAttribute('tabindex', '0');
+      this.setAttribute('tabindex', '-1');
     }
   }
 
   attributeChangedCallback(_name: string, oldVal: string | null, newVal: string | null) {
     if (oldVal === newVal) return;
     if (_name === 'disabled') {
-      this.setAttribute('tabindex', newVal !== null ? '-1' : '0');
+      this.setAttribute('tabindex', '-1');
       if (newVal !== null) {
         this.setAttribute('aria-disabled', 'true');
       } else {
         this.removeAttribute('aria-disabled');
       }
     }
+  }
+
+  focus() {
+    // When focused, update tabindex for roving pattern
+    this.setAttribute('tabindex', '0');
+    super.focus();
   }
 
   private _handleClick = () => {

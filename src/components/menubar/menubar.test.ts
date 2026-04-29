@@ -116,7 +116,6 @@ describe('elx-menubar', () => {
     const menus = el.querySelectorAll('elx-menubar-menu');
     (menus[0] as any).show();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
-    // First menu should close, second should open
     expect((menus[0] as any).open).toBe(false);
     expect((menus[1] as any).open).toBe(true);
   });
@@ -156,6 +155,36 @@ describe('elx-menubar', () => {
     expect((menus[0] as any).open).toBe(false);
   });
 
+  it('should close on Tab key', () => {
+    const el = createMenubar();
+    const menus = el.querySelectorAll('elx-menubar-menu');
+    (menus[0] as any).show();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
+    expect((menus[0] as any).open).toBe(false);
+  });
+
+  it('should skip disabled menus during ArrowRight navigation', () => {
+    const el = createMenubar();
+    const menus = el.querySelectorAll('elx-menubar-menu');
+    (menus[1] as any).disabled = true;
+    (menus[0] as any).show();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    expect((menus[0] as any).open).toBe(false);
+    expect((menus[1] as any).open).toBe(false);
+    expect((menus[2] as any).open).toBe(true);
+  });
+
+  it('should skip disabled menus during ArrowLeft navigation', () => {
+    const el = createMenubar();
+    const menus = el.querySelectorAll('elx-menubar-menu');
+    (menus[1] as any).disabled = true;
+    (menus[2] as any).show();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
+    expect((menus[2] as any).open).toBe(false);
+    expect((menus[1] as any).open).toBe(false);
+    expect((menus[0] as any).open).toBe(true);
+  });
+
   it('should expose closeAll method', () => {
     const el = createMenubar() as any;
     const menus = el.querySelectorAll('elx-menubar-menu');
@@ -169,7 +198,6 @@ describe('elx-menubar', () => {
   it('should clean up listeners on disconnect', () => {
     const el = createMenubar();
     el.remove();
-    // Should not throw
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     document.dispatchEvent(new MouseEvent('click', { bubbles: true }));
   });
@@ -297,13 +325,20 @@ describe('elx-menubar-menu', () => {
     expect(trigger!.getAttribute('aria-label')).toBe('File');
   });
 
+  it('should not set aria-label when label is empty', () => {
+    const el = createMenubar();
+    const menu = el.querySelector('elx-menubar-menu') as any;
+    menu.removeAttribute('label');
+    const trigger = menu.shadowRoot!.querySelector('.trigger');
+    expect(trigger!.hasAttribute('aria-label')).toBe(false);
+  });
+
   it('should navigate items with ArrowDown inside menu', () => {
     const el = createMenubar();
     const menu = el.querySelector('elx-menubar-menu') as any;
     menu.show();
-    const menuEl = menu.shadowRoot!.querySelector('.menu') as HTMLElement;
-    menuEl.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
-    // Should not throw
+    // Dispatch on the host element (where listener is attached)
+    menu.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     expect(menu.open).toBe(true);
   });
 
@@ -311,8 +346,7 @@ describe('elx-menubar-menu', () => {
     const el = createMenubar();
     const menu = el.querySelector('elx-menubar-menu') as any;
     menu.show();
-    const menuEl = menu.shadowRoot!.querySelector('.menu') as HTMLElement;
-    menuEl.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
+    menu.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
     expect(menu.open).toBe(true);
   });
 
@@ -320,8 +354,7 @@ describe('elx-menubar-menu', () => {
     const el = createMenubar();
     const menu = el.querySelector('elx-menubar-menu') as any;
     menu.show();
-    const menuEl = menu.shadowRoot!.querySelector('.menu') as HTMLElement;
-    menuEl.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
+    menu.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
     expect(menu.open).toBe(true);
   });
 
@@ -329,8 +362,7 @@ describe('elx-menubar-menu', () => {
     const el = createMenubar();
     const menu = el.querySelector('elx-menubar-menu') as any;
     menu.show();
-    const menuEl = menu.shadowRoot!.querySelector('.menu') as HTMLElement;
-    menuEl.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }));
+    menu.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }));
     expect(menu.open).toBe(true);
   });
 });
@@ -353,10 +385,10 @@ describe('elx-menubar-item', () => {
     expect(base!.getAttribute('part')).toBe('base');
   });
 
-  it('should have tabindex 0 by default', () => {
+  it('should have tabindex -1 by default (roving tabindex)', () => {
     const el = createMenubar();
     const item = el.querySelector('elx-menubar-item')!;
-    expect(item.getAttribute('tabindex')).toBe('0');
+    expect(item.getAttribute('tabindex')).toBe('-1');
   });
 
   it('should dispatch select event on click', () => {
@@ -369,6 +401,19 @@ describe('elx-menubar-item', () => {
     item.click();
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy.mock.calls[0][0].detail.value).toBe('new');
+  });
+
+  it('should fall back to textContent when value is absent', () => {
+    const el = createMenubar();
+    const menu = el.querySelector('elx-menubar-menu') as any;
+    menu.show();
+    const item = el.querySelector('elx-menubar-item')!;
+    item.removeAttribute('value');
+    const spy = vi.fn();
+    el.addEventListener('elx-menubar-select', spy);
+    item.click();
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy.mock.calls[0][0].detail.value).toBe('New');
   });
 
   it('should close menu on item click', () => {
@@ -423,6 +468,14 @@ describe('elx-menubar-item', () => {
     expect(item.getAttribute('aria-disabled')).toBe('true');
     item.disabled = false;
     expect(item.hasAttribute('disabled')).toBe(false);
+    expect(item.getAttribute('tabindex')).toBe('-1');
+  });
+
+  it('should set tabindex to 0 when focused', () => {
+    const el = createMenubar();
+    const item = el.querySelector('elx-menubar-item') as any;
+    expect(item.getAttribute('tabindex')).toBe('-1');
+    item.focus();
     expect(item.getAttribute('tabindex')).toBe('0');
   });
 });
