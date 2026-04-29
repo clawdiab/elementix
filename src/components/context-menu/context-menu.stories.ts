@@ -19,8 +19,8 @@ type Story = StoryObj;
 
 export const Default: Story = {
   render: () => html`
-    <elx-context-menu>
-      <div slot="trigger" style="padding: 2rem; border: 2px dashed #e2e8f0; border-radius: 0.5rem; text-align: center; color: #64748b; user-select: none;">
+    <elx-context-menu label="Edit menu">
+      <div style="padding: 2rem; border: 2px dashed #e2e8f0; border-radius: 0.5rem; text-align: center; color: #64748b; user-select: none;">
         Right-click here
       </div>
       <elx-context-menu-item value="copy">Copy</elx-context-menu-item>
@@ -34,8 +34,8 @@ export const Default: Story = {
 
 export const WithDisabledItems: Story = {
   render: () => html`
-    <elx-context-menu>
-      <div slot="trigger" style="padding: 2rem; border: 2px dashed #e2e8f0; border-radius: 0.5rem; text-align: center; color: #64748b; user-select: none;">
+    <elx-context-menu label="Edit menu">
+      <div style="padding: 2rem; border: 2px dashed #e2e8f0; border-radius: 0.5rem; text-align: center; color: #64748b; user-select: none;">
         Right-click here
       </div>
       <elx-context-menu-item value="copy">Copy</elx-context-menu-item>
@@ -49,8 +49,8 @@ export const WithDisabledItems: Story = {
 
 export const WithIcons: Story = {
   render: () => html`
-    <elx-context-menu>
-      <div slot="trigger" style="padding: 2rem; border: 2px dashed #e2e8f0; border-radius: 0.5rem; text-align: center; color: #64748b; user-select: none;">
+    <elx-context-menu label="Edit menu">
+      <div style="padding: 2rem; border: 2px dashed #e2e8f0; border-radius: 0.5rem; text-align: center; color: #64748b; user-select: none;">
         Right-click here
       </div>
       <elx-context-menu-item value="copy">
@@ -76,8 +76,8 @@ export const WithIcons: Story = {
 
 export const WithShortcuts: Story = {
   render: () => html`
-    <elx-context-menu>
-      <div slot="trigger" style="padding: 2rem; border: 2px dashed #e2e8f0; border-radius: 0.5rem; text-align: center; color: #64748b; user-select: none;">
+    <elx-context-menu label="Edit menu">
+      <div style="padding: 2rem; border: 2px dashed #e2e8f0; border-radius: 0.5rem; text-align: center; color: #64748b; user-select: none;">
         Right-click here
       </div>
       <elx-context-menu-item value="copy">

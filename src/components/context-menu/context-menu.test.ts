@@ -193,6 +193,39 @@ describe('elx-context-menu', () => {
     el.dispatchEvent(event);
     expect(el.open).toBe(true);
   });
+
+  it('should close on Tab key', () => {
+    const el = createMenu() as any;
+    el.show(0, 0);
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
+    expect(el.open).toBe(false);
+  });
+
+  it('should update aria-hidden when open attribute changes', () => {
+    const el = createMenu() as any;
+    el.setAttribute('open', '');
+    const menu = el.shadowRoot!.querySelector('.context-menu');
+    expect(menu!.getAttribute('aria-hidden')).toBe('false');
+    el.removeAttribute('open');
+    expect(menu!.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('should support label attribute for aria-label', () => {
+    const el = document.createElement('elx-context-menu') as any;
+    el.setAttribute('label', 'Edit options');
+    document.body.appendChild(el);
+    const menu = el.shadowRoot!.querySelector('.context-menu');
+    expect(menu!.getAttribute('aria-label')).toBe('Edit options');
+  });
+
+  it('should update aria-label when label attribute changes', () => {
+    const el = createMenu() as any;
+    el.setAttribute('label', 'Context options');
+    const menu = el.shadowRoot!.querySelector('.context-menu');
+    expect(menu!.getAttribute('aria-label')).toBe('Context options');
+    el.setAttribute('label', 'New label');
+    expect(menu!.getAttribute('aria-label')).toBe('New label');
+  });
 });
 
 describe('elx-context-menu-item', () => {

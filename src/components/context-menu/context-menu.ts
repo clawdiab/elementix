@@ -102,6 +102,8 @@ const contextMenuDividerStyles = `
 `;
 
 export class ElxContextMenu extends HTMLElement {
+  static observedAttributes = ['open', 'label'];
+
   private _onContextMenu: (e: Event) => void;
   private _onClickOutside: (e: Event) => void;
   private _onKeydown: (e: KeyboardEvent) => void;
@@ -129,6 +131,10 @@ export class ElxContextMenu extends HTMLElement {
     document.removeEventListener('keydown', this._onKeydown);
   }
 
+  attributeChangedCallback() {
+    this._update();
+  }
+
   get open(): boolean {
     return this.hasAttribute('open');
   }
@@ -142,6 +148,19 @@ export class ElxContextMenu extends HTMLElement {
     if (this._menuElement) {
       this._menuElement.style.left = x + 'px';
       this._menuElement.style.top = y + 'px';
+      // Adjust for viewport overflow after paint
+      requestAnimationFrame(() => {
+        if (!this._menuElement) return;
+        const rect = this._menuElement.getBoundingClientRect();
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        if (rect.right > vw) {
+          this._menuElement.style.left = Math.max(0, x - rect.width) + 'px';
+        }
+        if (rect.bottom > vh) {
+          this._menuElement.style.top = Math.max(0, y - rect.height) + 'px';
+        }
+      });
     }
     this.dispatchEvent(new CustomEvent('open', { bubbles: true, composed: true }));
     this._focusFirst();
@@ -175,7 +194,7 @@ export class ElxContextMenu extends HTMLElement {
 
   private _handleKeydown(e: KeyboardEvent) {
     if (!this.open) return;
-    if (e.key === 'Escape') {
+    if (e.key === 'Escape' || e.key === 'Tab') {
       e.preventDefault();
       this.hide();
     }
@@ -246,6 +265,10 @@ export class ElxContextMenu extends HTMLElement {
     menu.setAttribute('role', 'menu');
     menu.setAttribute('aria-orientation', 'vertical');
     menu.setAttribute('part', 'menu');
+    const label = this.getAttribute('label');
+    if (label) {
+      menu.setAttribute('aria-label', label);
+    }
     const slot = document.createElement('slot');
     menu.appendChild(slot);
 
@@ -259,6 +282,12 @@ export class ElxContextMenu extends HTMLElement {
     const menu = this.shadowRoot?.querySelector('.context-menu');
     if (menu) {
       menu.setAttribute('aria-hidden', String(!this.open));
+      const label = this.getAttribute('label');
+      if (label) {
+        menu.setAttribute('aria-label', label);
+      } else {
+        menu.removeAttribute('aria-label');
+      }
     }
   }
 }
