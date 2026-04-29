@@ -43,4 +43,5 @@ export * from './components/hover-card/hover-card';
 export * from './components/navigation-menu/navigation-menu';
 export * from './components/context-menu/context-menu';
 export * from './components/menubar/menubar';
+export * from './components/datalist/datalist';
 export * from './components/command-palette/command-palette';
