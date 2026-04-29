@@ -13,7 +13,9 @@ export class ElxAspectRatio extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this._buildDom();
+    if (!this.shadowRoot!.querySelector('.aspect-ratio')) {
+      this._buildDom();
+    }
   }
 
   attributeChangedCallback(_name: string, oldValue: string | null, newValue: string | null): void {
@@ -91,7 +93,6 @@ export class ElxAspectRatio extends HTMLElement {
         ::slotted(*) {
           width: 100%;
           height: 100%;
-          object-fit: cover;
         }
 
         ::slotted(img),
@@ -100,8 +101,8 @@ export class ElxAspectRatio extends HTMLElement {
           object-position: var(--elx-aspect-ratio-object-position, center);
         }
       </style>
-      <div class="aspect-ratio">
-        <div class="content">
+      <div class="aspect-ratio" part="wrapper">
+        <div class="content" part="content">
           <slot></slot>
         </div>
       </div>

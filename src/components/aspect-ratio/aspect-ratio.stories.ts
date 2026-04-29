@@ -80,6 +80,7 @@ export const WithIframe: Story = {
     <elx-aspect-ratio ratio="16/9">
       <iframe 
         src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+        title="YouTube video player"
         style="width: 100%; height: 100%; border: none;"
         allowfullscreen>
       </iframe>

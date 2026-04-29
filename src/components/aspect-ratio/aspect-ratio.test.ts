@@ -142,4 +142,22 @@ describe('ElxAspectRatio', () => {
     el.setAttribute('ratio', '9/16');
     expect(el.ratio).toBeCloseTo(9 / 16, 5);
   });
+
+  it('should have part="wrapper" on aspect-ratio div', () => {
+    const wrapper = el.shadowRoot!.querySelector('.aspect-ratio');
+    expect(wrapper.getAttribute('part')).toBe('wrapper');
+  });
+
+  it('should have part="content" on content div', () => {
+    const content = el.shadowRoot!.querySelector('.content');
+    expect(content.getAttribute('part')).toBe('content');
+  });
+
+  it('should not rebuild DOM on re-connection', () => {
+    const wrapper = el.shadowRoot!.querySelector('.aspect-ratio');
+    document.body.removeChild(el);
+    document.body.appendChild(el);
+    const wrapperAfter = el.shadowRoot!.querySelector('.aspect-ratio');
+    expect(wrapperAfter).toBe(wrapper);
+  });
 });
