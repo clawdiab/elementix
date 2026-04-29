@@ -153,6 +153,7 @@ export class ElxCommandPalette extends HTMLElement {
   private _filteredItems: CommandItem[] = [];
   private _selectedIndex = 0;
   private _searchValue = '';
+  private _previousActive: HTMLElement | null = null;
   private _onKeydown: (e: KeyboardEvent) => void;
   private _onClickOutside: (e: Event) => void;
   private _searchInput: HTMLInputElement | null = null;
@@ -166,7 +167,9 @@ export class ElxCommandPalette extends HTMLElement {
   }
 
   connectedCallback() {
-    this._buildDom();
+    if (!this.shadowRoot!.firstChild) {
+      this._buildDom();
+    }
     this._update();
     document.addEventListener('keydown', this._onKeydown);
     document.addEventListener('click', this._onClickOutside);
@@ -175,6 +178,7 @@ export class ElxCommandPalette extends HTMLElement {
   disconnectedCallback() {
     document.removeEventListener('keydown', this._onKeydown);
     document.removeEventListener('click', this._onClickOutside);
+    this._restoreFocus();
   }
 
   attributeChangedCallback() {
@@ -195,7 +199,11 @@ export class ElxCommandPalette extends HTMLElement {
 
   set items(val: CommandItem[]) {
     this._items = val;
+    this._selectedIndex = 0;
     this._filterItems();
+    if (this.open) {
+      this._updateResults();
+    }
   }
 
   private _buildDom() {
@@ -205,12 +213,13 @@ export class ElxCommandPalette extends HTMLElement {
     const overlay = document.createElement('div');
     overlay.setAttribute('part', 'overlay');
     overlay.className = 'overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', 'Command palette');
 
     const palette = document.createElement('div');
     palette.setAttribute('part', 'palette');
     palette.className = 'palette';
-    palette.setAttribute('role', 'listbox');
-    palette.setAttribute('aria-label', 'Command palette');
 
     const searchBox = document.createElement('div');
     searchBox.className = 'search-box';
@@ -218,12 +227,17 @@ export class ElxCommandPalette extends HTMLElement {
     const searchIcon = document.createElement('span');
     searchIcon.className = 'search-icon';
     searchIcon.textContent = '🔍';
+    searchIcon.setAttribute('aria-hidden', 'true');
 
     const searchInput = document.createElement('input');
     searchInput.className = 'search-input';
     searchInput.type = 'text';
     searchInput.placeholder = this.getAttribute('placeholder') || 'Search commands...';
     searchInput.setAttribute('aria-label', 'Search commands');
+    searchInput.setAttribute('role', 'combobox');
+    searchInput.setAttribute('aria-autocomplete', 'list');
+    searchInput.setAttribute('aria-controls', 'elx-cp-results');
+    searchInput.setAttribute('aria-expanded', 'true');
     searchInput.addEventListener('input', (e) => {
       this._searchValue = (e.target as HTMLInputElement).value;
       this._selectedIndex = 0;
@@ -238,7 +252,8 @@ export class ElxCommandPalette extends HTMLElement {
 
     const results = document.createElement('ul');
     results.className = 'results';
-    results.setAttribute('role', 'presentation');
+    results.id = 'elx-cp-results';
+    results.setAttribute('role', 'listbox');
 
     this._resultsList = results;
 
@@ -256,26 +271,44 @@ export class ElxCommandPalette extends HTMLElement {
 
     if (this.open) {
       overlay.classList.add('open');
-      this._searchInput?.focus();
+      this._previousActive = document.activeElement as HTMLElement;
       this._searchValue = '';
       this._selectedIndex = 0;
+      if (this._searchInput) {
+        this._searchInput.value = '';
+        this._searchInput.placeholder = this.getAttribute('placeholder') || 'Search commands...';
+      }
       this._filterItems();
       this._updateResults();
+      this._searchInput?.focus();
     } else {
       overlay.classList.remove('open');
+      this._restoreFocus();
+    }
+  }
+
+  private _restoreFocus() {
+    if (this._previousActive) {
+      this._previousActive.focus();
+      this._previousActive = null;
     }
   }
 
   private _filterItems() {
+    const base: CommandItem[] = [];
+    for (let i = 0; i < this._items.length; i++) {
+      if (!this._items[i].disabled) {
+        base.push(this._items[i]);
+      }
+    }
     if (!this._searchValue) {
-      this._filteredItems = this._items;
+      this._filteredItems = base;
     } else {
       const query = this._searchValue.toLowerCase();
-      this._filteredItems = this._items.filter(
+      this._filteredItems = base.filter(
         (item) =>
-          !item.disabled &&
-          (item.label.toLowerCase().indexOf(query) !== -1 ||
-            (item.group && item.group.toLowerCase().indexOf(query) !== -1))
+          item.label.toLowerCase().indexOf(query) !== -1 ||
+          (item.group && item.group.toLowerCase().indexOf(query) !== -1)
       );
     }
   }
@@ -284,6 +317,15 @@ export class ElxCommandPalette extends HTMLElement {
     if (!this._resultsList) return;
 
     this._resultsList.innerHTML = '';
+
+    // Update aria-activedescendant
+    const activeItem = this._filteredItems[this._selectedIndex];
+    if (this._searchInput) {
+      this._searchInput.setAttribute(
+        'aria-activedescendant',
+        activeItem ? 'elx-cp-item-' + activeItem.id : ''
+      );
+    }
 
     if (this._filteredItems.length === 0) {
       const empty = document.createElement('div');
@@ -302,17 +344,20 @@ export class ElxCommandPalette extends HTMLElement {
         currentGroup = item.group;
         const groupLabel = document.createElement('div');
         groupLabel.className = 'group-label';
+        groupLabel.setAttribute('aria-hidden', 'true');
         groupLabel.textContent = currentGroup;
         this._resultsList.appendChild(groupLabel);
       }
 
       const li = document.createElement('li');
+      li.id = 'elx-cp-item-' + item.id;
       li.className = 'result-item';
-      if (i === this._selectedIndex) {
+      const isActive = i === this._selectedIndex;
+      if (isActive) {
         li.classList.add('active');
       }
       li.setAttribute('role', 'option');
-      li.setAttribute('aria-selected', String(i === this._selectedIndex));
+      li.setAttribute('aria-selected', String(isActive));
       li.addEventListener('click', () => this._selectItem(i));
       li.addEventListener('mouseenter', () => {
         this._selectedIndex = i;
@@ -323,6 +368,7 @@ export class ElxCommandPalette extends HTMLElement {
         const icon = document.createElement('span');
         icon.className = 'result-icon';
         icon.textContent = item.icon;
+        icon.setAttribute('aria-hidden', 'true');
         li.appendChild(icon);
       }
 
@@ -334,11 +380,18 @@ export class ElxCommandPalette extends HTMLElement {
       if (item.shortcut) {
         const shortcut = document.createElement('span');
         shortcut.className = 'result-shortcut';
+        shortcut.setAttribute('aria-hidden', 'true');
         shortcut.textContent = item.shortcut;
         li.appendChild(shortcut);
       }
 
       this._resultsList.appendChild(li);
+    }
+
+    // Scroll active item into view
+    const activeLi = this._resultsList.querySelector('.result-item.active') as HTMLElement | null;
+    if (activeLi && activeLi.scrollIntoView) {
+      activeLi.scrollIntoView({ block: 'nearest' });
     }
   }
 
@@ -391,7 +444,7 @@ export class ElxCommandPalette extends HTMLElement {
 
   private _selectItem(index: number) {
     const item = this._filteredItems[index];
-    if (!item) return;
+    if (!item || item.disabled) return;
 
     this.dispatchEvent(
       new CustomEvent('elx-command-select', {

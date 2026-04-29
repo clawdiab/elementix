@@ -121,7 +121,7 @@ describe('elx-command-palette', () => {
       input.dispatchEvent(new Event('input'));
       el.close();
       el.show();
-      expect(el.shadowRoot.querySelectorAll('.result-item').length).toBe(9);
+      expect(el.shadowRoot.querySelectorAll('.result-item').length).toBe(8);
     });
   });
 
@@ -130,18 +130,17 @@ describe('elx-command-palette', () => {
       const el = createPalette() as any;
       el.show();
       const items = el.shadowRoot.querySelectorAll('.result-item');
-      expect(items.length).toBe(9);
+      expect(items.length).toBe(8);
     });
 
     it('should render group labels', () => {
       const el = createPalette() as any;
       el.show();
       const groups = el.shadowRoot.querySelectorAll('.group-label');
-      expect(groups.length).toBe(4);
+      expect(groups.length).toBe(3);
       expect(groups[0].textContent).toBe('File');
       expect(groups[1].textContent).toBe('Edit');
       expect(groups[2].textContent).toBe('View');
-      expect(groups[3].textContent).toBe('Other');
     });
 
     it('should render icons', () => {
@@ -176,7 +175,7 @@ describe('elx-command-palette', () => {
       expect(el.shadowRoot.querySelector('.empty-state')).not.toBeNull();
       el.items = sampleItems;
       el.show();
-      expect(el.shadowRoot.querySelectorAll('.result-item').length).toBe(9);
+      expect(el.shadowRoot.querySelectorAll('.result-item').length).toBe(8);
     });
   });
 
@@ -346,16 +345,18 @@ describe('elx-command-palette', () => {
   });
 
   describe('accessibility', () => {
-    it('should have listbox role', () => {
+    it('should have listbox role on results', () => {
       const el = createPalette() as any;
-      const palette = el.shadowRoot.querySelector('.palette');
-      expect(palette.getAttribute('role')).toBe('listbox');
+      const results = el.shadowRoot.querySelector('.results');
+      expect(results.getAttribute('role')).toBe('listbox');
     });
 
-    it('should have aria-label on palette', () => {
+    it('should have dialog role on overlay', () => {
       const el = createPalette() as any;
-      const palette = el.shadowRoot.querySelector('.palette');
-      expect(palette.getAttribute('aria-label')).toBe('Command palette');
+      const overlay = el.shadowRoot.querySelector('.overlay');
+      expect(overlay.getAttribute('role')).toBe('dialog');
+      expect(overlay.getAttribute('aria-modal')).toBe('true');
+      expect(overlay.getAttribute('aria-label')).toBe('Command palette');
     });
 
     it('should have aria-label on search input', () => {
@@ -401,6 +402,46 @@ describe('elx-command-palette', () => {
       document.body.appendChild(el);
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }));
       expect(el.open).toBe(true);
+    });
+
+    it('should not duplicate DOM on reconnect', () => {
+      const el = createPalette() as any;
+      el.remove();
+      document.body.appendChild(el);
+      const overlays = el.shadowRoot.querySelectorAll('.overlay');
+      expect(overlays.length).toBe(1);
+    });
+  });
+
+  describe('focus restoration', () => {
+    it('should restore focus on close', () => {
+      const btn = document.createElement('button');
+      btn.id = 'trigger';
+      document.body.appendChild(btn);
+      btn.focus();
+      const el = createPalette() as any;
+      el.show();
+      el.close();
+      expect(document.activeElement).toBe(btn);
+    });
+  });
+
+  describe('combobox role', () => {
+    it('should have combobox role on search input', () => {
+      const el = createPalette() as any;
+      const input = el.shadowRoot.querySelector('.search-input');
+      expect(input.getAttribute('role')).toBe('combobox');
+      expect(input.getAttribute('aria-autocomplete')).toBe('list');
+      expect(input.getAttribute('aria-controls')).toBe('elx-cp-results');
+    });
+
+    it('should update aria-activedescendant on arrow', () => {
+      const el = createPalette() as any;
+      el.show();
+      const input = el.shadowRoot.querySelector('.search-input');
+      expect(input.getAttribute('aria-activedescendant')).toBe('elx-cp-item-new-file');
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+      expect(input.getAttribute('aria-activedescendant')).toBe('elx-cp-item-open-file');
     });
   });
 
