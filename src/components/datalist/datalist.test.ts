@@ -36,18 +36,19 @@ describe('elx-datalist', () => {
   });
 
   describe('items', () => {
-    it('should render all non-disabled items', () => {
+    it('should render all items including disabled', () => {
       const el = createDataList() as any;
       const items = el.shadowRoot.querySelectorAll('.list-item');
-      expect(items.length).toBe(6);
+      expect(items.length).toBe(7);
     });
 
     it('should render group labels', () => {
       const el = createDataList() as any;
       const groups = el.shadowRoot.querySelectorAll('.group-label');
-      expect(groups.length).toBe(2);
+      expect(groups.length).toBe(3);
       expect(groups[0].textContent).toBe('Fruits');
       expect(groups[1].textContent).toBe('Vegetables');
+      expect(groups[2].textContent).toBe('Other');
     });
 
     it('should render descriptions', () => {
@@ -60,7 +61,7 @@ describe('elx-datalist', () => {
       const el = createDataList([]) as any;
       expect(el.shadowRoot.querySelector('.empty-state')).not.toBeNull();
       el.items = sampleItems;
-      expect(el.shadowRoot.querySelectorAll('.list-item').length).toBe(6);
+      expect(el.shadowRoot.querySelectorAll('.list-item').length).toBe(7);
     });
   });
 
@@ -183,6 +184,33 @@ describe('elx-datalist', () => {
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy.mock.calls[0][0].detail.id).toBe('apple');
     });
+
+    it('should clear selection on Escape', () => {
+      const el = createDataList() as any;
+      el.focus();
+      el.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+      el.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      const items = el.shadowRoot.querySelectorAll('.list-item');
+      expect(items[0].classList.contains('active')).toBe(false);
+    });
+
+    it('should jump to first item on Home', () => {
+      const el = createDataList() as any;
+      el.focus();
+      el.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+      el.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+      el.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home' }));
+      const items = el.shadowRoot.querySelectorAll('.list-item');
+      expect(items[0].classList.contains('active')).toBe(true);
+    });
+
+    it('should jump to last item on End', () => {
+      const el = createDataList() as any;
+      el.focus();
+      el.dispatchEvent(new KeyboardEvent('keydown', { key: 'End' }));
+      const items = el.shadowRoot.querySelectorAll('.list-item');
+      expect(items[items.length - 1].classList.contains('active')).toBe(true);
+    });
   });
 
   describe('mouse interaction', () => {
@@ -260,6 +288,37 @@ describe('elx-datalist', () => {
       const items = el.shadowRoot.querySelectorAll('.list-item');
       expect(items[0].getAttribute('aria-selected')).toBe('true');
       expect(items[1].getAttribute('aria-selected')).toBe('false');
+    });
+
+    it('should have aria-disabled on disabled items', () => {
+      const el = createDataList() as any;
+      const items = el.shadowRoot.querySelectorAll('.list-item');
+      let disabledItem: any = null;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].textContent.indexOf('Disabled') !== -1) {
+          disabledItem = items[i];
+          break;
+        }
+      }
+      expect(disabledItem?.getAttribute('aria-disabled')).toBe('true');
+    });
+
+    it('should update aria-activedescendant on keyboard nav', () => {
+      const el = createDataList() as any;
+      const container = el.shadowRoot.querySelector('.container');
+      el.focus();
+      el.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+      const items = el.shadowRoot.querySelectorAll('.list-item');
+      expect(container.getAttribute('aria-activedescendant')).toBe(items[0].id);
+    });
+
+    it('should remove aria-activedescendant on Escape', () => {
+      const el = createDataList() as any;
+      const container = el.shadowRoot.querySelector('.container');
+      el.focus();
+      el.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+      el.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      expect(container.getAttribute('aria-activedescendant')).toBeNull();
     });
   });
 

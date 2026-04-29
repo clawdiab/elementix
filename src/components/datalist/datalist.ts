@@ -195,6 +195,7 @@ export class ElxDataList extends HTMLElement {
     container.setAttribute('part', 'container');
     container.className = 'container';
     container.setAttribute('role', 'listbox');
+    container.setAttribute('tabindex', '0');
     const lbl = this.getAttribute('label');
     if (lbl) {
       container.setAttribute('aria-label', lbl);
@@ -241,22 +242,22 @@ export class ElxDataList extends HTMLElement {
   }
 
   private _filterItems() {
-    const base: DataListItem[] = [];
-    for (let i = 0; i < this._items.length; i++) {
-      if (!this._items[i].disabled) {
-        base.push(this._items[i]);
-      }
-    }
     if (!this._searchValue) {
-      this._filteredItems = base;
+      this._filteredItems = this._items.slice();
     } else {
       const query = this._searchValue.toLowerCase();
-      this._filteredItems = base.filter(
-        (item) =>
+      const result: DataListItem[] = [];
+      for (let i = 0; i < this._items.length; i++) {
+        const item = this._items[i];
+        if (
           item.label.toLowerCase().indexOf(query) !== -1 ||
           (item.description && item.description.toLowerCase().indexOf(query) !== -1) ||
           (item.group && item.group.toLowerCase().indexOf(query) !== -1)
-      );
+        ) {
+          result.push(item);
+        }
+      }
+      this._filteredItems = result;
     }
   }
 
@@ -296,7 +297,13 @@ export class ElxDataList extends HTMLElement {
       }
       li.setAttribute('role', 'option');
       li.setAttribute('aria-selected', String(isActive));
-      li.addEventListener('click', () => this._selectItem(i));
+      if (item.disabled) {
+        li.classList.add('disabled');
+        li.setAttribute('aria-disabled', 'true');
+      }
+      if (!item.disabled) {
+        li.addEventListener('click', () => this._selectItem(i));
+      }
 
       const label = document.createElement('span');
       label.className = 'list-item-label';
@@ -318,6 +325,14 @@ export class ElxDataList extends HTMLElement {
     if (activeLi && activeLi.scrollIntoView) {
       activeLi.scrollIntoView({ block: 'nearest' });
     }
+
+    // Update aria-activedescendant
+    const container = this.shadowRoot?.querySelector('.container');
+    if (activeLi) {
+      container?.setAttribute('aria-activedescendant', activeLi.id);
+    } else {
+      container?.removeAttribute('aria-activedescendant');
+    }
   }
 
   private _handleKeydown(e: KeyboardEvent) {
@@ -337,6 +352,24 @@ export class ElxDataList extends HTMLElement {
       e.preventDefault();
       if (this._selectedIndex >= 0) {
         this._selectItem(this._selectedIndex);
+      }
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      this._selectedIndex = -1;
+      this._updateList();
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      if (this._filteredItems.length > 0) {
+        this._selectedIndex = 0;
+        this._updateList();
+        this._emitChange();
+      }
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      if (this._filteredItems.length > 0) {
+        this._selectedIndex = this._filteredItems.length - 1;
+        this._updateList();
+        this._emitChange();
       }
     }
   }
