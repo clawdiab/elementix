@@ -42,3 +42,4 @@ export * from './components/aspect-ratio/aspect-ratio';
 export * from './components/hover-card/hover-card';
 export * from './components/navigation-menu/navigation-menu';
 export * from './components/context-menu/context-menu';
+export * from './components/menubar/menubar';
