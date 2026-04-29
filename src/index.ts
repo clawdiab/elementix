@@ -38,3 +38,4 @@ export * from './components/form-field/form-field';
 export * from './components/toggle/toggle';
 export * from './components/collapsible/collapsible';
 export * from './components/scroll-area/scroll-area';
+export * from './components/aspect-ratio/aspect-ratio';
